@@ -31,4 +31,4 @@
 - [x] WebGL shader animations with the ME: glass, pixel / dither, grit. A live tool on the site to tweak and export (PNG / video), plus rendered loops as backgrounds.
 
 ## Final
-- [ ] Rebuild renders, kit, PDF; publish to GitHub Pages + release.
+- [x] Rebuild renders, kit, PDF; publish to GitHub Pages + release.
