@@ -23,7 +23,7 @@
 .op2 { padding: clamp(60px, 10vh, 120px) var(--gut) clamp(80px, 12vh, 140px); }
 .op2 .word .lg { width: 100%; }
 .op2 .arcwrap { position: relative; margin-top: -1px; aspect-ratio: 2 / 1; }
-.op2 .arcwrap .quote { position: absolute; left: 50%; top: 22%; transform: translateX(-50%); width: min(90%, 760px); text-align: center; font: 500 clamp(.9rem, 2.2vw, 1.9rem)/1.35 var(--mono); text-transform: uppercase; margin: 0; }
+.op2 .arcwrap .quote { position: absolute; left: 50%; top: 22%; transform: translateX(-50%); width: min(90%, 760px); text-align: center; font: 500 clamp(.78rem, 1.45vw, 1.3rem)/1.4 var(--mono); text-transform: uppercase; margin: 0; }
 .op2 .band { position: relative; height: clamp(80px, 13vw, 200px); margin: clamp(10px, 3vw, 40px) calc(var(--gut) * -1) 0; }
 .op2 .band .outline { position: absolute; left: 0; top: 50%; transform: translateY(-50%); will-change: transform; }
 .op2 .rule { position: relative; height: 54px; margin-top: clamp(-30px, -2vw, -10px); }
@@ -37,17 +37,17 @@
 .op4 { height: 380vh; }
 .op4 .pin { position: sticky; top: 0; height: 100vh; height: 100svh; overflow: hidden; }
 .op4 .stage { position: absolute; inset: 0; }
-.op4 .w { position: absolute; font: 800 clamp(2.6rem, 9vw, 9.5rem)/.86 var(--disp); letter-spacing: -.045em; white-space: nowrap; will-change: transform, opacity; }
+.op4 .w { position: absolute; font: 800 clamp(2rem, 6.2vw, 6.6rem)/.86 var(--disp); letter-spacing: -.045em; white-space: nowrap; will-change: transform, opacity; }
 .op4 .w.a { left: var(--gut); top: 13vh; } .op4 .w.b { right: var(--gut); top: 13vh; }
 .op4 .w.c { left: var(--gut); top: calc(13vh + .86em); } .op4 .w.d { right: var(--gut); top: calc(13vh + .86em); }
 .op4 .w.e { left: var(--gut); top: calc(13vh + 1.72em); } .op4 .w.f { right: var(--gut); top: calc(13vh + 1.72em); }
 /* the Ǝ of FRONƎ and the W of ROW are the halves of the mark; placeholders hold their place in the words */
-.op4 .ph { display: inline-block; height: .7em; width: calc(.7em * 1.036); margin: 0 .02em; vertical-align: 0; visibility: hidden; }
+.op4 .ph { display: inline-block; height: .7em; width: calc(.7em * .9655); margin: 0 .02em; vertical-align: 0; visibility: hidden; }
 .op4 .glyph { position: absolute; left: 0; top: 0; color: var(--fg); will-change: transform, width, height; pointer-events: none; }
 .op4 .glyph svg { display: block; width: 100%; height: 100%; }
 .op4 .lab2 { position: absolute; text-align: center; width: 190px; opacity: 0; will-change: opacity; }
 .op4 .lab2 b { display: block; font: 500 clamp(.8rem, 1.3vw, 1.05rem)/1 var(--mono); letter-spacing: .08em; margin-bottom: 10px; }
-.op4 .deg { position: absolute; left: 50%; bottom: 3.2vh; transform: translateX(-50%); font: 500 clamp(1rem, 1.8vw, 1.5rem)/1 var(--mono); color: var(--lime); }
+.op4 .deg { position: absolute; left: 50%; bottom: 3.2vh; transform: translateX(-50%); font: 500 clamp(.72rem, 1vw, .9rem)/1 var(--mono); color: var(--lime); }
 .op4 .vt { position: absolute; left: 50%; top: 42%; transform: translate(-50%, -50%) rotate(90deg); font: 500 .62rem/1 var(--mono); text-transform: uppercase; opacity: .7; white-space: nowrap; }
 .op4 .cap4 { position: absolute; left: 50%; bottom: 10vh; transform: translateX(-50%); margin: 0; opacity: 0; }
 
@@ -55,6 +55,7 @@
   .op2 .mani { grid-template-columns: 1fr; }
   .op4 .lab2 { width: 140px; font-size: .55rem; }
   .op4 .deg { bottom: 84px; }
+  .op4 .cap4 { bottom: 150px; width: calc(100% - 2 * var(--gut)); text-align: center; }
 }
 @media (prefers-reduced-motion: reduce) {
   .rv > span, .rv-clip, .draw, .fade { transition: none !important; transform: none !important; clip-path: none !important; stroke-dashoffset: 0 !important; opacity: 1 !important; }

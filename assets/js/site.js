@@ -56,34 +56,41 @@ const segp = (t, a, b) => clamp((t - a) / (b - a));
 const ioe = t => t < .5 ? 4 * t * t * t : 1 - (-2 * t + 2) ** 3 / 2;
 function seqScene() {
   if (!seq) return;
-  const r = seq.getBoundingClientRect(); const p = printing ? .5 : clamp(-r.top / Math.max(1, r.height - innerHeight));
+  const r = seq.getBoundingClientRect(), vh = innerHeight, vw = innerWidth;
+  const p = printing ? .5 : clamp(-r.top / Math.max(1, r.height - vh));
   const W = $('.lg3 .cond', seq)?.clientHeight * SQ.full / 299 || 1, u = W / SQ.full;
   // 1 · MNML ■ EFFRT: the square closes
-  const close = ioe(segp(p, .06, .2));
+  const close = ioe(segp(p, .05, .16));
   const sqw = SQ.sqW * (1 - close), g = 94 - 47 * close;
   const sq = $('.lg3 .sq', seq); if (sq) sq.style.width = (sqw * u) + 'px';
   $$('.lg3 .gap', seq).forEach(e => { e.style.width = (g * u) + 'px'; e.style.flex = 'none'; });
   // 2 · MINIMAL EFFORT · 3 · ME
-  const toWord = ioe(segp(p, .25, .33)), toMark = ioe(segp(p, .4, .48));
+  const toWord = ioe(segp(p, .2, .28)), toMark = ioe(segp(p, .34, .42));
   const m1 = $('.lg3 .cond', seq), m2 = $('.lg3 .m2', seq), m3 = $('.lg3 .m3', seq);
   const blur = x => `blur(${(Math.sin(x * Math.PI) * 14).toFixed(1)}px)`;
   if (m1) { m1.style.opacity = 1 - toWord; m1.style.filter = blur(toWord); }
   if (m2) { m2.style.opacity = toWord * (1 - toMark); m2.style.filter = blur(toMark > 0 ? toMark : toWord); }
-  // 4 · the ME grows big, the lines draw, Make a flyer leaves, Download the kit floats
-  const grow = ioe(segp(p, .6, .84));
-  const lr = $('.lg3', seq)?.getBoundingClientRect(), dy = lr ? (innerHeight / 2 - (lr.top + lr.height / 2)) * grow : 0;
-  if (m3) { m3.style.opacity = toMark; m3.style.filter = blur(toMark); m3.style.transform = `translateY(${dy.toFixed(1)}px) scale(${(.9 + .1 * toMark) * (1 + (innerWidth < 760 ? .55 : 1.0) * grow)})`; }
-  const phase = p < .06 ? 0 : p < .23 ? 1 : p < .38 ? 2 : 3;
+  // 4 · the ME grows to the width of the MINIMAL EFFORT wordmark below (gutter to gutter), centred on the screen
+  const grow = ioe(segp(p, .5, .72));
+  const gut = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--gut')) || 24;
+  const h0 = $('.lg3', seq)?.clientHeight || 1, w0 = h0 * 874.943 / 422.417;
+  const target = Math.min((vw - 2 * gut) / w0, (vh * .84) / h0);
+  // 5 · the next section rises over the pinned hero; the ME keeps drifting up while it is eaten
+  const pEat = (r.height - 2 * vh) / Math.max(1, r.height - vh), eat = clamp((p - pEat) / Math.max(.001, 1 - pEat));
+  const lift = printing ? 0 : -eat * vh * .42;
+  if (m3) { m3.style.opacity = toMark; m3.style.filter = blur(toMark); m3.style.transform = `translateY(${lift.toFixed(1)}px) scale(${((.9 + .1 * toMark) * lerp(1, target, grow)).toFixed(4)})`; }
+  const phase = p < .05 ? 0 : p < .19 ? 1 : p < .33 ? 2 : 3;
   $$('.seq-cap span', seq).forEach((e, i) => e.classList.toggle('on', i === phase));
-  const quiet = 1 - ioe(segp(p, .56, .64));
+  const quiet = 1 - ioe(segp(p, .47, .53));
   const cap = $('.seq-cap', seq), lab = $('.seq-lab', seq); if (cap) cap.style.opacity = quiet; if (lab) lab.style.opacity = quiet;
-  const end = $('.seq-end', seq); end?.classList.toggle('on', p > .5);
-  const mf = $('.seq-mf', seq), dl = $('.seq-dl', seq); if (mf) mf.style.opacity = 1 - ioe(segp(p, .58, .64)); if (dl) dl.style.opacity = 1 - ioe(segp(p, .64, .68));
-  document.documentElement.classList.toggle('dl-float', p > .66 || r.bottom < innerHeight * .5);
-  const sl = $('.slides', seq); if (sl) sl.style.opacity = 1 - ioe(segp(p, .6, .8));
-  $$('.seq-lines i', seq).forEach((l, i) => { l.style.transform = `scaleY(${ioe(segp(p, .7 + i * .03, .88 + i * .03))})`; });
+  const mf = $('.seq-mf', seq), dl = $('.seq-dl', seq);
+  if (mf) { mf.style.opacity = 1 - ioe(segp(p, .46, .52)); mf.style.pointerEvents = p > .5 ? 'none' : ''; }
+  if (dl) { dl.style.opacity = 1 - ioe(segp(p, .52, .56)); dl.style.pointerEvents = p > .55 ? 'none' : ''; }
+  document.documentElement.classList.toggle('dl-float', p > .55 || r.bottom < vh * .5);
+  const sl = $('.slides', seq); if (sl) sl.style.opacity = 1 - ioe(segp(p, .5, .7));
+  $$('.seq-lines i', seq).forEach((l, i) => { l.style.transform = `scaleY(${ioe(segp(p, .6 + i * .03, .76 + i * .03))})`; });
   const bar = $('.seq-bar .track i', seq); if (bar) bar.style.width = (p * 100) + '%';
-  const sb = $('.seq-bar', seq); if (sb) sb.style.opacity = 1 - ioe(segp(p, .9, 1));
+  const sb = $('.seq-bar', seq); if (sb) sb.style.opacity = 1 - ioe(segp(p, .5, .6));
 }
 // event slideshow behind the sequence
 const slides = $$('.slides img'); let si = 0;

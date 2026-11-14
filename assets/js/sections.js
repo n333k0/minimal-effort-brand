@@ -35,9 +35,10 @@ if (ig) {
 /* ---------------- compositions A–G */
 const comps = $('#comps');
 if (comps) {
-  const USE = { center: 'Default, any lineup', header: 'Co-brands, partner first', left: 'Long lineups, on the margin', headliner: 'One big name', split: 'Date-led, two columns', bottom: 'Image-led, type low', frame: 'Technical label, frame corners' };
-  const BG = { center: 'waves', header: 'rainbow', left: 'lilac', headliner: 'bubbles', split: 'flow', bottom: 'bloom', frame: 'holo' };
-  comps.innerHTML = Object.entries(LAYOUTS).map(([k, v]) => `<div class="tp"><div class="frame" data-tpl='${attr({ template: 'lineup', layout: k, bg: BG[k] })}'></div><div class="meta-r"><h4>${v}</h4><span class="lab">${USE[k]}</span></div></div>`).join('');
+  const USE = { center: 'Default, any lineup', header: 'Co-brands, partner first', left: 'Long lineups, on the margin', headliner: 'One big name', split: 'Date-led, two columns', bottom: 'Image-led, type low', half: 'Half image, half colour, text across both', window: 'A photo window, names inside it' };
+  const BG = { center: 'waves', header: 'rainbow', left: 'lilac', headliner: 'bubbles', split: 'flow', bottom: 'bloom', half: 'lime', window: 'ember' };
+  const PH = { half: 'lee-burridge-2', window: 'party-02' };
+  comps.innerHTML = Object.entries(LAYOUTS).map(([k, v]) => `<div class="tp"><div class="frame" data-tpl='${attr({ template: 'lineup', layout: k, bg: BG[k], ...(PH[k] ? { photo: PH[k] } : {}) })}'></div><div class="meta-r"><h4>${v}</h4><span class="lab">${USE[k]}</span></div></div>`).join('');
 }
 
 /* ---------------- backgrounds, grouped by family */
@@ -45,7 +46,7 @@ const loops = $('#loops');
 if (loops) {
   const fams = {};
   for (const [k, b] of Object.entries(BACKGROUNDS)) if (b.video) (fams[b.family] ??= []).push([k, b]);
-  const NOTE = { Chrome: 'Liquid, iridescent forms', Prism: 'Spectrum light', Film: 'Analog leaks and holo film', 'Brand light': 'Lime and Lilac, for light posts' };
+  const NOTE = { Chrome: 'Liquid, iridescent forms', Prism: 'Spectrum light', Film: 'Analog leaks and holo film', 'Brand light': 'Lime and Lilac, for light posts', Shader: 'The ME drawn live by WebGL: glass, pixel, grit. Make your own in the shader lab below' };
   loops.innerHTML = Object.entries(fams).map(([f, list]) => `<p class="fam-h">${f} · ${NOTE[f] || ''}</p><div class="g" style="--c:${Math.min(5, Math.max(3, list.length))}">${list.map(([k, b]) => {
     const id = b.loop, base = `downloads/backgrounds/minimal-effort_loop_${id}`;
     return `<div class="card flush"><video src="${b.video}" poster="${b.still}" muted loop playsinline autoplay preload="none" style="aspect-ratio:4/5;object-fit:cover;width:100%;display:block"></video><div class="cap"><span class="lab">${b.label}</span><span style="display:flex;gap:6px;flex-wrap:wrap"><a class="dl" href="${base}_feed-1080x1350.mp4" download>Feed</a><a class="dl" href="${base}_story-1080x1920.mp4" download>Story</a><a class="dl" href="${base}_master-1440x1920.mp4" download>2K</a></span></div></div>`;
@@ -57,13 +58,14 @@ const groups = $('#tpl-groups');
 if (groups) {
   const G = [
     ['The Second Wind flyer · every size', 'The flyer we made, on the waves loop, adapted to feed 4:5, story 9:16, square 1:1 and landscape 16:9 (event pages, screens). Same words, same blocks, the layout adapts.', n => n === 'second-wind_waves', true],
-    ['Lineup · compositions', 'The same night in five more compositions and backgrounds. Black label blocks by default, Lime as an option.', n => n.startsWith('lineup-')],
-    ['THE MAZE', 'A party of its own: THE MAZE logo on top, every line in Lime, THE MAZE PRESENTS.', n => n.startsWith('the-maze')],
+    ['Lineup · compositions', 'The same night in more compositions and backgrounds, including G · Half image and H · Window. Black label blocks by default, Lime as an option.', n => n.startsWith('lineup-')],
+    ['THE MAZE · its own flyer', 'From the real MAZE flyers: maze blocks over a blurred colour field or photo, the MAZE logo sitting in one block, lime names, IN ORDER OF APPEARANCE. Four palettes, every size; try another maze pattern in the builder.', n => n.startsWith('the-maze'), true],
     ['Just announced', 'Real press photos. The ME on top, the venue logo at the bottom, and all the info: night, date, time, place.', n => n.startsWith('announce')],
-    ['Ticket giveaway', 'Party photos, “Win 5 × VIP tickets”, three colourways. The ME bottom left.', n => n.startsWith('giveaway')],
-    ['Ticket messaging', 'Sold out, on sale now, presale live, final release. Centred; the button at the bottom; the venue logo below.', n => n.startsWith('status')],
+    ['Ticket giveaway', 'Three compositions: a photo window, a full photo (centred, words low) and a ticket stub. The ME bottom left or centred.', n => n.startsWith('giveaway')],
+    ['Ticket messaging', 'Presale live, tickets live, on sale now, final release, sold out. The words sit low, or on a band across the middle; the button at the bottom.', n => n.startsWith('status')],
     ['Monthly calendar', 'One month of nights in one post. Four backgrounds.', n => n.startsWith('calendar')],
-    ['Statements & hiring', 'Type-led covers and the hiring post.', n => n.startsWith('cover') || n === 'hiring'],
+    ['Now hiring', 'Three ways to say it: an object (walkie-talkie, flight case, headphones, crew pass, gaffer tape), a statement on a photo, a list of open roles. The ME centred.', n => n.startsWith('hiring')],
+    ['Statements', 'Type-led covers. The ME takes the colour that reads on the background, never boxed.', n => n.startsWith('cover')],
   ];
   fetch('tools/examples/templates.json').then(r => r.json()).then(list => {
     groups.innerHTML = G.map(([h, note, test, all]) => {
@@ -92,7 +94,7 @@ if (hg) hg.innerHTML = ['lime', 'midnight'].flatMap(st => HL.map(([t, ic]) => `<
 const feed = [
   { template: 'announce', photo: 'lee-burridge-1', artists: [{ name: 'LEE BURRIDGE' }] }, { template: 'lineup', bg: 'waves' }, { template: 'calendar', bg: 'midnight', dust: true },
   { template: 'status', status: 'ON SALE NOW', bg: 'lime' }, { template: 'announce', photo: 'ry-x', artists: [{ name: 'RY X', note: '[DJ SET]' }] }, { template: 'cover', bg: 'lilac', car: 1, statement: 'Second Wind. Jan 2.' },
-  { template: 'giveaway', bg: 'midnight', dust: true, photo: 'party-03' }, { template: 'lineup', bg: 'ribbon', event: 'THE MAZE', title: 'Halloween Night', date: 'Oct 31', time: '8pm to 4am', artists: [{ name: 'GUY GERBER' }, { name: 'LEE BURRIDGE' }, { name: 'DEER JADE' }], venue: ['The Train Station', 'Los Angeles'] }, { template: 'status', status: 'SOLD OUT', bg: 'rainbow' },
+  { template: 'giveaway', bg: 'midnight', dust: true, photo: 'party-03' }, { template: 'maze', layout: 'orange', date: 'OCT 31', title: 'HALLOWEEN NIGHT', artists: [{ name: 'GUY GERBER' }, { name: 'LEE BURRIDGE' }, { name: 'DEER JADE' }, { name: 'THE BITAR BROTHERS' }], venue: ['THE TRAIN STATION', '800 N. Alameda St. Los Angeles, CA'] }, { template: 'status', status: 'SOLD OUT', bg: 'rainbow' },
 ];
 const grid = $('#ig-grid'), hl = $('#ig-hl'), car = $('#carousel');
 if (grid) grid.innerHTML = feed.map(s => `<div class="${s.car ? 'car' : ''}" data-f='${attr(s)}'></div>`).join('');

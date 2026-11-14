@@ -320,3 +320,37 @@ body { overflow-x: clip; }
 .tp .frame:hover { box-shadow: 0 0 0 2px var(--lime); }
 .tp.wide2 { grid-column: span 2; }
 @media (max-width: 760px) { .tp.wide2 { grid-column: 1 / -1; } }
+
+/* round 4: the logo sits at the centre of the screen, label above, caption + both CTAs below in every state */
+.seq-stage { position: absolute; inset: 0; width: auto; display: block; --lw: min(92vw, 1500px); --lh: calc(var(--lw) * 299 / 2924.4 * 2.3); }
+.seq-stage .lg3 { position: absolute; left: 50%; top: 50%; width: var(--lw); height: var(--lh); transform: translate(-50%, -50%); }
+.seq-stage .seq-lab { position: absolute; left: 0; right: 0; bottom: calc(50% + var(--lh) / 2 + 18px); margin: 0; text-align: center; }
+.seq-below { position: absolute; left: 0; right: 0; top: calc(50% + var(--lh) / 2 + 22px); display: grid; justify-items: center; text-align: center; }
+.seq-below .seq-cap { margin-top: 0; }
+.seq-end, .seq-end.on { opacity: 1; transform: none; margin-top: clamp(16px, 3vh, 32px); }
+.seq-end .ctas { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
+.seq-end .ctas a { transition: opacity .4s ease; }
+/* the next section rises over the pinned hero and eats the big ME; its lines meet the hero's */
+.op.op2 { margin-top: -100vh; margin-top: -100svh; z-index: 3; }
+.op2 .topframe { position: relative; }
+.op2-lines i { position: absolute; background: rgba(245, 246, 252, .35); pointer-events: none; }
+.op2-lines .l, .op2-lines .m, .op2-lines .r { top: calc(-1 * clamp(60px, 10vh, 120px)); bottom: 0; width: 1px; }
+.op2-lines .l { left: 0; } .op2-lines .m { left: 50%; } .op2-lines .r { right: 0; }
+.op2-lines .h { left: 0; right: 0; top: 0; height: 1px; }
+.op2 .word { position: relative; }
+@media print { .op.op2 { margin-top: 0; } }
+
+/* shader lab */
+.lab-ui { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: clamp(16px, 3vw, 40px); align-items: start; }
+.lab-view { position: sticky; top: 90px; display: grid; place-items: center; background: var(--card); border-radius: 14px; padding: 18px; min-height: 360px; }
+.lab-view canvas { display: block; max-width: 100%; max-height: 72vh; width: auto; height: auto; border-radius: 6px; }
+.lab-ctl { display: grid; gap: 10px; }
+.lab-ctl label { display: grid; gap: 6px; }
+.lab-ctl input[type=range] { width: 100%; accent-color: var(--lime); }
+.lab-seg { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 6px; }
+.lab-seg .lab-b { height: 30px; padding: 0 12px; border-radius: 999px; border: 0; background: transparent; box-shadow: inset 0 0 0 1px rgba(245, 246, 252, .26); color: var(--fg); font: 500 .68rem/1 var(--mono); text-transform: uppercase; letter-spacing: .02em; cursor: pointer; }
+.lab-seg .lab-b:hover { background: rgba(245, 246, 252, .08); }
+.lab-seg .lab-b[aria-pressed="true"] { background: var(--fg); color: var(--ink); box-shadow: none; }
+.lab-acts { display: flex; flex-wrap: wrap; gap: 10px; margin: 8px 0; }
+@media (max-width: 860px) { .lab-ui { grid-template-columns: 1fr; } .lab-view { position: relative; top: 0; } }
+@media print { .lab-ui { display: none; } }

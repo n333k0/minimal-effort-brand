@@ -1,6 +1,6 @@
 // Minimal Effort guidelines: the opening after the hero. Panels reveal when they enter (IntersectionObserver adds .in), the
 // outline band drifts with scroll, and the construction panel is scrubbed by scroll: lines and circles draw, A DIFFERENT KIND
-// OF FRONƎ ROW arrives, then the Ǝ (a mirrored E) and the W (the M upside down) leave the words, turn, and meet inside the
+// OF FRONƎ ROW arrives, then the Ǝ (the M turned) and the W (the E turned) leave the words, rotate back, and meet inside the
 // square as the ME. MINIMAL / EFFORT label the halves; 90° holds at the bottom.
 const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => [...r.querySelectorAll(s)];
 const clamp = (v, a = 0, b = 1) => Math.max(a, Math.min(b, v));
@@ -40,15 +40,17 @@ function frame() {
       const sqW = 480 * k, cx = ox + 800 * k, cy = oy + 490 * k;
       const MEw = Math.min(sqW * .78, vw * .8), MEh = MEw * MH / MW, halfW = MEw * SPLIT / MW;
       const fly = ease(seg(p, .44, .7));
-      const pairs = [['.glyph.m', '.ph.w-g', cx - MEw / 2, halfW, 180], ['.glyph.e', '.ph.e-g', cx - MEw / 2 + halfW, MEw - halfW, -1]];
+      // FRONƎ's Ǝ is the M turned a quarter clockwise; ROW's W is the E turned a quarter anticlockwise. They only rotate back.
+      const pairs = [['.glyph.m', '.ph.e-g', cx - MEw / 2, halfW, 90], ['.glyph.e', '.ph.w-g', cx - MEw / 2 + halfW, MEw - halfW, -90]];
       const rise = ease(seg(p, .14, .3));
       for (const [g, ph, tx, tw, from] of pairs) {
         const el = $('.op4 ' + g), pl = $('.op4 ' + ph); if (!el || !pl) continue;
-        const s = pl.getBoundingClientRect(), ty = cy - MEh / 2;
-        const x = lerp(s.left, tx, fly), y = lerp(s.top, ty, fly), w = lerp(s.width, tw, fly), h = lerp(s.height, MEh, fly);
+        const s = pl.getBoundingClientRect();
+        // start: the unrotated box is the placeholder with its sides swapped, on the same centre
+        const w = lerp(s.height, tw, fly), h = lerp(s.width, MEh, fly);
+        const ccx = lerp(s.left + s.width / 2, tx + tw / 2, fly), ccy = lerp(s.top + s.height / 2, cy, fly);
         el.style.width = w + 'px'; el.style.height = h + 'px';
-        const turn = from === 180 ? `rotate(${180 * (1 - fly)}deg)` : `scaleX(${lerp(-1, 1, fly)})`;
-        el.style.transform = `translate(${x}px, ${y}px) ${turn}`;
+        el.style.transform = `translate(${(ccx - w / 2).toFixed(1)}px, ${(ccy - h / 2).toFixed(1)}px) rotate(${(from * (1 - fly)).toFixed(2)}deg)`;
         el.style.opacity = rise;
         el.style.filter = `blur(${((1 - rise) * 8).toFixed(1)}px)`;
       }

@@ -8,3 +8,7 @@
 @font-face { font-family: 'Manrope'; src: url(Manrope-var.woff2) format('woff2'); font-weight: 300 800; font-display: swap; }
 @font-face { font-family: 'IBM Plex Mono'; src: url(IBMPlexMono-400.woff2) format('woff2'); font-weight: 400; font-display: swap; }
 @font-face { font-family: 'IBM Plex Mono'; src: url(IBMPlexMono-500.woff2) format('woff2'); font-weight: 500; font-display: swap; }
+/* THE MAZE display type: the real flyers use 403 Quzie (commercial, not bundled). If it is installed on the machine it is
+   used; otherwise Saira Stencil One (SIL OFL) stands in. */
+@font-face { font-family: '403 Quzie'; src: local('403 Quzie'), local('403Quzie-Regular'); }
+@font-face { font-family: 'Saira Stencil One'; src: url(SairaStencilOne-Regular.woff2) format('woff2'); font-weight: 400; font-display: swap; }

@@ -67,9 +67,11 @@
         <div class="m2" style="opacity:0"></div>
         <div class="m3" style="opacity:0"></div>
       </div>
-      <p class="lab seq-cap"><span class="on">MNML ■ EFFRT — the condensed name with its square</span><span>The square closes — MNML EFFRT</span><span>The full name — MINIMAL EFFORT</span><span>The mark — ME</span></p>
-      <div class="seq-end"><h1 class="sr-only">Minimal Effort brand guidelines</h1>
-        <div class="ctas"><a class="pill pill-l acc seq-dl" href="#downloads">Download the kit</a><a class="pill pill-l pill-o seq-mf" href="builder.html">Make a flyer →</a></div></div>
+      <div class="seq-below">
+        <p class="lab seq-cap"><span class="on">MNML ■ EFFRT — the condensed name with its square</span><span>The square closes — MNML EFFRT</span><span>The full name — MINIMAL EFFORT</span><span>The mark — ME</span></p>
+        <div class="seq-end"><h1 class="sr-only">Minimal Effort brand guidelines</h1>
+          <div class="ctas"><a class="pill pill-l acc seq-dl" href="#downloads">Download the kit</a><a class="pill pill-l pill-o seq-mf" href="builder.html">Make a flyer →</a></div></div>
+      </div>
     </div>
     <div class="seq-lines" aria-hidden="true"><i class="l"></i><i class="m"></i><i class="r"></i></div>
     <div class="seq-bar"><span class="lab">Scroll</span><span class="track"><i></i></span><span class="lab">MNML EFFRT → ME</span></div>
@@ -79,7 +81,8 @@
 
 <!-- ============================================================ OPENING (Figma "Brand Guidelines 2", Slide 16:9 - 5) -->
 <section class="op op2" aria-label="Minimal Effort" data-in>
-  <div class="word rv-clip"><i class="lg lg-word"></i></div>
+  <div class="topframe"><div class="op2-lines" aria-hidden="true"><i class="l"></i><i class="m"></i><i class="r"></i><i class="h"></i></div>
+  <div class="word rv-clip"><i class="lg lg-word"></i></div></div>
   <div class="arcwrap" data-in>
     <svg class="ln" viewBox="0 0 200 100" preserveAspectRatio="none" style="--sw:.15" aria-hidden="true"><path class="draw" pathLength="1" d="M0 0A100 100 0 0 0 200 0"/><path class="draw d1" pathLength="1" d="M0 0H200"/><path class="draw d2" pathLength="1" d="M100 0V100"/></svg>
     <p class="quote"><span class="rv d2"><span>We believe cultural impact comes</span></span><span class="rv d3"><span>from discernment, not excess.</span></span></p>
@@ -291,9 +294,9 @@
 
 <!-- ============================================================ 07 LAYOUT -->
 <section class="sec" id="layout" aria-labelledby="ly-h">
-  <div class="sec-h"><span class="n">07 — Grid, layout &amp; safe zones</span><h2 id="ly-h" class="goo">Six compositions.</h2>
+  <div class="sec-h"><span class="n">07 — Grid, layout &amp; safe zones</span><h2 id="ly-h" class="goo">Eight compositions.</h2>
     <p class="note">Every post is built on a 1080 px artboard with a <b>64 px margin</b>. Pick one composition and keep it for the whole campaign; the logo row always sits on the bottom margin. Logos can also go top left, centre or right.</p></div>
-  <div class="sub"><h3>Compositions<small>A–F, all live in the builder. Click one to edit it.</small></h3>
+  <div class="sub"><h3>Compositions<small>A–H, all live in the builder. Click one to edit it; sizes, margins and spacing are adjustable there.</small></h3>
     <div class="body g" style="--c:4" id="comps"></div></div>
   <div class="sub"><h3>Grid<small>Feed 1080×1350 · margins 64 · 12 columns · 24 gutter</small></h3>
     <div class="body g" style="--c:2">
@@ -321,8 +324,23 @@
 <!-- ============================================================ 08 MOTION -->
 <section class="sec" id="motion" aria-labelledby="mo-h">
   <div class="sec-h"><span class="n">08 — Backgrounds &amp; motion</span><h2 id="mo-h" class="goo">Liquid light.</h2>
-    <p class="note">One family of moving backgrounds in four groups: <b>Chrome</b> (liquid iridescent forms), <b>Prism</b> (spectrum light), <b>Film</b> (analog leaks) and <b>Brand light</b> (Lime and Lilac). Every loop is 9–10 s, locked camera, ends on its first frame. Type holds still on top.</p></div>
+    <p class="note">One family of moving backgrounds in five groups: <b>Chrome</b> (liquid iridescent forms), <b>Prism</b> (spectrum light), <b>Film</b> (analog leaks), <b>Brand light</b> (Lime and Lilac) and <b>Shader</b> (the ME drawn live by WebGL). Every loop is 9–10 s, locked camera, ends on its first frame. Type holds still on top.</p></div>
   <div class="body" id="loops"></div>
+  <div class="sub"><h3>Shader lab<small>A tool, not a file: the ME in glass, pixels or grit, drawn live. Pick a look, a palette and a size, then export a PNG or record one seamless loop.</small></h3>
+    <div class="body"><div class="lab-ui" id="lab">
+      <div class="lab-view"><canvas aria-label="Live shader preview of the ME"></canvas><p class="lab lab-err"></p></div>
+      <div class="lab-ctl">
+        <span class="lab">Look</span><div class="lab-seg" data-k="mode"></div>
+        <span class="lab">Palette</span><div class="lab-seg" data-k="palette"></div>
+        <span class="lab">Format</span><div class="lab-seg" data-k="format"></div>
+        <label><span class="lab">Mark size</span><input type="range" name="scale" min="0.2" max="0.95" step="0.01" value="0.62"></label>
+        <label><span class="lab">Grain</span><input type="range" name="grain" min="0" max="0.25" step="0.01" value="0.06"></label>
+        <label><span class="lab">Pixel size (Pixel)</span><input type="range" name="cell" min="4" max="40" step="1" value="12"></label>
+        <label><span class="lab">Speed</span><input type="range" name="speed" min="0.25" max="3" step="0.25" value="1"></label>
+        <div class="lab-acts"><button type="button" class="pill pill-l acc lab-rec">Record one loop</button><button type="button" class="pill pill-l pill-o lab-png">Export PNG</button></div>
+        <p class="lab" style="line-height:1.6;margin:0">Recording runs in real time (10 s at speed 1) and saves an MP4 or WebM at full size. The three rendered loops above (Glass ME, Pixel ME, Grit ME) are also backgrounds in the builder.</p>
+      </div>
+    </div></div></div>
   <div class="sub"><h3>Motion rules<small>How things move</small></h3>
     <div class="body"><ul class="rule-list"><li><b>Backgrounds move, type holds.</b> The only text motion: a single rise-in at the start (≤ 0.6 s, no fades).</li><li><b>Slow and seamless:</b> no zooms, no cuts, no beat-synced flashing.</li><li><b>New loops</b> come from a still with Higgsfield (MiniMax H3, 2K, 10 s, start frame = end frame) and must belong to one of the four groups.</li></ul></div></div>
 </section>
@@ -450,5 +468,6 @@
 <script src="assets/vendor/lenis.min.js"></script>
 <script type="module" src="assets/js/site.js"></script>
 <script type="module" src="assets/js/opening.js"></script>
+<script type="module" src="assets/js/lab.js"></script>
 </body>
 </html>

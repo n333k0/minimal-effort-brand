@@ -19,9 +19,12 @@ press *Copy spec*, save it as `spec.json` here and run `npm run render -- spec.j
 - `node tools/render.mjs tools/examples/templates.json --out downloads/templates` — template examples
 - `node tools/build-kit.mjs` — icons, highlight covers, grids, colour tokens, fonts, signature, business cards, zips
 - `python3 tools/build-mockups.py` — tee, cube sign, phone and street mockups (exact logo composited on photos)
+- `node tools/render-shaders.mjs` — the three WebGL shader loops (Glass, Pixel, Grit ME); `python3 tools/cutout-objects.py` — hiring objects
 - `node tools/build-pdf.mjs` — the PDF (with the page served on :8790)
 - `sh tools/pack.sh` — the full kit .zip
 
 ## Fonts
 ABC Normal is a commercial typeface by Dinamo; the web files in `assets/fonts/` render these pages only. Licence it before
 using it in other work. Manrope and IBM Plex Mono are open-licence and included in `downloads/fonts/`.
+THE MAZE flyers use 403 Quzie on the originals (commercial, not bundled): install it and the `maze` template uses it;
+otherwise Saira Stencil One (SIL OFL, in `assets/fonts/`) stands in.
