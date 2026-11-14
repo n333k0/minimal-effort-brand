@@ -1,0 +1,24 @@
+/* Minimal Effort colour + type tokens */
+:root {
+  --me-midnight: #14141A;
+  --me-ice-white: #F5F6FC;
+  --me-lime: #B4F152;
+  --me-lilac: #A79BEE;
+  --me-label: #181D20;
+  --me-coal: #1E1E24;
+  --me-iron: #40424D;
+  --me-graphite: #6E7180;
+  --me-slate: #9DA2B3;
+  --me-steel: #BCBFCC;
+  --me-smoke: #D3D6E0;
+  --me-cloud: #EDEFF7;
+  --me-cyan: #2ED0FF;
+  --me-yellow: #F3CE3A;
+  --me-orange: #FF7022;
+  --me-red: #E92E4A;
+  --me-font-display: 'ABC Normal', 'Helvetica Neue', Arial, sans-serif; /* Heavy 800 */
+  --me-font-text: 'Manrope', 'Helvetica Neue', Arial, sans-serif;
+  --me-font-mono: 'IBM Plex Mono', ui-monospace, Menlo, monospace;
+  --me-track-display: -0.031em;
+  --me-margin: 64px; /* at 1080 */
+}

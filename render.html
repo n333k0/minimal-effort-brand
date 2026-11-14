@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Minimal Effort — render surface</title>
+<link rel="stylesheet" href="assets/fonts/fonts.css">
+<link rel="stylesheet" href="assets/css/templates.css">
+<style>html, body { margin: 0; background: transparent; } #out { display: inline-block; }</style>
+</head>
+<body>
+<!-- Used by tools/render.mjs: draws one spec at its real size. ?spec=<base64 JSON>&mode=still|overlay -->
+<div id="out"></div>
+<script type="module">
+  import { render } from './assets/js/templates.js';
+  const q = new URLSearchParams(location.search);
+  const spec = JSON.parse(decodeURIComponent(escape(atob(q.get('spec') || 'e30='))));
+  const mode = q.get('mode') || 'still';
+  document.getElementById('out').innerHTML = render(spec, { forExport: true, textOnly: mode === 'overlay' });
+  const imgs = [...document.images].map(i => i.complete ? 0 : new Promise(r => { i.onload = i.onerror = r; }));
+  Promise.all([document.fonts.ready, ...imgs]).then(() => { document.body.dataset.ready = '1'; });
+</script>
+</body>
+</html>

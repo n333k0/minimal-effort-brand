@@ -1,0 +1,273 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Minimal Effort — Flyer Builder</title>
+<link rel="icon" href="assets/logo/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/fonts/fonts.css">
+<link rel="stylesheet" href="assets/css/templates.css">
+<style>
+  :root { --mid: #14141A; --ice: #F5F6FC; --lime: #B4F152; --lilac: #A79BEE; --mute: rgba(245,246,252,.55); --line: rgba(245,246,252,.14);
+    --sans: 'Manrope', 'Helvetica Neue', Arial, sans-serif; --mono: 'IBM Plex Mono', ui-monospace, Menlo, monospace; color-scheme: dark; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; background: var(--mid); color: var(--ice); font: 500 13px/1.4 var(--sans); -webkit-font-smoothing: antialiased; }
+  .canvas { position: fixed; inset: 0; background-image: linear-gradient(rgba(245,246,252,.035) 1px, transparent 1px), linear-gradient(90deg, rgba(245,246,252,.035) 1px, transparent 1px); background-size: 32px 32px; }
+  .stage { position: fixed; inset: 0; display: grid; place-items: center; padding: 84px 32px 32px 432px; }
+  .stage .shadow { box-shadow: 0 40px 90px rgba(0,0,0,.55); border-radius: 6px; overflow: hidden; }
+  .top { position: fixed; z-index: 5; top: 14px; left: 14px; right: 14px; display: flex; align-items: center; gap: 10px; pointer-events: none; }
+  .top > * { pointer-events: auto; }
+  .glass { background: rgba(20,20,26,.74); -webkit-backdrop-filter: blur(18px); backdrop-filter: blur(18px); box-shadow: inset 0 0 0 1px rgba(245,246,252,.1); }
+  .brand { display: flex; align-items: center; gap: 12px; height: 44px; padding: 0 16px 0 14px; border-radius: 999px; text-decoration: none; color: var(--ice); font: 500 11px/1.2 var(--mono); text-transform: uppercase; }
+  .brand i { display: block; width: 40px; aspect-ratio: 874.943/422.417; background: currentColor; -webkit-mask: url(assets/logo/me-mark.svg) center/contain no-repeat; mask: url(assets/logo/me-mark.svg) center/contain no-repeat; }
+  .acts { margin-left: auto; display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
+  .btn { height: 36px; padding: 0 14px; border-radius: 999px; border: 0; background: var(--ice); color: var(--mid); font: 700 12px/1 var(--sans); cursor: pointer; white-space: nowrap; transition: transform .3s cubic-bezier(.2,.8,.2,1), background-color .2s; }
+  .btn:hover { transform: scale(.96); background: var(--lime); }
+  .btn.acc { background: var(--lime); }
+  .btn.o { background: transparent; color: var(--ice); box-shadow: inset 0 0 0 1px rgba(245,246,252,.28); }
+  .btn.o:hover { background: rgba(245,246,252,.08); }
+  .btn.sm { height: 28px; padding: 0 11px; font-size: 11px; }
+  .panel { position: fixed; z-index: 4; top: 72px; left: 14px; bottom: 14px; width: 400px; border-radius: 18px; overflow-y: auto; padding: 16px 18px 26px; scrollbar-width: thin; scrollbar-color: rgba(245,246,252,.15) transparent; }
+  .grp { padding: 14px 0; border-top: 1px solid var(--line); }
+  .grp:first-child { border-top: 0; padding-top: 4px; }
+  .grp > .lab, .sub-l { margin-bottom: 10px; display: block; }
+  .lab { font: 500 10px/1.3 var(--mono); text-transform: uppercase; color: var(--mute); letter-spacing: .03em; }
+  .seg { display: flex; flex-wrap: wrap; gap: 4px; }
+  .seg button { height: 30px; padding: 0 11px; border-radius: 999px; border: 0; background: transparent; box-shadow: inset 0 0 0 1px rgba(245,246,252,.22); color: var(--ice); font: 600 11.5px/1 var(--sans); cursor: pointer; }
+  .seg button[aria-pressed="true"] { background: var(--ice); color: var(--mid); box-shadow: none; }
+  .seg button:disabled { opacity: .3; cursor: default; }
+  .fam { font: 500 9.5px/1 var(--mono); text-transform: uppercase; color: var(--mute); margin: 12px 0 6px; }
+  .chips { display: grid; grid-template-columns: repeat(5, minmax(0,1fr)); gap: 6px; }
+  .chip { position: relative; aspect-ratio: 3/4; border-radius: 8px; overflow: hidden; border: 0; padding: 0; cursor: pointer; background: #222 center/cover; box-shadow: inset 0 0 0 1px rgba(245,246,252,.14); }
+  .chip span { position: absolute; left: 4px; bottom: 3px; right: 4px; font: 500 8px/1.1 var(--mono); text-transform: uppercase; color: #fff; text-align: left; text-shadow: 0 1px 4px rgba(0,0,0,.8); }
+  .chip[aria-pressed="true"] { box-shadow: 0 0 0 2px var(--lime); }
+  .chip.up { display: grid; place-items: center; background: rgba(245,246,252,.06); color: var(--ice); font: 600 18px/1 var(--sans); }
+  .sws { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+  .sws button { width: 28px; height: 28px; border-radius: 50%; border: 0; cursor: pointer; box-shadow: inset 0 0 0 1px rgba(245,246,252,.25); }
+  .sws button[aria-pressed="true"] { box-shadow: 0 0 0 2px var(--mid), 0 0 0 4px var(--ice); }
+  .sws button.none { background: repeating-linear-gradient(135deg, transparent 0 5px, rgba(245,246,252,.35) 5px 6px); }
+  label.f { display: block; margin-top: 10px; }
+  label.f > span { display: block; margin-bottom: 5px; }
+  input[type=text], textarea, select { width: 100%; background: rgba(245,246,252,.05); border: 0; border-bottom: 1px solid rgba(245,246,252,.2); color: var(--ice); font: 500 13px/1.4 var(--sans); padding: 8px 2px; outline: 0; border-radius: 0; }
+  textarea { resize: vertical; min-height: 74px; font-family: var(--mono); font-size: 12px; }
+  input:focus, textarea:focus, select:focus { border-bottom-color: var(--lime); }
+  select option { background: var(--mid); }
+  .tog { display: flex; align-items: center; justify-content: space-between; margin-top: 10px; cursor: pointer; }
+  .tog input { appearance: none; width: 34px; height: 20px; border-radius: 999px; background: rgba(245,246,252,.18); position: relative; cursor: pointer; margin: 0; transition: background .2s; flex: none; }
+  .tog input::after { content: ''; position: absolute; left: 3px; top: 3px; width: 14px; height: 14px; border-radius: 50%; background: var(--ice); transition: transform .2s; }
+  .tog input:checked { background: var(--lime); } .tog input:checked::after { transform: translateX(14px); background: var(--mid); }
+  input[type=range] { width: 100%; -webkit-appearance: none; appearance: none; height: 1px; background: rgba(245,246,252,.3); margin: 10px 0 4px; }
+  input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 12px; height: 12px; border-radius: 50%; background: var(--ice); cursor: pointer; }
+  .lgrow { display: grid; grid-template-columns: 30px minmax(0,1fr) 92px 64px 22px; gap: 8px; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--line); }
+  .lgrow .pv { width: 34px; height: 24px; color: var(--ice); display: grid; place-items: center; }
+  .lgrow .pv svg, .lgrow .pv img { max-width: 100%; max-height: 100%; display: block; }
+  .lgrow select { padding: 4px 2px; font-size: 12px; }
+  .lgrow input[type=range] { margin: 0; }
+  .x-btn { width: 26px; height: 26px; border-radius: 50%; border: 0; background: rgba(245,246,252,.08); color: var(--ice); cursor: pointer; font: 600 13px/1 var(--sans); }
+  [data-only] { display: none; }
+  .toast { position: fixed; z-index: 9; left: 50%; bottom: 24px; transform: translate(-50%, 20px); opacity: 0; padding: 10px 16px; border-radius: 999px; background: var(--lime); color: var(--mid); font: 700 12px/1 var(--sans); transition: .3s; pointer-events: none; }
+  .toast.on { opacity: 1; transform: translate(-50%, 0); }
+  #exportNode { position: fixed; left: -99999px; top: 0; }
+  input[type=file] { display: none; }
+  @media (max-width: 900px) {
+    .stage { position: relative; inset: auto; padding: 84px 16px 16px; min-height: 66vh; }
+    .panel { position: relative; top: auto; left: auto; bottom: auto; width: auto; margin: 0 16px 16px; }
+    .brand .t { display: none; }
+    body { height: auto; }
+  }
+</style>
+</head>
+<body>
+<div class="canvas" aria-hidden="true"></div>
+<div class="top">
+  <a class="brand glass" href="index.html"><i></i><span class="t">Flyer builder<br>Minimal Effort</span></a>
+  <div class="acts">
+    <button class="btn o" id="bReset">Reset</button>
+    <button class="btn o" id="bAgent" title="A plain-language request for an AI agent (PNG + MP4)">Copy agent request</button>
+    <button class="btn o" id="bSpec" title="JSON for tools/render.mjs">Copy spec</button>
+    <button class="btn acc" id="bPng">Export PNG</button>
+  </div>
+</div>
+<main class="stage" id="stage"><div class="shadow" id="preview"></div></main>
+
+<aside class="panel glass" aria-label="Flyer settings">
+  <div class="grp"><span class="lab">Template</span><div class="seg" id="tpl"></div></div>
+  <div class="grp"><span class="lab">Format</span><div class="seg" id="fmt"></div>
+    <div data-only="lineup" style="margin-top:12px"><span class="lab sub-l">Composition</span><div class="seg" id="lay"></div></div>
+  </div>
+  <div class="grp"><span class="lab">Event — sets logo + accent</span><div class="seg" id="evt"></div></div>
+  <div class="grp"><span class="lab">Colours</span>
+    <span class="lab sub-l" style="margin-top:4px">Label blocks</span><div class="sws" id="lblc"></div>
+    <span class="lab sub-l" style="margin-top:12px">Text</span><div class="sws" id="txtc"></div>
+    <span class="lab sub-l" style="margin-top:12px">Accent (×, tags, CTA)</span><div class="sws" id="accc"></div>
+  </div>
+  <div class="grp"><span class="lab">Logos at the bottom</span><div id="lglist"></div>
+    <div style="display:flex;gap:6px;margin-top:10px;flex-wrap:wrap"><button class="btn sm o" id="lgAdd">+ Add logo</button><button class="btn sm o" id="lgUp">+ Upload logo</button><input type="file" id="lgFile" accept="image/svg+xml,image/png"></div>
+    <label class="f"><span class="lab">Logo size (all, optically matched)</span><input type="range" id="logoSize" min="30" max="120" step="1"></label>
+    <label class="tog"><span class="lab" style="margin:0">Our marks on a black box</span><input type="checkbox" id="logoLabel"></label>
+  </div>
+  <div class="grp"><span class="lab">Background</span><div id="bgs"></div><input type="file" id="bgFile" accept="image/*,video/*">
+    <label class="tog"><span class="lab" style="margin:0">Dust texture</span><input type="checkbox" id="dust"></label>
+    <label class="f"><span class="lab">Darken background</span><input type="range" id="shade" min="0" max="0.8" step="0.05"></label>
+  </div>
+  <div class="grp" data-only="announce giveaway system hiring photo"><span class="lab">Photo</span><div class="chips" id="photos"></div><input type="file" id="phFile" accept="image/*"></div>
+
+  <div class="grp"><span class="lab">Words</span>
+    <div data-only="lineup">
+      <label class="f"><span class="lab">Presenter</span><input type="text" data-k="presenter"></label>
+      <label class="f"><span class="lab">Partner (× co-brand, empty for none)</span><input type="text" data-k="partner"></label>
+      <label class="f"><span class="lab">Small line under the presenter</span><input type="text" data-k="presents"></label>
+    </div>
+    <div data-only="lineup status system"><label class="f"><span class="lab">Event title</span><input type="text" data-k="title"></label></div>
+    <div data-only="lineup announce giveaway status system"><label class="f"><span class="lab">Date</span><input type="text" data-k="date"></label></div>
+    <div data-only="lineup announce status system"><label class="f"><span class="lab">Time</span><input type="text" data-k="time"></label></div>
+    <div data-only="lineup announce"><label class="f"><span class="lab">Artists — one per line, note after |   e.g.  RY X | [DJ SET]</span><textarea data-k="artists" style="min-height:110px"></textarea></label></div>
+    <div data-only="lineup announce"><label class="f"><span class="lab">Venue — one line each</span><textarea data-k="venue"></textarea></label></div>
+    <div data-only="status"><label class="f"><span class="lab">Message</span><select data-k="status"><option>SOLD OUT</option><option>ON SALE NOW</option><option>PRESALE LIVE</option><option>FINAL RELEASE</option><option>LAST TICKETS</option><option>DOORS OPEN</option></select></label></div>
+    <div data-only="status calendar"><label class="f"><span class="lab">Call to action</span><input type="text" data-k="cta"></label></div>
+    <div data-only="giveaway">
+      <label class="f"><span class="lab">Prize</span><input type="text" data-k="prize"></label>
+      <label class="f"><span class="lab">Steps — one per line (three)</span><textarea data-k="steps"></textarea></label>
+      <label class="f"><span class="lab">Deadline</span><input type="text" data-k="deadline"></label>
+    </div>
+    <div data-only="calendar">
+      <label class="f"><span class="lab">Month heading</span><input type="text" data-k="month"></label>
+      <label class="f"><span class="lab">Rows — DATE | DAY | EVENT | ARTISTS | VENUE</span><textarea data-k="rows" style="min-height:130px"></textarea></label>
+    </div>
+    <div data-only="system"><label class="f"><span class="lab">System log — one line each</span><textarea data-k="log" style="min-height:110px"></textarea></label></div>
+    <div data-only="hiring">
+      <label class="f"><span class="lab">Role</span><input type="text" data-k="role"></label>
+      <label class="f"><span class="lab">Description</span><textarea data-k="hireBody"></textarea></label>
+      <label class="f"><span class="lab">How to apply</span><input type="text" data-k="apply"></label>
+    </div>
+    <div data-only="highlight">
+      <label class="f"><span class="lab">Cover word (when no icon)</span><input type="text" data-k="highlight"></label>
+      <label class="f"><span class="lab">Icon</span><select data-k="icon" id="iconSel"></select></label>
+    </div>
+    <div data-only="cover">
+      <label class="f"><span class="lab">Statement</span><textarea data-k="statement"></textarea></label>
+      <label class="f"><span class="lab">Handle</span><input type="text" data-k="handle"></label>
+    </div>
+    <div data-only="announce giveaway calendar cover status"><label class="f"><span class="lab">Event name (small line)</span><input type="text" data-k="event"></label></div>
+    <label class="tog"><span class="lab" style="margin:0">Label blocks behind text</span><input type="checkbox" id="labels"></label>
+  </div>
+  <div class="grp"><p class="lab" style="line-height:1.6">PNG exports the still (loops use their first frame). For the moving MP4: <b style="color:var(--ice)">Copy spec</b>, save it as spec.json in the kit and run <span style="color:var(--lime)">npm run render -- spec.json</span>, or paste <b style="color:var(--ice)">Copy agent request</b> into your agent. Uploaded videos: put the file in the kit folder and add <span style="color:var(--lime)">"bgFile": "path"</span> to the spec.</p></div>
+</aside>
+<div id="exportNode"></div>
+<div class="toast" id="toast"></div>
+
+<script src="assets/vendor/html-to-image.js"></script>
+<script type="module">
+  import { render, DEFAULT, TEMPLATES, LAYOUTS, BACKGROUNDS, PHOTOS, EVENTS, FORMATS, ICONS, LOGO, LOGO_META, LABEL_COLORS, TEXT_COLORS } from './assets/js/templates.js';
+  const $ = s => document.querySelector(s);
+  const clone = o => JSON.parse(JSON.stringify(o));
+  let S = clone(DEFAULT);
+  try { const h = location.hash.slice(1); if (h) S = { ...S, ...JSON.parse(decodeURIComponent(escape(atob(h)))) }; } catch (e) { }
+  const uploads = {};          // big data URLs stay out of the URL hash
+
+  const toText = { artists: a => a.map(x => x.note ? `${x.name} | ${x.note}` : x.name).join('\n'), venue: a => a.join('\n'), steps: a => a.join('\n'), log: a => a.join('\n'), rows: a => a.map(r => [r.d, r.w, r.e, r.a, r.v].join(' | ')).join('\n') };
+  const fromText = { artists: t => t.split('\n').map(l => l.trim()).filter(Boolean).map(l => { const [name, note] = l.split('|').map(s => s.trim()); return note ? { name: name.toUpperCase(), note } : { name: name.toUpperCase() }; }),
+    venue: t => t.split('\n').map(l => l.trim()).filter(Boolean), steps: t => t.split('\n').map(l => l.trim()).filter(Boolean).slice(0, 3), log: t => t.split('\n').filter(l => l.trim()),
+    rows: t => t.split('\n').map(l => l.trim()).filter(Boolean).map(l => { const [d = '', w = '', e = '', a = '', v = ''] = l.split('|').map(s => s.trim()); return { d, w, e, a, v }; }) };
+
+  const seg = (el, items, key, after) => { el.innerHTML = items.map(([v, t]) => `<button type="button" data-v="${v}">${t}</button>`).join(''); el.addEventListener('click', e => { const b = e.target.closest('button'); if (!b || b.disabled) return; S[key] = b.dataset.v; after?.(b.dataset.v); sync(); }); };
+  const defLogos = (t, ev) => t === 'announce' ? [{ id: 'me-mark', pos: 'tl' }, ...(ev === 'SECOND WIND' ? [{ id: 'origin-mark' }] : [])] : ['giveaway', 'hiring', 'calendar', 'cover'].includes(t) ? [{ id: 'me-mark' }] : clone(EVENTS[ev]?.logos || [{ id: 'me-mark' }]);
+  seg($('#tpl'), Object.entries(TEMPLATES).filter(([k, v]) => !v.hidden).map(([k, v]) => [k, v.label]), 'template', t => { S.logos = defLogos(t, S.event); if (t === 'hiring') { S.bg = 'limesolid'; if (!S.photo || S.photo.startsWith('lee')) S.photo = 'party-01'; } if (t === 'giveaway' && (S.photo || '').startsWith('lee')) S.photo = 'party-03'; if (t === 'highlight') { S.format = 'story'; S.labels = false; } });
+  seg($('#fmt'), [['feed', 'Feed 4:5'], ['story', 'Story 9:16'], ['square', 'Square 1:1'], ['landscape', 'Landscape 16:9']], 'format');
+  seg($('#lay'), Object.entries(LAYOUTS), 'layout');
+  seg($('#evt'), [...Object.keys(EVENTS).map(e => [e, e]), ['OTHER', 'Other']], 'event', ev => { const E = EVENTS[ev]; if (E) { for (const k of ['accent', 'presenter', 'partner', 'presents', 'textColor', 'logoColor']) S[k] = E[k]; S.logos = defLogos(S.template, ev); } else { S.textColor = ''; S.logoColor = ''; } });
+  const sws = (el, map, key, extra = {}) => { el.innerHTML = Object.entries(map).map(([n, c]) => `<button type="button" title="${n}" data-v="${c}" class="${c === 'none' ? 'none' : ''}" style="${c === 'none' ? '' : 'background:' + c}"></button>`).join(''); el.addEventListener('click', e => { const b = e.target.closest('button'); if (b) { S[key] = b.dataset.v; extra.after?.(); sync(); } }); };
+  sws($('#lblc'), LABEL_COLORS, 'labelColor', { after: () => { S.labels = S.labelColor !== 'none'; S.textColor = ''; } });
+  sws($('#txtc'), { Auto: '', ...TEXT_COLORS }, 'textColor');
+  $('#txtc').firstElementChild.style.background = 'linear-gradient(135deg,#F5F5F5 50%,#14141A 50%)';
+  sws($('#accc'), { Lime: '#B4F152', Lilac: '#A79BEE', Ice: '#F5F6FC' }, 'accent');
+
+  // backgrounds grouped by family
+  const fams = {}; Object.entries(BACKGROUNDS).forEach(([k, b]) => (fams[b.family] ||= []).push([k, b]));
+  $('#bgs').innerHTML = Object.entries(fams).map(([f, list]) => `<div class="fam">${f}</div><div class="chips">${list.map(([k, b]) => k === 'custom'
+      ? `<button type="button" class="chip up" data-v="custom" title="Upload an image or a video">+<span>Upload</span></button>`
+      : `<button type="button" class="chip" data-v="${k}" style="${b.still ? `background-image:url(${b.still})` : b.photo ? `background-image:url(${PHOTOS['party-02']})` : `background:${b.color}`}"><span>${b.label}</span></button>`).join('')}</div>`).join('');
+  $('#bgs').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; if (b.dataset.v === 'custom') return $('#bgFile').click(); S.bg = b.dataset.v; sync(); });
+  $('#bgFile').addEventListener('change', async e => {
+    const f = e.target.files[0]; if (!f) return; const url = URL.createObjectURL(f);
+    S.bg = 'custom'; S.bgType = f.type.startsWith('video') ? 'video' : 'image'; S.bgFile = f.name;
+    uploads.bgSrc = url; uploads.bgStill = S.bgType === 'video' ? await firstFrame(url) : await toDataURL(f);
+    sync(); toast('Background loaded');
+  });
+  const firstFrame = url => new Promise(r => { const v = document.createElement('video'); v.muted = true; v.src = url; v.addEventListener('loadeddata', () => { v.currentTime = 0.05; }); v.addEventListener('seeked', () => { const c = document.createElement('canvas'); c.width = v.videoWidth; c.height = v.videoHeight; c.getContext('2d').drawImage(v, 0, 0); r(c.toDataURL('image/jpeg', .9)); }, { once: true }); });
+  const toDataURL = f => new Promise(r => { const fr = new FileReader(); fr.onload = () => r(fr.result); fr.readAsDataURL(f); });
+
+  $('#photos').innerHTML = Object.entries(PHOTOS).map(([k, src]) => `<button type="button" class="chip" data-v="${k}" style="background-image:url(${src})"><span>${k}</span></button>`).join('') + `<button type="button" class="chip up" data-v="upload">+<span>Upload</span></button>`;
+  $('#photos').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; if (b.dataset.v === 'upload') return $('#phFile').click(); S.photo = b.dataset.v; sync(); });
+  $('#phFile').addEventListener('change', async e => { const f = e.target.files[0]; if (!f) return; uploads.photo = await toDataURL(f); S.photo = 'upload:' + f.name; sync(); toast('Photo loaded'); });
+
+  // logos
+  const POS = [['', 'Row'], ['tl', 'Top left'], ['tc', 'Top centre'], ['tr', 'Top right'], ['bl', 'Bottom left'], ['bc', 'Bottom centre'], ['br', 'Bottom right']].map(([v, t]) => `<option value="${v}">${t}</option>`).join('');
+  const logoOpts = Object.entries(LOGO_META).map(([k, m]) => `<option value="${k}">${m.label}</option>`).join('');
+  function drawLogos() {
+    $('#lglist').innerHTML = (S.logos || []).map((l, i) => `<div class="lgrow" data-i="${i}"><span class="pv">${l.src ? `<img src="${uploads['logo' + i] || l.src}" alt="">` : (LOGO[l.id] || '')}</span>
+      ${l.src ? `<span class="lab" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${l.name || 'Uploaded logo'}</span>` : `<select data-i="${i}">${logoOpts}</select>`}
+      <select data-pos="${i}" title="Where this logo goes">${POS}</select><input type="range" min="0.4" max="2" step="0.05" value="${l.scale ?? 1}" data-i="${i}" title="Size of this logo"><button class="x-btn" data-del="${i}" title="Remove">×</button></div>`).join('') || '<p class="lab">No logos</p>';
+    $('#lglist').querySelectorAll('select[data-i]').forEach(s => s.value = S.logos[+s.dataset.i].id);
+    $('#lglist').querySelectorAll('select[data-pos]').forEach(s => s.value = S.logos[+s.dataset.pos].pos || '');
+  }
+  $('#lglist').addEventListener('input', e => { const i = +e.target.dataset.i; if (e.target.type === 'range') { S.logos[i].scale = +e.target.value; draw(); save(); } });
+  $('#lglist').addEventListener('change', e => { if (e.target.dataset.pos !== undefined) { const l = S.logos[+e.target.dataset.pos]; if (e.target.value) l.pos = e.target.value; else delete l.pos; sync(); } else if (e.target.tagName === 'SELECT') { S.logos[+e.target.dataset.i].id = e.target.value; sync(); } });
+  $('#lglist').addEventListener('click', e => { const d = e.target.closest('[data-del]'); if (d) { S.logos.splice(+d.dataset.del, 1); sync(); } });
+  $('#lgAdd').addEventListener('click', () => { (S.logos ||= []).push({ id: 'me-mark', scale: 1 }); sync(); });
+  $('#lgUp').addEventListener('click', () => $('#lgFile').click());
+  $('#lgFile').addEventListener('change', async e => {
+    const f = e.target.files[0]; if (!f) return; const url = await toDataURL(f);
+    const img = new Image(); img.onload = () => { (S.logos ||= []).push({ src: url, aspect: img.naturalWidth / img.naturalHeight, scale: 1, name: f.name }); sync(); toast('Logo added'); }; img.src = url;
+  });
+
+  $('#iconSel').innerHTML = ['none', 'maze-logo', ...Object.keys(ICONS)].map(n => `<option value="${n}">${n === 'none' ? 'No icon (word)' : n === 'maze-logo' ? 'THE MAZE logo' : n}</option>`).join('');
+  for (const id of ['labels', 'dust', 'logoLabel']) $('#' + id).addEventListener('change', e => { S[id] = e.target.checked; if (id === 'labels' && S.labels && S.labelColor === 'none') S.labelColor = '#181D20'; sync(); });
+  $('#shade').addEventListener('input', e => { S.shade = +e.target.value; draw(); save(); });
+  $('#logoSize').addEventListener('input', e => { S.logoSize = +e.target.value; draw(); save(); });
+  document.querySelectorAll('[data-k]').forEach(el => el.addEventListener('input', () => { const k = el.dataset.k; S[k] = fromText[k] ? fromText[k](el.value) : el.value; draw(); save(); }));
+
+  const live = () => { const o = { ...S }; if (S.bg === 'custom') { o.bgSrc = uploads.bgSrc; o.bgStill = uploads.bgStill; } if ((S.photo || '').startsWith('upload:')) o.photo = uploads.photo; return o; };
+  function fill() {
+    document.querySelectorAll('[data-k]').forEach(el => { const k = el.dataset.k; if (document.activeElement === el) return; el.value = toText[k] ? toText[k](S[k] || []) : (S[k] ?? ''); });
+    $('#labels').checked = !!S.labels; $('#dust').checked = !!S.dust; $('#shade').value = S.shade || 0; $('#logoSize').value = S.logoSize || 62; $('#logoLabel').checked = !!S.logoLabel;
+    const press = (sel, v) => document.querySelectorAll(sel + ' [data-v]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.v === v)));
+    press('#tpl', S.template); press('#fmt', S.format); press('#lay', S.layout); press('#evt', EVENTS[S.event] ? S.event : 'OTHER');
+    press('#lblc', S.labels ? S.labelColor : 'none'); press('#txtc', S.textColor || ''); press('#accc', S.accent); press('#bgs', S.bg); press('#photos', (S.photo || '').startsWith('upload:') ? 'upload' : S.photo);
+    const allowed = TEMPLATES[S.template].formats; document.querySelectorAll('#fmt button').forEach(b => b.disabled = !allowed.includes(b.dataset.v));
+    if (!allowed.includes(S.format)) S.format = allowed[0];
+    document.querySelectorAll('[data-only]').forEach(el => { const on = el.dataset.only.split(' '); el.style.display = on.includes(S.template) || (on.includes('photo') && S.bg === 'photo') ? 'block' : 'none'; });
+    drawLogos();
+  }
+  function draw() {
+    const st = $('#stage'), [w, h] = FORMATS[S.format];
+    const wide = innerWidth > 900, avW = st.clientWidth - (wide ? 464 : 32), avH = wide ? st.clientHeight - 116 : innerHeight * .64;
+    const k = Math.max(.1, Math.min(avW / w, avH / h, 1));
+    $('#preview').innerHTML = `<div style="width:${w * k}px;height:${h * k}px;overflow:hidden"><div style="transform:scale(${k});transform-origin:0 0;width:${w}px;height:${h}px">${render(live())}</div></div>`;
+  }
+  const save = () => { try { const o = { ...S, logos: (S.logos || []).filter(l => !l.src) }; history.replaceState(null, '', '#' + btoa(unescape(encodeURIComponent(JSON.stringify(o))))); } catch (e) { } };
+  function sync() { fill(); draw(); save(); }
+  addEventListener('resize', draw);
+  document.fonts.ready.then(draw);
+  sync();
+
+  const toast = t => { const el = $('#toast'); el.textContent = t; el.classList.add('on'); setTimeout(() => el.classList.remove('on'), 1800); };
+  const name = () => `minimal-effort_${S.template}_${(S.event || '').toLowerCase().replace(/\s+/g, '-')}_${S.format}`;
+  $('#bPng').addEventListener('click', async () => {
+    const node = $('#exportNode'); node.innerHTML = render(live(), { forExport: true }); const ab = node.firstElementChild;
+    await Promise.all([...ab.querySelectorAll('img')].map(i => i.complete ? 0 : new Promise(r => i.onload = i.onerror = r)));
+    await document.fonts.ready;
+    try { const url = await htmlToImage.toPng(ab, { pixelRatio: 1 }); const a = document.createElement('a'); a.href = url; a.download = name() + '.png'; a.click(); toast('PNG exported'); }
+    catch (e) { toast('Export failed — use Copy spec + render'); console.error(e); }
+    node.innerHTML = '';
+  });
+  const spec = () => { const o = { name: name().replace('minimal-effort_', ''), ...S }; o.logos = (S.logos || []).map(l => l.src ? { ...l, src: '(uploaded logo: save it in the kit and put its path here)' } : l); return o; };
+  $('#bSpec').addEventListener('click', async () => { await navigator.clipboard.writeText(JSON.stringify(spec(), null, 2)); toast('Spec copied — save as spec.json'); });
+  $('#bAgent').addEventListener('click', async () => {
+    const t = `Using the Minimal Effort kit (read AGENTS.md first), render this ${TEMPLATES[S.template].label.toLowerCase()} as PNG${BACKGROUNDS[S.bg]?.video || S.bgType === 'video' ? ' and MP4' : ''} in ${S.format} format. Spec:\n\n${JSON.stringify(spec(), null, 2)}`;
+    await navigator.clipboard.writeText(t); toast('Agent request copied');
+  });
+  $('#bReset').addEventListener('click', () => { S = clone(DEFAULT); sync(); });
+</script>
+</body>
+</html>

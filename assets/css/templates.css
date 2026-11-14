@@ -1,0 +1,106 @@
+/* Minimal Effort social templates (round 2). Every artboard is drawn at its export size (1080 wide) and scaled for previews.
+   Type sizes measured from the Second Wind flyer (Figma "Minimal-effort-flyers" 1:220) x1.3935. Label blocks are block
+   boxes as tall as their line box, so stacked lines touch (presents under the presenter bar, [DJ SET] under the name...). */
+.ab { --ink: #F5F5F5; --label: #181D20; --acc: #B4F152; --mid: #14141A; --meta: #F5F5F5; --logo: #F5F5F5;
+  --disp: 'ABC Normal', 'Helvetica Neue', Arial, sans-serif; --mono: 'IBM Plex Mono', ui-monospace, Menlo, monospace;
+  position: relative; width: 1080px; height: 1350px; overflow: hidden; background: var(--mid); color: var(--ink);
+  font-family: var(--disp); font-weight: 800; -webkit-font-smoothing: antialiased; text-rendering: geometricPrecision; contain: strict; }
+.ab[data-format="story"] { height: 1920px; }
+.ab[data-format="square"] { height: 1080px; }
+.ab[data-format="landscape"] { width: 1920px; height: 1080px; }
+.ab * { box-sizing: border-box; }
+.ab .bg, .ab .bg > * { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.ab .bg video, .ab .bg img { transform: scale(1.02); }
+.ab .shade, .ab .layer { position: absolute; inset: 0; }
+.ab .shade { pointer-events: none; }
+.ab.no-bg .bg, .ab.no-bg .dust { display: none; }
+.ab.no-bg { background: transparent !important; }
+.ab .dust { position: absolute; inset: 0; background: url(../tex/dust.jpg) center / cover; mix-blend-mode: screen; opacity: .5; pointer-events: none; }
+
+/* type roles (px at 1080) */
+.ab .t-hero { font-size: 150px; line-height: .92; letter-spacing: -0.045em; }
+.ab .t-xl { font-size: 80px; line-height: 1.01; letter-spacing: -0.031em; }
+.ab .t-l { font-size: 44px; line-height: 1.12; letter-spacing: -0.031em; }
+.ab .t-m { font-size: 34px; line-height: 1.27; letter-spacing: -0.038em; }
+.ab .t-s { font-size: 27px; line-height: 1.27; letter-spacing: -0.038em; }
+.ab .t-xs { font-size: 20px; line-height: 1.3; letter-spacing: -0.02em; }
+.ab .t-v { font-size: 23.6px; line-height: 1.27; letter-spacing: -0.038em; }
+.ab .mono { font-family: var(--mono); font-weight: 500; letter-spacing: .02em; text-transform: uppercase; }
+.ab .acc { color: var(--acc); }
+
+/* label blocks */
+.ab .lbx { display: table; padding: 0 .16em; color: var(--ink); white-space: pre-line; }
+.ab.labels .lbx { background: var(--label); }
+.ab .stack { position: absolute; left: 0; right: 0; display: flex; flex-direction: column; }
+.ab .stack.c { align-items: center; text-align: center; }
+.ab .stack.l { align-items: flex-start; text-align: left; }
+.ab .stack.r { align-items: flex-end; text-align: right; }
+.ab .stack.c .lbx { margin: 0 auto; }
+.ab .x { display: inline-block; width: .62em; height: .62em; margin: 0 .38em; vertical-align: -0.02em; }
+.ab .x svg { display: block; width: 100%; height: 100%; }
+.ab .wide { position: absolute; left: 40px; right: 40px; display: flex; align-items: center; justify-content: space-between; white-space: nowrap; }
+.ab .wide .x { flex: none; }
+
+/* logo row: optically matched logos, optionally each on a label block */
+.ab .logos { position: absolute; left: 64px; right: 64px; display: flex; align-items: center; justify-content: center; gap: 34px; color: var(--logo); }
+.ab .logos.l { justify-content: flex-start; } .ab .logos.r { justify-content: flex-end; }
+.ab .logos .lg-w { display: block; flex: none; }
+.ab .logos .lg-i { display: block; }
+.ab .logos .lg-i svg, .ab .logos .lg-i img { display: block; width: 100%; height: 100%; object-fit: contain; }
+/* our marks: a tight black box, always (they are part of the brand); other logos plain */
+.ab .logos .lg-w.boxed { background: #181D20; color: #F5F5F5; }
+
+/* tags, ctas, rules, meta */
+.ab .tag { display: inline-flex; align-items: center; gap: 14px; height: 56px; padding: 0 22px; background: var(--acc); color: var(--mid); font: 500 24px/1 var(--mono); letter-spacing: .04em; text-transform: uppercase; }
+.ab .tag.dot::before { content: ''; width: 12px; height: 12px; background: currentColor; }
+.ab .cta { display: inline-flex; align-items: center; gap: 18px; height: 84px; padding: 0 40px; border-radius: 999px; background: var(--ink); color: var(--mid); font: 800 32px/1 var(--disp); letter-spacing: -0.02em; }
+.ab .cta.acc { background: var(--acc); color: var(--mid); }
+.ab .cta .arr { width: 30px; height: 30px; }
+.ab .rule { position: absolute; left: 64px; right: 64px; height: 2px; background: var(--meta); opacity: .9; }
+.ab .meta { position: absolute; left: 64px; right: 64px; display: flex; justify-content: space-between; gap: 20px; font: 500 22px/1.3 var(--mono); text-transform: uppercase; letter-spacing: .02em; color: var(--meta); }
+
+/* photo windows */
+.ab .photo { position: absolute; overflow: hidden; background: #111; }
+.ab .photo img, .ab .photo video { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+/* technical-label molecules (from the ID file's "Molecules / Technicals labels", redrawn in brand colours) */
+.ab .tl { display: inline-grid; grid-auto-flow: column; border: 2px solid currentColor; color: var(--ink); background: var(--label); font: 500 15px/1.15 var(--mono); text-transform: uppercase; }
+.ab:not(.labels) .tl { background: transparent; }
+.ab .tl > div { padding: 10px 14px; border-left: 2px solid currentColor; display: flex; flex-direction: column; justify-content: center; gap: 6px; }
+.ab .tl > div:first-child { border-left: 0; }
+.ab .tl small { font-size: 11px; opacity: .7; letter-spacing: .06em; }
+.ab .tl b { font-weight: 500; font-size: 22px; letter-spacing: 0; }
+.ab .tl .glb { width: 92px; align-items: center; }
+.ab .tl .glb svg { width: 60px; height: 34px; }
+.ab .tl .bar { width: 64px; background: repeating-linear-gradient(90deg, currentColor 0 2px, transparent 2px 4px, currentColor 4px 7px, transparent 7px 9px); }
+.ab .frame-c { position: absolute; width: 34px; height: 34px; border-color: var(--meta); border-style: solid; border-width: 0; }
+.ab .frame-c.tl0 { left: 40px; top: 40px; border-left-width: 3px; border-top-width: 3px; }
+.ab .frame-c.tr0 { right: 40px; top: 40px; border-right-width: 3px; border-top-width: 3px; }
+.ab .frame-c.bl0 { left: 40px; bottom: 40px; border-left-width: 3px; border-bottom-width: 3px; }
+.ab .frame-c.br0 { right: 40px; bottom: 40px; border-right-width: 3px; border-bottom-width: 3px; }
+.ab .log { font: 500 24px/1.55 var(--mono); text-transform: uppercase; color: var(--ink); white-space: pre; }
+.ab .log .ok { color: var(--acc); }
+
+/* calendar */
+.ab .cal { position: absolute; left: 64px; right: 64px; }
+.ab .cal .row { display: grid; grid-template-columns: 170px minmax(0, 1fr) 220px; gap: 24px; align-items: baseline; padding: 22px 0 24px; border-top: 2px solid var(--meta); color: var(--ink); }
+.ab .cal .row:last-child { border-bottom: 2px solid var(--meta); }
+.ab .cal .d { font: 800 46px/1 var(--disp); letter-spacing: -0.03em; }
+.ab .cal .d small, .ab .cal .e small { display: block; margin-top: 10px; font: 500 19px/1.25 var(--mono); letter-spacing: .03em; text-transform: uppercase; opacity: .85; }
+.ab .cal .e { font: 800 46px/1.02 var(--disp); letter-spacing: -0.035em; }
+.ab .cal .v { font: 500 20px/1.3 var(--mono); text-transform: uppercase; text-align: right; opacity: .85; }
+.ab.labels .cal .row { background: var(--label); padding-left: 18px; padding-right: 18px; border-top: 0; margin-top: 2px; }
+.ab.labels .cal .row:last-child { border-bottom: 0; }
+
+/* highlight covers: everything inside the centre 760 px circle */
+.ab.hl .layer { display: grid; place-items: center; }
+.ab.hl .hl-in { width: 760px; height: 760px; border-radius: 50%; display: grid; place-items: center; text-align: center; }
+.ab.hl .hl-t { font: 800 150px/0.88 var(--disp); letter-spacing: -0.045em; color: var(--ink); }
+.ab.hl .hl-ico { width: 340px; height: 340px; color: var(--ink); }
+.ab.hl .hl-ico svg { width: 100%; height: 100%; display: block; }
+
+/* hiring (round-1 post, restored): NOW / object / HIRING on Lime with grid lines */
+.ab .hire-w { position: absolute; font: 800 118px/0.9 var(--disp); letter-spacing: -0.045em; }
+.ab .grid-lines { position: absolute; inset: 64px; pointer-events: none; }
+.ab .grid-lines i { position: absolute; background: currentColor; opacity: .35; }
+.ab[data-format="story"] .grid-lines { top: 250px; bottom: 330px; }

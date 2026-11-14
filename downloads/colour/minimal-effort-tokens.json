@@ -1,0 +1,90 @@
+{
+  "colour": {
+    "midnight": {
+      "value": "#14141A",
+      "group": "primary"
+    },
+    "ice-white": {
+      "value": "#F5F6FC",
+      "group": "primary"
+    },
+    "lime": {
+      "value": "#B4F152",
+      "group": "primary"
+    },
+    "lilac": {
+      "value": "#A79BEE",
+      "group": "primary"
+    },
+    "label": {
+      "value": "#181D20",
+      "group": "system"
+    },
+    "coal": {
+      "value": "#1E1E24",
+      "group": "grey"
+    },
+    "iron": {
+      "value": "#40424D",
+      "group": "grey"
+    },
+    "graphite": {
+      "value": "#6E7180",
+      "group": "grey"
+    },
+    "slate": {
+      "value": "#9DA2B3",
+      "group": "grey"
+    },
+    "steel": {
+      "value": "#BCBFCC",
+      "group": "grey"
+    },
+    "smoke": {
+      "value": "#D3D6E0",
+      "group": "grey"
+    },
+    "cloud": {
+      "value": "#EDEFF7",
+      "group": "grey"
+    },
+    "cyan": {
+      "value": "#2ED0FF",
+      "group": "spectrum"
+    },
+    "yellow": {
+      "value": "#F3CE3A",
+      "group": "spectrum"
+    },
+    "orange": {
+      "value": "#FF7022",
+      "group": "spectrum"
+    },
+    "red": {
+      "value": "#E92E4A",
+      "group": "spectrum"
+    }
+  },
+  "font": {
+    "display": "ABC Normal Heavy",
+    "text": "Manrope",
+    "mono": "IBM Plex Mono"
+  },
+  "social": {
+    "feed": [
+      1080,
+      1350
+    ],
+    "story": [
+      1080,
+      1920
+    ],
+    "square": [
+      1080,
+      1080
+    ],
+    "margin": 64,
+    "storySafeTop": 250,
+    "storySafeBottom": 340
+  }
+}

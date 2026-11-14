@@ -1,0 +1,11 @@
+node_modules/
+ref/
+versions/
+.DS_Store
+*.old
+# too big for git: published as GitHub release files instead
+downloads/minimal-effort-brand-kit.zip
+downloads/minimal-effort_backgrounds.zip
+downloads/minimal-effort_templates.zip
+downloads/second-wind_flyer_all-sizes.zip
+downloads/renders/

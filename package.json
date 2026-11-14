@@ -1,0 +1,18 @@
+{
+  "name": "minimal-effort-brand",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "serve": "python3 -m http.server 8790",
+    "render": "node tools/render.mjs",
+    "logos": "node tools/build-logos.mjs",
+    "templates": "node tools/render.mjs tools/examples/templates.json --out downloads/templates",
+    "kit": "node tools/build-kit.mjs",
+    "pdf": "node tools/build-pdf.mjs",
+    "pack": "sh tools/pack.sh",
+    "check": "node tools/check-links.mjs"
+  },
+  "devDependencies": {
+    "playwright": "^1.56.1"
+  }
+}
