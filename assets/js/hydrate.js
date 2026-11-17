@@ -214,13 +214,15 @@ function extraLabels(root) {
       const t = String(e?.t ?? '').trim(); if (!t) return;
       const d = document.createElement('div');
       d.className = x5 ? 'pb' : 'lbx'; d.dataset.xli = i; d.textContent = t;
-      const fs = `font-size:${XL_SIZE[e.size] || XL_SIZE.s}px;white-space:nowrap;${x5 ? '' : 'letter-spacing:-0.035em;line-height:1.2;'}`;
+      const fs = `font-size:${+e.px > 0 ? +e.px : XL_SIZE[e.size] || XL_SIZE.s}px;white-space:nowrap;${x5 ? '' : 'letter-spacing:-0.035em;line-height:1.2;'}`;
       if ((Number.isInteger(e.at) || e.at === 'main') && blocks.length) {
+        // space above / below (post px) pushes it away from its neighbours; side margins stay as the stack sets them
+        const gap = `${+e.gapT ? `margin-top:${+e.gapT}px;` : ''}${+e.gapB ? `margin-bottom:${+e.gapB}px;` : ''}`;
         // in the flow: before or after one of the post's blocks, so it takes that stack's alignment, padding and hang
         // ('main' = the biggest block, e.g. the headliner)
         const at = e.at === 'main' ? xlMain(blocks, ab.dataset.xmain) : e.at;
         const b = blocks[Math.min(Math.max(0, at), blocks.length - 1)];
-        d.style.cssText = fs; if (e.side === 'after' || e.at >= blocks.length) b.after(d); else b.before(d);
+        d.style.cssText = fs + gap; if (e.side === 'after' || e.at >= blocks.length) b.after(d); else b.before(d);
         return;
       }
       const x = Number.isFinite(+e.x) && e.x !== null ? +e.x : M - P, y = Number.isFinite(+e.y) && e.y !== null ? +e.y : H * .3 + i * 60;

@@ -1,8 +1,8 @@
 // Minimal Effort guidelines v2: builds the data-driven sections (technical labels, icons, compositions, loops, templates,
 // highlights, feed) from templates.js and tools/examples/templates.json. Template previews carry data-tpl, which
 // site.js draws (and redraws on resize). Every block checks that its container exists, so other pages can import this.
-import { preview, icon, ICONS, LAYOUTS, BACKGROUNDS, LOGO } from './templates.js';
-import { hydrate } from './hydrate.js';
+import { preview, icon, ICONS, LAYOUTS, BACKGROUNDS, LOGO } from './templates.js?v=20261117c';
+import { hydrate } from './hydrate.js?v=20261117c';
 
 const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => [...r.querySelectorAll(s)];
 const attr = o => JSON.stringify(o).replace(/'/g, '&#39;');

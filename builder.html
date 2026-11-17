@@ -69,8 +69,9 @@
   .szrow button:hover { background: var(--lime); color: var(--mid); }
   .lab b { color: var(--ice); font-weight: 500; }
   .xlbox { padding: 10px 0 14px; margin-bottom: 6px; border-bottom: 1px solid var(--line); }
-  .xlrow { display: grid; grid-template-columns: minmax(0,1fr) 64px 26px; gap: 6px 8px; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--line); }
-  .xlrow select[data-xlw] { grid-column: 1 / -1; }
+  .xlrow { display: grid; grid-template-columns: minmax(0,1fr) 26px; gap: 6px 8px; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--line); }
+  .xlrow select[data-xlw], .xlrow .xlsz { grid-column: 1 / -1; }
+  .xlrow .xlsz .szrow:last-child { border-bottom: 0; }
   .xlrow input[type=text] { margin: 0; } .xlrow select { padding: 4px 2px; font-size: 12px; }
   #xlAdd { margin-top: 8px; }
   #preview [data-xli] { cursor: grab; touch-action: none; outline: 1px dashed rgba(180,241,82,.0); transition: outline-color .2s; }
@@ -221,10 +222,10 @@
 
 <script src="assets/vendor/html-to-image.js"></script>
 <script type="module">
-  import { render, DEFAULT, TEMPLATES, ROLES, MAZE, BACKGROUNDS, PHOTOS, EVENTS, FORMATS, ICONS, LOGO, LOGO_META, LABEL_COLORS, TEXT_COLORS, CW, LABEL_STYLES, FONTS, ANIMS, SHAPES } from './assets/js/templates.js';
+  import { render, DEFAULT, TEMPLATES, ROLES, MAZE, BACKGROUNDS, PHOTOS, EVENTS, FORMATS, ICONS, LOGO, LOGO_META, LABEL_COLORS, TEXT_COLORS, CW, LABEL_STYLES, FONTS, ANIMS, SHAPES } from './assets/js/templates.js?v=20261117c';
   import { EXT } from './assets/js/compose.js';
   import { FX_MODES, GRADS, FX_DEFAULT } from './assets/js/fx.js';
-  import { hydrate, fxFrame, seekTo, xlBlocks, xlMain } from './assets/js/hydrate.js';
+  import { hydrate, fxFrame, seekTo, xlBlocks, xlMain, XL_SIZE } from './assets/js/hydrate.js?v=20261117c';
   import { Muxer, ArrayBufferTarget } from './assets/vendor/mp4-muxer.mjs';
   const $ = s => document.querySelector(s);
   const clone = o => JSON.parse(JSON.stringify(o));
@@ -233,6 +234,8 @@
   // the single "Extra label" field became free, draggable labels: carry an old link's label over
   if (String(S.extra || '').trim() && !(S.extras || []).length) S.extras = String(S.extra).split('\n').map(t => t.trim()).filter(Boolean).map(t => ({ t, size: 'm', at: 'main', side: 'before' }));
   S.extra = ''; S.extraPos = 'top'; S.extras ||= [];
+  // labels made by the first version of + Add label (free, never dragged: no x) join the text above the headliner
+  for (const e of S.extras) if (e && !Number.isInteger(e.at) && e.at !== 'main' && (e.x === null || e.x === undefined)) { e.at = 'main'; e.side = 'before'; delete e.x; delete e.y; }
   const uploads = {};          // big data URLs stay out of the URL hash
 
   const toText = { artists: a => a.map(x => x.note ? `${x.name} | ${x.note}` : x.name).join('\n'), venue: a => a.join('\n'), steps: a => a.join('\n'), log: a => a.join('\n'), rows: a => a.map(r => [r.d, r.w, r.e, r.a, r.v].join(' | ')).join('\n') };
@@ -280,8 +283,11 @@
   const toDataURL = f => new Promise(r => { const fr = new FileReader(); fr.onload = () => r(fr.result); fr.readAsDataURL(f); });
 
   $('#photos').innerHTML = Object.entries(PHOTOS).map(([k, src]) => `<button type="button" class="chip" data-v="${k}" style="background-image:url(${src})"><span>${k}</span></button>`).join('') + `<button type="button" class="chip up" data-v="upload">+<span>Upload</span></button>`;
-  $('#photos').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; if (b.dataset.v === 'upload') return $('#phFile').click(); S.photo = b.dataset.v; sync(); });
-  $('#phFile').addEventListener('change', async e => { const f = e.target.files[0]; if (!f) return; uploads.photo = await toDataURL(f); S.photo = 'upload:' + f.name; sync(); toast('Photo loaded'); });
+  // picking a photo should always show it: if the flyer doesn't use the photo yet (a loop or colour background), the
+  // background switches to the photo. Templates that already place the photo (announce, window…) keep their background.
+  const showPhoto = () => { const src = (S.photo || '').startsWith('upload:') ? uploads.photo : PHOTOS[S.photo]; if (src && !render(live()).includes(src)) { S.bg = 'photo'; toast('Background switched to the photo'); } };
+  $('#photos').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; if (b.dataset.v === 'upload') return $('#phFile').click(); S.photo = b.dataset.v; showPhoto(); sync(); });
+  $('#phFile').addEventListener('change', async e => { const f = e.target.files[0]; if (!f) return; uploads.photo = await toDataURL(f); S.photo = 'upload:' + f.name; showPhoto(); sync(); toast('Photo loaded'); });
 
   // logos
   const POS = [['', 'Row'], ['tl', 'Top left'], ['tc', 'Top centre'], ['tr', 'Top right'], ['bl', 'Bottom left'], ['bc', 'Bottom centre'], ['br', 'Bottom right']].map(([v, t]) => `<option value="${v}">${t}</option>`).join('');
@@ -306,12 +312,23 @@
   // ---- extra labels: a list (text, where, size, remove). A label sits IN the text, before or after one of the post's blocks,
   //      so it takes that stack's alignment and padding. Drag it up / down on the flyer and it slots in where the lime line
   //      shows; hold Alt while dragging to place it freely (it then snaps to the margins, the centre and the other blocks).
-  const XLZ = [['s', 'S'], ['m', 'M'], ['l', 'L'], ['xl', 'XL']];
   const escA = v => String(v ?? '').replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
   function drawXL() {
-    $('#xlList').innerHTML = (S.extras || []).map((e, i) => `<div class="xlrow"><input type="text" data-xlt="${i}" value="${escA(e.t)}" placeholder="A TO Z" aria-label="Label ${i + 1} text"><select data-xlz="${i}" title="Size">${XLZ.map(([v, t]) => `<option value="${v}"${(e.size || 's') === v ? ' selected' : ''}>${t}</option>`).join('')}</select><button type="button" class="x-btn" data-xldel="${i}" title="Remove">×</button><select data-xlw="${i}" title="Where it goes" aria-label="Label ${i + 1} position"></select></div>`).join('');
+    const st = (i, k, label, v, unit) => `<div class="szrow"><span class="lab" style="margin:0">${label}</span><button type="button" data-xs="${i}" data-xk="${k}" data-d="-1" title="Less">−</button><b>${v}${unit}</b><button type="button" data-xs="${i}" data-xk="${k}" data-d="1" title="More">+</button></div>`;
+    $('#xlList').innerHTML = (S.extras || []).map((e, i) => `<div class="xlrow"><input type="text" data-xlt="${i}" value="${escA(e.t)}" placeholder="A TO Z" aria-label="Label ${i + 1} text"><button type="button" class="x-btn" data-xldel="${i}" title="Remove">×</button>
+      <select data-xlw="${i}" title="Where it goes" aria-label="Label ${i + 1} position"></select>
+      <div class="xlsz">${st(i, 'px', 'Size', xlPx(e), ' px')}${st(i, 'gapT', 'Space above', +e.gapT || 0, ' px')}${st(i, 'gapB', 'Space below', +e.gapB || 0, ' px')}</div></div>`).join('');
     drawWhere();
   }
+  const xlPx = e => Math.round(+e.px > 0 ? +e.px : XL_SIZE[e.size] || XL_SIZE.s);
+  // size steps like the other text sizes (about 12 % a click); space in 8 px steps
+  $('#xlList').addEventListener('click', e => {
+    const b = e.target.closest('[data-xs]'); if (!b) return;
+    const it = S.extras[+b.dataset.xs], d = +b.dataset.d, k = b.dataset.xk;
+    if (k === 'px') { const v = xlPx(it); it.px = Math.max(12, Math.min(320, d > 0 ? Math.max(v + 1, Math.round(v * 1.12)) : Math.min(v - 1, Math.round(v / 1.12)))); delete it.size; }
+    else it[k] = Math.max(0, Math.min(400, (+it[k] || 0) + d * 8));
+    drawXL(); draw(); save();
+  });
   // the Where menus list the post's own blocks, read from the preview once it is drawn
   function drawWhere() {
     const ab = $('#preview .ab'); if (!ab) return;
@@ -326,8 +343,7 @@
   const mainBlock = ab => { const bs = xlBlocks(ab); return bs.length ? xlMain(bs, S.artists?.[0]?.name) : -1; };
   $('#xlList').addEventListener('input', e => { const i = e.target.dataset.xlt; if (i !== undefined) { S.extras[+i].t = e.target.value; draw(); save(); } });
   $('#xlList').addEventListener('change', e => {
-    const z = e.target.dataset.xlz, w = e.target.dataset.xlw;
-    if (z !== undefined) { S.extras[+z].size = e.target.value; draw(); save(); }
+    const w = e.target.dataset.xlw;
     if (w !== undefined) {
       const it = S.extras[+w];
       if (e.target.value === 'free') { const el = $(`#preview [data-xli="${w}"]`), ab = $('#preview .ab'); if (el && ab) { const A = ab.getBoundingClientRect(), k = A.width / ab.offsetWidth, r = el.getBoundingClientRect(); it.x = Math.round((r.left - A.left) / k); it.y = Math.round((r.top - A.top) / k); } delete it.at; delete it.side; }
@@ -339,7 +355,7 @@
   $('#xlAdd').addEventListener('click', () => {
     const ab = $('#preview .ab'), n = (S.extras ||= []).length, j = ab ? mainBlock(ab) : -1;
     // a new label goes right above the main block (the headliner on a lineup), in the stack, aligned like it
-    S.extras.push(j >= 0 ? { t: 'A TO Z', size: 'm', at: j, side: 'before' } : { t: 'A TO Z', size: 'm', x: null, y: Math.round(FORMATS[S.format][1] * .3 + n * 60) });
+    S.extras.push(j >= 0 ? { t: 'A TO Z', px: 34, at: j, side: 'before' } : { t: 'A TO Z', px: 34, x: null, y: Math.round(FORMATS[S.format][1] * .3 + n * 60) });
     sync(); setTimeout(() => $('#xlList').querySelector(`[data-xlt="${n}"]`)?.select(), 0); toast('Label added above the main block — drag it up or down to move it');
   });
   $('#preview').addEventListener('pointerdown', ev => {
