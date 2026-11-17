@@ -43,7 +43,8 @@ The human alternative is `builder.html` (open it from a local server: `npm run s
 | `bgType`, `bgFile` | `"video"` / `"image"`, path to the file | with `bg:"custom"`: your own background (a video loops for 10 s in the MP4) |
 | `photo` | `lee-burridge-1..3` `ry-x` `jamiie` `party-01..07` `venue-01` `extra-01..04`, or a path | announce, giveaway, `bg:"photo"`. Real press photos for artists, party photos for giveaways |
 | `presenter` / `partner` / `presents` | `MNML EFFRT` / `SBCTLR` / `PRESENTS` | partner empty = no × co-brand |
-| `extra` / `extraPos` | `""` / `top` | an extra label on ANY template, in the post's own label style (e.g. `"A TO Z"`; a new line is a new block). `extraPos`: `top` / `bottom` of the main text, or a corner `tl` `tr` `bl` `br`. Builder: Words → Extra label |
+| `extras[]` | `[]` | free labels on ANY template, in the post's own label style: `{"t":"A TO Z","x":486,"y":476,"size":"m"}` (x / y = the block's top-left in post px; `size` `s` `m` `l` `xl`; x / y `null` = left margin). Builder: Words → Extra labels → + Add label, then drag it on the flyer (snaps to the margins, the centre and the other blocks; Alt = no snap) |
+| `extra` / `extraPos` | `""` / `top` | older single extra label, still rendered (new line = new block; `top` / `bottom` of the main text or a corner `tl` `tr` `bl` `br`); the builder turns it into `extras` |
 | `title`, `date`, `time` | `Second Wind`, `Jan 2`, `6pm to 3am` | "Jan 2" style; announce posts always show the date |
 | `artists` | `[{"name":"LEE BURRIDGE"},{"name":"RY X","note":"[DJ SET]"}]` | names UPPERCASE; notes in [brackets]; as many as fit |
 | `venue` | `["613 Imperial Street","Arts District Los Angeles","Day to Night"]` | up to 3 lines |

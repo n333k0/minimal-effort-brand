@@ -194,7 +194,23 @@ export function labelBoxes(root) {
 
 // Extra label (spec.extra, e.g. "A TO Z"; a new line is a new block) on any template, in the post's own label style.
 // data-extra-pos: top / bottom of the main text, or a corner (tl tr bl br).
+export const XL_SIZE = { s: 27, m: 34, l: 44, xl: 80 };
 function extraLabels(root) {
+  // free labels (spec.extras): each one absolutely placed, dragged in the builder
+  root.querySelectorAll('.ab[data-xls]').forEach(ab => {
+    if (ab.querySelector('[data-xli]')) return;
+    let list = []; try { list = JSON.parse(ab.dataset.xls); } catch (e) { return; }
+    const x5 = ab.classList.contains('x5'), W = ab.offsetWidth, H = ab.offsetHeight, M = parseFloat(getComputedStyle(ab).getPropertyValue('--m')) || 64;
+    const P = LPAD * Math.min(W, H) / 1080, layer = ab.querySelector('.layer') || ab;
+    list.forEach((e, i) => {
+      const t = String(e?.t ?? '').trim(); if (!t) return;
+      const d = document.createElement('div');
+      d.className = x5 ? 'pb' : 'lbx'; d.dataset.xli = i; d.textContent = t;
+      const x = Number.isFinite(+e.x) && e.x !== null ? +e.x : M - P, y = Number.isFinite(+e.y) && e.y !== null ? +e.y : H * .3 + i * 60;
+      d.style.cssText = `position:absolute;left:${x}px;top:${y}px;margin:0;z-index:6;font-size:${XL_SIZE[e.size] || XL_SIZE.s}px;white-space:nowrap;${x5 ? '' : 'letter-spacing:-0.035em;line-height:1.2;'}`;
+      layer.append(d);
+    });
+  });
   root.querySelectorAll('.ab[data-extra]').forEach(ab => {
     if (ab.querySelector('[data-xl]')) return;
     const lines = ab.dataset.extra.split('\n').map(t => t.trim()).filter(Boolean); if (!lines.length) return;

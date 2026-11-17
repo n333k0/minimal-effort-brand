@@ -576,7 +576,9 @@ export function render(spec, opts = {}) {
 }
 
 // extra label on any template (hydrate.js draws it in the post's own label style): spec.extra = "A TO Z", extraPos = top | bottom | tl | tr | bl | br
-const xtra = s => String(s.extra ?? '').trim() ? ` data-extra="${esc(String(s.extra).trim())}" data-extra-pos="${esc(s.extraPos || 'top')}"` : '';
+// extras = [{ t: "A TO Z", x, y, size: s|m|l|xl }]: free labels at x / y (the block's top-left, in post px), dragged in the builder
+const xtra = s => (String(s.extra ?? '').trim() ? ` data-extra="${esc(String(s.extra).trim())}" data-extra-pos="${esc(s.extraPos || 'top')}"` : '')
+  + ((s.extras || []).some(e => String(e?.t ?? '').trim()) ? ` data-xls="${esc(JSON.stringify(s.extras))}"` : '');
 
 // round 5 templates (compose.js): colourway, label style, font, shapes, effects, animation
 function renderExt(s, opts) {

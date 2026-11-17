@@ -68,6 +68,14 @@
   .szrow button { width: 28px; height: 26px; border-radius: 8px; border: 0; background: rgba(245,246,252,.08); color: var(--ice); cursor: pointer; font: 700 15px/1 var(--sans); }
   .szrow button:hover { background: var(--lime); color: var(--mid); }
   .lab b { color: var(--ice); font-weight: 500; }
+  .xlbox { padding: 10px 0 14px; margin-bottom: 6px; border-bottom: 1px solid var(--line); }
+  .xlrow { display: grid; grid-template-columns: minmax(0,1fr) 64px 26px; gap: 8px; align-items: center; padding: 6px 0; }
+  .xlrow input[type=text] { margin: 0; } .xlrow select { padding: 4px 2px; font-size: 12px; }
+  #xlAdd { margin-top: 8px; }
+  #preview [data-xli] { cursor: grab; touch-action: none; outline: 1px dashed rgba(180,241,82,.0); transition: outline-color .2s; }
+  #preview [data-xli]:hover, #preview [data-xli].drag { outline-color: rgba(180,241,82,.9); outline-offset: 3px; }
+  #preview [data-xli].drag { cursor: grabbing; }
+  .xguide { position: absolute; z-index: 20; pointer-events: none; background: #B4F152; }
   .x-btn { width: 26px; height: 26px; border-radius: 50%; border: 0; background: rgba(245,246,252,.08); color: var(--ice); cursor: pointer; font: 600 13px/1 var(--sans); }
   [data-only] { display: none; }
   .toast { position: fixed; z-index: 9; left: 50%; bottom: 24px; transform: translate(-50%, 20px); opacity: 0; padding: 10px 16px; border-radius: 999px; background: var(--lime); color: var(--mid); font: 700 12px/1 var(--sans); transition: .3s; pointer-events: none; }
@@ -152,8 +160,8 @@
   <div class="grp" data-only="announce giveaway system hiring photo lineup poster slide timetable tour release calendar cover"><span class="lab">Photo</span><div class="chips" id="photos"></div><input type="file" id="phFile" accept="image/*"></div>
 
   <div class="grp"><span class="lab">Words</span>
-    <label class="f"><span class="lab">Extra label, on any template (e.g. A TO Z · new line = new block)</span><textarea data-k="extra" rows="2" placeholder="A TO Z"></textarea></label>
-    <label class="f"><span class="lab">Extra label goes</span><select data-k="extraPos"><option value="top">Top of the text</option><option value="bottom">Bottom of the text</option><option value="tl">Corner · top left</option><option value="tr">Corner · top right</option><option value="bl">Corner · bottom left</option><option value="br">Corner · bottom right</option></select></label>
+    <div class="xlbox"><span class="lab">Extra labels — add as many as you need, then drag them on the flyer (they snap to the margins, the centre and the other blocks)</span>
+      <div id="xlList"></div><button type="button" class="btn sm" id="xlAdd">+ Add label</button></div>
     <div data-only="lineup poster timetable">
       <label class="f"><span class="lab">Presenter</span><input type="text" data-k="presenter"></label>
       <label class="f"><span class="lab">Partner (× co-brand, empty for none)</span><input type="text" data-k="partner"></label>
@@ -221,6 +229,9 @@
   const clone = o => JSON.parse(JSON.stringify(o));
   let S = clone(DEFAULT);
   try { const h = location.hash.slice(1); if (h) S = { ...S, ...JSON.parse(decodeURIComponent(escape(atob(h)))) }; } catch (e) { }
+  // the single "Extra label" field became free, draggable labels: carry an old link's label over
+  if (String(S.extra || '').trim() && !(S.extras || []).length) S.extras = String(S.extra).split('\n').map(t => t.trim()).filter(Boolean).map(t => ({ t, size: 's', x: null, y: null }));
+  S.extra = ''; S.extraPos = 'top'; S.extras ||= [];
   const uploads = {};          // big data URLs stay out of the URL hash
 
   const toText = { artists: a => a.map(x => x.note ? `${x.name} | ${x.note}` : x.name).join('\n'), venue: a => a.join('\n'), steps: a => a.join('\n'), log: a => a.join('\n'), rows: a => a.map(r => [r.d, r.w, r.e, r.a, r.v].join(' | ')).join('\n') };
@@ -291,6 +302,54 @@
     const img = new Image(); img.onload = () => { (S.logos ||= []).push({ src: url, aspect: img.naturalWidth / img.naturalHeight, scale: 1, name: f.name }); sync(); toast('Logo added'); }; img.src = url;
   });
 
+  // ---- extra labels: a list (text, size, remove) + drag on the preview; they snap to the margins (letters on the margin,
+  //      block edge 7 px outside), the centre and every other block's edges. Hold Alt while dragging to place freely.
+  const XLZ = [['s', 'S'], ['m', 'M'], ['l', 'L'], ['xl', 'XL']];
+  const escA = v => String(v ?? '').replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
+  function drawXL() {
+    $('#xlList').innerHTML = (S.extras || []).map((e, i) => `<div class="xlrow"><input type="text" data-xlt="${i}" value="${escA(e.t)}" placeholder="A TO Z" aria-label="Label ${i + 1} text"><select data-xlz="${i}" title="Size">${XLZ.map(([v, t]) => `<option value="${v}"${(e.size || 's') === v ? ' selected' : ''}>${t}</option>`).join('')}</select><button type="button" class="x-btn" data-xldel="${i}" title="Remove">×</button></div>`).join('');
+  }
+  $('#xlList').addEventListener('input', e => { const i = e.target.dataset.xlt; if (i !== undefined) { S.extras[+i].t = e.target.value; draw(); save(); } });
+  $('#xlList').addEventListener('change', e => { const i = e.target.dataset.xlz; if (i !== undefined) { S.extras[+i].size = e.target.value; draw(); save(); } });
+  $('#xlList').addEventListener('click', e => { const d = e.target.closest('[data-xldel]'); if (d) { S.extras.splice(+d.dataset.xldel, 1); sync(); } });
+  $('#xlAdd').addEventListener('click', () => {
+    const h = FORMATS[S.format][1], n = (S.extras ||= []).length;
+    S.extras.push({ t: 'A TO Z', size: 'm', x: null, y: Math.round(h * .3 + n * 60) }); sync();
+    setTimeout(() => $('#xlList').querySelector(`[data-xlt="${n}"]`)?.select(), 0); toast('Label added — drag it on the flyer');
+  });
+  $('#preview').addEventListener('pointerdown', ev => {
+    const el = ev.target.closest('[data-xli]'); if (!el || ev.button > 0) return;
+    ev.preventDefault(); el.setPointerCapture(ev.pointerId);
+    const ab = el.closest('.ab'), A = ab.getBoundingClientRect(), k = A.width / ab.offsetWidth, W = ab.offsetWidth, H = ab.offsetHeight;
+    const M = +S.margin || 64, P = 7 * Math.min(W, H) / 1080, r0 = el.getBoundingClientRect(), w = r0.width / k, h = r0.height / k;
+    const x0 = parseFloat(el.style.left), y0 = parseFloat(el.style.top), sx = ev.clientX, sy = ev.clientY, T = Math.max(8, 6 / k); // snap reach: 6 screen px
+    const box = q => ({ l: (q.left - A.left) / k, r: (q.right - A.left) / k, t: (q.top - A.top) / k, b: (q.bottom - A.top) / k });
+    const others = [...ab.querySelectorAll('.lbx, .pb, .logo, [class*="logo"]')].filter(o => o !== el && !el.contains(o) && o.offsetWidth && !o.closest('svg') && o.getBoundingClientRect().width < A.width * .95).map(o => box(o.getBoundingClientRect()));
+    // the page's own lines (margins, centre) win over other blocks' edges when both are in reach
+    const XS = [{ v: M - P, e: 'l', p: 0 }, { v: W - M + P, e: 'r', p: 0 }, { v: W / 2, e: 'c', p: 0 }, ...others.flatMap(o => [{ v: o.l, e: 'l', p: 1 }, { v: o.r, e: 'r', p: 1 }, { v: (o.l + o.r) / 2, e: 'c', p: 1 }])];
+    const YS = others.flatMap(o => [{ v: o.b, e: 't' }, { v: o.t, e: 'b' }, { v: o.t, e: 't' }, { v: o.b, e: 'b' }]);
+    const gv = document.createElement('div'), gh = document.createElement('div');
+    for (const g of [gv, gh]) { g.className = 'xguide'; g.style.display = 'none'; ab.append(g); }
+    gv.style.cssText += `;top:0;height:${H}px;width:${1 / k}px`; gh.style.cssText += `;left:0;width:${W}px;height:${1 / k}px`;
+    const snap = (pos, size, list) => { let best = null; for (const s of list) { const at = s.e === 'l' || s.e === 't' ? pos : s.e === 'c' ? pos + size / 2 : pos + size; const d = s.v - at, p = s.p || 0; if (Math.abs(d) <= T && (!best || p < best.p || (p === best.p && Math.abs(d) < Math.abs(best.d)))) best = { d, v: s.v, p }; } return best; };
+    let nx = x0, ny = y0; el.classList.add('drag');
+    const move = e => {
+      nx = x0 + (e.clientX - sx) / k; ny = y0 + (e.clientY - sy) / k;
+      const a = e.altKey ? null : snap(nx, w, XS), b = e.altKey ? null : snap(ny, h, YS);
+      if (a) nx += a.d; if (b) ny += b.d;
+      nx = Math.max(-w / 2, Math.min(W - w / 2, nx)); ny = Math.max(-h / 2, Math.min(H - h / 2, ny));
+      el.style.left = nx + 'px'; el.style.top = ny + 'px';
+      gv.style.display = a ? 'block' : 'none'; if (a) gv.style.left = a.v + 'px';
+      gh.style.display = b ? 'block' : 'none'; if (b) gh.style.top = b.v + 'px';
+    };
+    const up = () => {
+      el.removeEventListener('pointermove', move); el.removeEventListener('pointerup', up); el.removeEventListener('pointercancel', up);
+      gv.remove(); gh.remove(); el.classList.remove('drag');
+      const it = S.extras?.[+el.dataset.xli]; if (it) { it.x = Math.round(nx * 10) / 10; it.y = Math.round(ny * 10) / 10; save(); draw(); }
+    };
+    el.addEventListener('pointermove', move); el.addEventListener('pointerup', up); el.addEventListener('pointercancel', up);
+  });
+
   // ---- round 5: the look (colourway, wrapping, type, shapes, animation), the background lab, button / logo switches
   function applyPreset() {
     const pre = EXT[S.template]?.preset({ ...S }) || {};
@@ -352,7 +411,7 @@
     const F = { ...FX_DEFAULT, ...(S.fx || {}) }; press('#fxm', S.bg === 'fx' ? F.mode : ''); press('#fxg', F.grad);
     document.querySelectorAll('input[data-fx]').forEach(r => { r.value = F[r.dataset.fx]; const v = $('#vfx' + r.dataset.fx); if (v) v.textContent = (+F[r.dataset.fx]).toFixed(2).replace(/\.00$/, ''); });
     if (document.activeElement !== $('#fxChars')) $('#fxChars').value = F.chars || ''; $('#fxInvert').checked = !!F.invert; $('#fxAnim').checked = F.animate !== false;
-    drawLogos();
+    drawLogos(); drawXL();
   }
   function draw() {
     const st = $('#stage'), [w, h] = FORMATS[S.format];
