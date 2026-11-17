@@ -69,7 +69,8 @@
   .szrow button:hover { background: var(--lime); color: var(--mid); }
   .lab b { color: var(--ice); font-weight: 500; }
   .xlbox { padding: 10px 0 14px; margin-bottom: 6px; border-bottom: 1px solid var(--line); }
-  .xlrow { display: grid; grid-template-columns: minmax(0,1fr) 64px 26px; gap: 8px; align-items: center; padding: 6px 0; }
+  .xlrow { display: grid; grid-template-columns: minmax(0,1fr) 64px 26px; gap: 6px 8px; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--line); }
+  .xlrow select[data-xlw] { grid-column: 1 / -1; }
   .xlrow input[type=text] { margin: 0; } .xlrow select { padding: 4px 2px; font-size: 12px; }
   #xlAdd { margin-top: 8px; }
   #preview [data-xli] { cursor: grab; touch-action: none; outline: 1px dashed rgba(180,241,82,.0); transition: outline-color .2s; }
@@ -160,7 +161,7 @@
   <div class="grp" data-only="announce giveaway system hiring photo lineup poster slide timetable tour release calendar cover"><span class="lab">Photo</span><div class="chips" id="photos"></div><input type="file" id="phFile" accept="image/*"></div>
 
   <div class="grp"><span class="lab">Words</span>
-    <div class="xlbox"><span class="lab">Extra labels — add as many as you need, then drag them on the flyer (they snap to the margins, the centre and the other blocks)</span>
+    <div class="xlbox"><span class="lab">Extra labels — + Add label puts one above the main name. Drag it up or down on the flyer, or pick where it goes, and it lines up with the text. Alt-drag = free position</span>
       <div id="xlList"></div><button type="button" class="btn sm" id="xlAdd">+ Add label</button></div>
     <div data-only="lineup poster timetable">
       <label class="f"><span class="lab">Presenter</span><input type="text" data-k="presenter"></label>
@@ -223,14 +224,14 @@
   import { render, DEFAULT, TEMPLATES, ROLES, MAZE, BACKGROUNDS, PHOTOS, EVENTS, FORMATS, ICONS, LOGO, LOGO_META, LABEL_COLORS, TEXT_COLORS, CW, LABEL_STYLES, FONTS, ANIMS, SHAPES } from './assets/js/templates.js';
   import { EXT } from './assets/js/compose.js';
   import { FX_MODES, GRADS, FX_DEFAULT } from './assets/js/fx.js';
-  import { hydrate, fxFrame, seekTo } from './assets/js/hydrate.js';
+  import { hydrate, fxFrame, seekTo, xlBlocks, xlMain } from './assets/js/hydrate.js';
   import { Muxer, ArrayBufferTarget } from './assets/vendor/mp4-muxer.mjs';
   const $ = s => document.querySelector(s);
   const clone = o => JSON.parse(JSON.stringify(o));
   let S = clone(DEFAULT);
   try { const h = location.hash.slice(1); if (h) S = { ...S, ...JSON.parse(decodeURIComponent(escape(atob(h)))) }; } catch (e) { }
   // the single "Extra label" field became free, draggable labels: carry an old link's label over
-  if (String(S.extra || '').trim() && !(S.extras || []).length) S.extras = String(S.extra).split('\n').map(t => t.trim()).filter(Boolean).map(t => ({ t, size: 's', x: null, y: null }));
+  if (String(S.extra || '').trim() && !(S.extras || []).length) S.extras = String(S.extra).split('\n').map(t => t.trim()).filter(Boolean).map(t => ({ t, size: 'm', at: 'main', side: 'before' }));
   S.extra = ''; S.extraPos = 'top'; S.extras ||= [];
   const uploads = {};          // big data URLs stay out of the URL hash
 
@@ -302,50 +303,84 @@
     const img = new Image(); img.onload = () => { (S.logos ||= []).push({ src: url, aspect: img.naturalWidth / img.naturalHeight, scale: 1, name: f.name }); sync(); toast('Logo added'); }; img.src = url;
   });
 
-  // ---- extra labels: a list (text, size, remove) + drag on the preview; they snap to the margins (letters on the margin,
-  //      block edge 7 px outside), the centre and every other block's edges. Hold Alt while dragging to place freely.
+  // ---- extra labels: a list (text, where, size, remove). A label sits IN the text, before or after one of the post's blocks,
+  //      so it takes that stack's alignment and padding. Drag it up / down on the flyer and it slots in where the lime line
+  //      shows; hold Alt while dragging to place it freely (it then snaps to the margins, the centre and the other blocks).
   const XLZ = [['s', 'S'], ['m', 'M'], ['l', 'L'], ['xl', 'XL']];
   const escA = v => String(v ?? '').replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
   function drawXL() {
-    $('#xlList').innerHTML = (S.extras || []).map((e, i) => `<div class="xlrow"><input type="text" data-xlt="${i}" value="${escA(e.t)}" placeholder="A TO Z" aria-label="Label ${i + 1} text"><select data-xlz="${i}" title="Size">${XLZ.map(([v, t]) => `<option value="${v}"${(e.size || 's') === v ? ' selected' : ''}>${t}</option>`).join('')}</select><button type="button" class="x-btn" data-xldel="${i}" title="Remove">×</button></div>`).join('');
+    $('#xlList').innerHTML = (S.extras || []).map((e, i) => `<div class="xlrow"><input type="text" data-xlt="${i}" value="${escA(e.t)}" placeholder="A TO Z" aria-label="Label ${i + 1} text"><select data-xlz="${i}" title="Size">${XLZ.map(([v, t]) => `<option value="${v}"${(e.size || 's') === v ? ' selected' : ''}>${t}</option>`).join('')}</select><button type="button" class="x-btn" data-xldel="${i}" title="Remove">×</button><select data-xlw="${i}" title="Where it goes" aria-label="Label ${i + 1} position"></select></div>`).join('');
+    drawWhere();
   }
+  // the Where menus list the post's own blocks, read from the preview once it is drawn
+  function drawWhere() {
+    const ab = $('#preview .ab'); if (!ab) return;
+    const names = xlBlocks(ab).map(b => b.textContent.replace(/\s+/g, ' ').trim().slice(0, 26) || '·');
+    document.querySelectorAll('#xlList select[data-xlw]').forEach(sel => {
+      const e = S.extras[+sel.dataset.xlw]; if (!e) return;
+      sel.innerHTML = names.map((n, j) => `<option value="${j}:before">Above “${escA(n)}”</option><option value="${j}:after">Below “${escA(n)}”</option>`).join('') + '<option value="free">Free position (Alt-drag)</option>';
+      const at = e.at === 'main' ? mainBlock(ab) : e.at;
+      sel.value = Number.isInteger(at) && at >= 0 ? `${Math.min(at, names.length - 1)}:${e.side || 'before'}` : 'free';
+    });
+  }
+  const mainBlock = ab => { const bs = xlBlocks(ab); return bs.length ? xlMain(bs, S.artists?.[0]?.name) : -1; };
   $('#xlList').addEventListener('input', e => { const i = e.target.dataset.xlt; if (i !== undefined) { S.extras[+i].t = e.target.value; draw(); save(); } });
-  $('#xlList').addEventListener('change', e => { const i = e.target.dataset.xlz; if (i !== undefined) { S.extras[+i].size = e.target.value; draw(); save(); } });
+  $('#xlList').addEventListener('change', e => {
+    const z = e.target.dataset.xlz, w = e.target.dataset.xlw;
+    if (z !== undefined) { S.extras[+z].size = e.target.value; draw(); save(); }
+    if (w !== undefined) {
+      const it = S.extras[+w];
+      if (e.target.value === 'free') { const el = $(`#preview [data-xli="${w}"]`), ab = $('#preview .ab'); if (el && ab) { const A = ab.getBoundingClientRect(), k = A.width / ab.offsetWidth, r = el.getBoundingClientRect(); it.x = Math.round((r.left - A.left) / k); it.y = Math.round((r.top - A.top) / k); } delete it.at; delete it.side; }
+      else { const [j, side] = e.target.value.split(':'); it.at = +j; it.side = side; delete it.x; delete it.y; }
+      draw(); save();
+    }
+  });
   $('#xlList').addEventListener('click', e => { const d = e.target.closest('[data-xldel]'); if (d) { S.extras.splice(+d.dataset.xldel, 1); sync(); } });
   $('#xlAdd').addEventListener('click', () => {
-    const h = FORMATS[S.format][1], n = (S.extras ||= []).length;
-    S.extras.push({ t: 'A TO Z', size: 'm', x: null, y: Math.round(h * .3 + n * 60) }); sync();
-    setTimeout(() => $('#xlList').querySelector(`[data-xlt="${n}"]`)?.select(), 0); toast('Label added — drag it on the flyer');
+    const ab = $('#preview .ab'), n = (S.extras ||= []).length, j = ab ? mainBlock(ab) : -1;
+    // a new label goes right above the main block (the headliner on a lineup), in the stack, aligned like it
+    S.extras.push(j >= 0 ? { t: 'A TO Z', size: 'm', at: j, side: 'before' } : { t: 'A TO Z', size: 'm', x: null, y: Math.round(FORMATS[S.format][1] * .3 + n * 60) });
+    sync(); setTimeout(() => $('#xlList').querySelector(`[data-xlt="${n}"]`)?.select(), 0); toast('Label added above the main block — drag it up or down to move it');
   });
   $('#preview').addEventListener('pointerdown', ev => {
     const el = ev.target.closest('[data-xli]'); if (!el || ev.button > 0) return;
     ev.preventDefault(); el.setPointerCapture(ev.pointerId);
-    const ab = el.closest('.ab'), A = ab.getBoundingClientRect(), k = A.width / ab.offsetWidth, W = ab.offsetWidth, H = ab.offsetHeight;
+    const ab = el.closest('.ab'), A = ab.getBoundingClientRect(), k = A.width / ab.offsetWidth, W = ab.offsetWidth, H = ab.offsetHeight, z = el.currentCSSZoom || 1;
     const M = +S.margin || 64, P = 7 * Math.min(W, H) / 1080, r0 = el.getBoundingClientRect(), w = r0.width / k, h = r0.height / k;
-    const x0 = parseFloat(el.style.left), y0 = parseFloat(el.style.top), sx = ev.clientX, sy = ev.clientY, T = Math.max(8, 6 / k); // snap reach: 6 screen px
     const box = q => ({ l: (q.left - A.left) / k, r: (q.right - A.left) / k, t: (q.top - A.top) / k, b: (q.bottom - A.top) / k });
+    const x0 = (r0.left - A.left) / k, y0 = (r0.top - A.top) / k, sx = ev.clientX, sy = ev.clientY, T = Math.max(8, 6 / k); // snap reach: 6 screen px
+    // slots: above / below each of the post's own blocks
+    const slots = xlBlocks(ab).flatMap((b, j) => { const q = box(b.getBoundingClientRect()); return [{ j, side: 'before', y: q.t, l: q.l, r: q.r }, { j, side: 'after', y: q.b, l: q.l, r: q.r }]; });
+    // free placement (Alt): the page's own lines (margins, centre) win over other blocks' edges when both are in reach
     const others = [...ab.querySelectorAll('.lbx, .pb, .logo, [class*="logo"]')].filter(o => o !== el && !el.contains(o) && o.offsetWidth && !o.closest('svg') && o.getBoundingClientRect().width < A.width * .95).map(o => box(o.getBoundingClientRect()));
-    // the page's own lines (margins, centre) win over other blocks' edges when both are in reach
     const XS = [{ v: M - P, e: 'l', p: 0 }, { v: W - M + P, e: 'r', p: 0 }, { v: W / 2, e: 'c', p: 0 }, ...others.flatMap(o => [{ v: o.l, e: 'l', p: 1 }, { v: o.r, e: 'r', p: 1 }, { v: (o.l + o.r) / 2, e: 'c', p: 1 }])];
     const YS = others.flatMap(o => [{ v: o.b, e: 't' }, { v: o.t, e: 'b' }, { v: o.t, e: 't' }, { v: o.b, e: 'b' }]);
+    const snap = (pos, size, list) => { let best = null; for (const s of list) { const at = s.e === 'l' || s.e === 't' ? pos : s.e === 'c' ? pos + size / 2 : pos + size; const d = s.v - at, p = s.p || 0; if (Math.abs(d) <= T && (!best || p < best.p || (p === best.p && Math.abs(d) < Math.abs(best.d)))) best = { d, v: s.v, p }; } return best; };
     const gv = document.createElement('div'), gh = document.createElement('div');
     for (const g of [gv, gh]) { g.className = 'xguide'; g.style.display = 'none'; ab.append(g); }
-    gv.style.cssText += `;top:0;height:${H}px;width:${1 / k}px`; gh.style.cssText += `;left:0;width:${W}px;height:${1 / k}px`;
-    const snap = (pos, size, list) => { let best = null; for (const s of list) { const at = s.e === 'l' || s.e === 't' ? pos : s.e === 'c' ? pos + size / 2 : pos + size; const d = s.v - at, p = s.p || 0; if (Math.abs(d) <= T && (!best || p < best.p || (p === best.p && Math.abs(d) < Math.abs(best.d)))) best = { d, v: s.v, p }; } return best; };
-    let nx = x0, ny = y0; el.classList.add('drag');
+    gv.style.cssText += `;top:0;height:${H}px;width:${1 / k}px`; gh.style.cssText += `;height:${2 / k}px`;
+    let nx = x0, ny = y0, slot = null, free = false, moved = false; el.classList.add('drag');
     const move = e => {
-      nx = x0 + (e.clientX - sx) / k; ny = y0 + (e.clientY - sy) / k;
-      const a = e.altKey ? null : snap(nx, w, XS), b = e.altKey ? null : snap(ny, h, YS);
-      if (a) nx += a.d; if (b) ny += b.d;
-      nx = Math.max(-w / 2, Math.min(W - w / 2, nx)); ny = Math.max(-h / 2, Math.min(H - h / 2, ny));
-      el.style.left = nx + 'px'; el.style.top = ny + 'px';
-      gv.style.display = a ? 'block' : 'none'; if (a) gv.style.left = a.v + 'px';
-      gh.style.display = b ? 'block' : 'none'; if (b) gh.style.top = b.v + 'px';
+      const dx = (e.clientX - sx) / k, dy = (e.clientY - sy) / k; if (Math.abs(dx) + Math.abs(dy) > 2) moved = true;
+      free = e.altKey; nx = x0 + dx; ny = y0 + dy;
+      if (free) {
+        const a = snap(nx, w, XS), b = snap(ny, h, YS); if (a) nx += a.d; if (b) ny += b.d;
+        gv.style.display = a ? 'block' : 'none'; if (a) gv.style.left = a.v + 'px';
+        gh.style.display = b ? 'block' : 'none'; if (b) Object.assign(gh.style, { top: b.v + 'px', left: '0px', width: W + 'px' });
+      } else {
+        const cy = ny + h / 2; slot = null; for (const s of slots) if (!slot || Math.abs(cy - s.y) < Math.abs(cy - slot.y)) slot = s;
+        gv.style.display = 'none'; gh.style.display = slot ? 'block' : 'none';
+        if (slot) Object.assign(gh.style, { top: (slot.y - 1 / k) + 'px', left: (slot.l - 10) + 'px', width: (slot.r - slot.l + 20) + 'px' });
+      }
+      el.style.translate = `${(nx - x0) / z}px ${(ny - y0) / z}px`;
     };
     const up = () => {
       el.removeEventListener('pointermove', move); el.removeEventListener('pointerup', up); el.removeEventListener('pointercancel', up);
-      gv.remove(); gh.remove(); el.classList.remove('drag');
-      const it = S.extras?.[+el.dataset.xli]; if (it) { it.x = Math.round(nx * 10) / 10; it.y = Math.round(ny * 10) / 10; save(); draw(); }
+      gv.remove(); gh.remove(); el.classList.remove('drag'); el.style.translate = '';
+      const it = S.extras?.[+el.dataset.xli]; if (!it || !moved) return;
+      if (free) { it.x = Math.round(nx * 10) / 10; it.y = Math.round(ny * 10) / 10; delete it.at; delete it.side; }
+      else if (slot) { it.at = slot.j; it.side = slot.side; delete it.x; delete it.y; }
+      save(); draw();
     };
     el.addEventListener('pointermove', move); el.addEventListener('pointerup', up); el.addEventListener('pointercancel', up);
   });
@@ -418,7 +453,7 @@
     const wide = innerWidth > 900, avW = st.clientWidth - (wide ? 464 : 32), avH = wide ? st.clientHeight - 116 : innerHeight * .64;
     const k = Math.max(.1, Math.min(avW / w, avH / h, 1));
     $('#preview').innerHTML = `<div style="width:${w * k}px;height:${h * k}px;overflow:hidden"><div style="transform:scale(${k});transform-origin:0 0;width:${w}px;height:${h}px">${render(live())}</div></div>`;
-    hydrate($('#preview'), { scale: Math.min(1, k * 1.6) });
+    hydrate($('#preview'), { scale: Math.min(1, k * 1.6) }).then(drawWhere);
   }
   const save = () => { try { const o = { ...S, logos: (S.logos || []).filter(l => !l.src) }; history.replaceState(null, '', '#' + btoa(unescape(encodeURIComponent(JSON.stringify(o))))); } catch (e) { } };
   function sync() { fill(); draw(); save(); }

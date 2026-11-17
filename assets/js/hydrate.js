@@ -195,6 +195,13 @@ export function labelBoxes(root) {
 // Extra label (spec.extra, e.g. "A TO Z"; a new line is a new block) on any template, in the post's own label style.
 // data-extra-pos: top / bottom of the main text, or a corner (tl tr bl br).
 export const XL_SIZE = { s: 27, m: 34, l: 44, xl: 80 };
+// the blocks an extra label can sit before / after, in reading order (extras themselves excluded)
+// the "main" block a new label goes above: the headliner's block (first artist) if there is one, else the biggest block
+export function xlMain(blocks, name) {
+  const n = String(name || '').trim().toLowerCase(), j = n ? blocks.findIndex(b => b.textContent.toLowerCase().includes(n)) : -1;
+  return j >= 0 ? j : blocks.reduce((m, b, i) => b.offsetHeight > blocks[m].offsetHeight + .5 ? i : m, 0);
+}
+export const xlBlocks = ab => [...ab.querySelectorAll(ab.classList.contains('x5') ? '.pb' : '.lbx')].filter(b => !b.closest('[data-xli], [data-xl]') && !b.closest('svg'));
 function extraLabels(root) {
   // free labels (spec.extras): each one absolutely placed, dragged in the builder
   root.querySelectorAll('.ab[data-xls]').forEach(ab => {
@@ -202,12 +209,22 @@ function extraLabels(root) {
     let list = []; try { list = JSON.parse(ab.dataset.xls); } catch (e) { return; }
     const x5 = ab.classList.contains('x5'), W = ab.offsetWidth, H = ab.offsetHeight, M = parseFloat(getComputedStyle(ab).getPropertyValue('--m')) || 64;
     const P = LPAD * Math.min(W, H) / 1080, layer = ab.querySelector('.layer') || ab;
+    const blocks = xlBlocks(ab); // the post's own blocks, before any label goes in (the order labels refer to)
     list.forEach((e, i) => {
       const t = String(e?.t ?? '').trim(); if (!t) return;
       const d = document.createElement('div');
       d.className = x5 ? 'pb' : 'lbx'; d.dataset.xli = i; d.textContent = t;
+      const fs = `font-size:${XL_SIZE[e.size] || XL_SIZE.s}px;white-space:nowrap;${x5 ? '' : 'letter-spacing:-0.035em;line-height:1.2;'}`;
+      if ((Number.isInteger(e.at) || e.at === 'main') && blocks.length) {
+        // in the flow: before or after one of the post's blocks, so it takes that stack's alignment, padding and hang
+        // ('main' = the biggest block, e.g. the headliner)
+        const at = e.at === 'main' ? xlMain(blocks, ab.dataset.xmain) : e.at;
+        const b = blocks[Math.min(Math.max(0, at), blocks.length - 1)];
+        d.style.cssText = fs; if (e.side === 'after' || e.at >= blocks.length) b.after(d); else b.before(d);
+        return;
+      }
       const x = Number.isFinite(+e.x) && e.x !== null ? +e.x : M - P, y = Number.isFinite(+e.y) && e.y !== null ? +e.y : H * .3 + i * 60;
-      d.style.cssText = `position:absolute;left:${x}px;top:${y}px;margin:0;z-index:6;font-size:${XL_SIZE[e.size] || XL_SIZE.s}px;white-space:nowrap;${x5 ? '' : 'letter-spacing:-0.035em;line-height:1.2;'}`;
+      d.style.cssText = `position:absolute;left:${x}px;top:${y}px;margin:0;z-index:6;${fs}`;
       layer.append(d);
     });
   });

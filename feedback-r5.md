@@ -31,7 +31,7 @@
 - [x] Full alignment audit (2026-11-17, client check): every line's letters measured against the margins and centre on all 197 layouts. Big type started up to 8 px in from the margin (letter side space grows with size): optical margins added, label-block, menu, bands, covers, hiring and status layouts now land on the margin to 0.7 px. Box-aligned posters keep their box edge; the wall's ragged-left name run is by design.
 - [x] Published: commit 6807e9b on main, release v1.1 (kit, PDF, zips, every template/background MP4); live site links the MP4s from the release.
 - [x] Black label blocks aligned too (2026-11-17): one padding for every block (7 px), so block edges line up 7 px outside the margin and the letters sit on it; big names get a tight box. Full-width words fill margin to margin.
-- [x] Extra labels on any template (A TO Z): builder Words → "+ Add label" (as many as needed, text + size), dragged on the flyer with snapping to margins, centre and the other blocks; exports keep the position. Spec `extras[]`.
+- [x] Extra labels on any template (A TO Z): + Add label puts it above the headliner IN the text (same alignment and blocks); drag it up/down to slot it before/after any block, or pick from its Where menu; Alt-drag places it freely. Spec `extras[]` (`at`/`side` or `x`/`y`).
 - [x] ME construction: mark + MINIMAL/EFFORT text centred as one group inside the inner square; both descriptions three lines; a horizontal line under the 90°.
 - [x] Builder: Export MP4 (in the browser, 10 s loop, 24 fps, H.264).
 
