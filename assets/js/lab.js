@@ -1,10 +1,10 @@
 // Shader lab on the guidelines page: pick a look, a palette, a format; tweak; export a PNG or record one seamless loop.
-import { mountShader, PALETTES, MODES, MARKS } from './shaders.js';
+import { mountShader, PALETTES, MODES, MARKS } from './shaders.js?v=20261117e';
 const PRESETS = {
-  glass: ['Glass · Midnight', { mode: 'glass', palette: 'brand', mark: 'me' }], chrome: ['Chrome · MAZE', { mode: 'chrome', palette: 'maze', mark: 'maze', scale: .5 }], holo: ['Holo · Ice', { mode: 'holo', palette: 'ice', mark: 'me' }],
-  glitch: ['Glitch · Acid', { mode: 'glitch', palette: 'acid', mark: 'me' }], neon: ['Neon · Violet', { mode: 'neon', palette: 'violet', mark: 'me' }], melt: ['Melt · Lime', { mode: 'melt', palette: 'lime', mark: 'me' }],
-  half: ['Halftone · Mono', { mode: 'halftone', palette: 'mono', mark: 'me', cell: 9 }], echo: ['Echo · Brand', { mode: 'echo', palette: 'brand', mark: 'me' }], ripple: ['Ripple · Lilac', { mode: 'ripple', palette: 'lilac', mark: 'me' }],
-  wave: ['Wave · Ember', { mode: 'wave', palette: 'ember', mark: 'me' }], word: ['Chrome · wordmark', { mode: 'chrome', palette: 'brand', mark: 'wordmark', scale: .9 }], pix: ['Pixel · MNML EFFRT', { mode: 'pixel', palette: 'brand', mark: 'mnml', scale: .9, cell: 8 }],
+  glass: ['Glass · Midnight', { mode: 'glass', palette: 'brand', mark: 'orb' }], chrome: ['Chrome · MAZE', { mode: 'chrome', palette: 'maze', mark: 'blob', scale: .72 }], holo: ['Holo · Ice', { mode: 'holo', palette: 'ice', mark: 'pill' }],
+  glitch: ['Glitch · Acid', { mode: 'glitch', palette: 'acid', mark: 'bars' }], neon: ['Neon · Violet', { mode: 'neon', palette: 'violet', mark: 'ring' }], melt: ['Melt · Lime', { mode: 'melt', palette: 'lime', mark: 'blob' }],
+  half: ['Halftone · Mono', { mode: 'halftone', palette: 'mono', mark: 'orb', cell: 9 }], echo: ['Echo · Brand', { mode: 'echo', palette: 'brand', mark: 'square', scale: .5 }], ripple: ['Ripple · Lilac', { mode: 'ripple', palette: 'lilac', mark: 'orb' }],
+  wave: ['Wave · Ember', { mode: 'wave', palette: 'ember', mark: 'bars' }], word: ['Chrome · wordmark', { mode: 'chrome', palette: 'brand', mark: 'wordmark', scale: .9 }], pix: ['Pixel · MNML EFFRT', { mode: 'pixel', palette: 'brand', mark: 'mnml', scale: .9, cell: 8 }],
 };
 
 const root = document.getElementById('lab');

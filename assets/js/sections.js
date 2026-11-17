@@ -1,8 +1,8 @@
 // Minimal Effort guidelines v2: builds the data-driven sections (technical labels, icons, compositions, loops, templates,
 // highlights, feed) from templates.js and tools/examples/templates.json. Template previews carry data-tpl, which
 // site.js draws (and redraws on resize). Every block checks that its container exists, so other pages can import this.
-import { preview, icon, ICONS, LAYOUTS, BACKGROUNDS, LOGO } from './templates.js?v=20261117d';
-import { hydrate } from './hydrate.js?v=20261117d';
+import { preview, icon, ICONS, LAYOUTS, BACKGROUNDS, LOGO } from './templates.js?v=20261117e';
+import { hydrate } from './hydrate.js?v=20261117e';
 
 const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => [...r.querySelectorAll(s)];
 const attr = o => JSON.stringify(o).replace(/'/g, '&#39;');
@@ -76,7 +76,7 @@ const loops = $('#loops');
 if (loops) {
   const fams = {};
   for (const [k, b] of Object.entries(BACKGROUNDS)) if (b.video) (fams[b.family] ??= []).push([k, b]);
-  const NOTE = { Chrome: 'Liquid, iridescent forms', Prism: 'Spectrum light', Film: 'Analog leaks and holo film', 'Brand light': 'Lime and Lilac, for light posts', Shader: 'The ME drawn live by WebGL: glass, pixel, grit. Make your own in the shader lab below' };
+  const NOTE = { Chrome: 'Liquid, iridescent forms', Prism: 'Spectrum light', Film: 'Analog leaks and holo film', 'Brand light': 'Lime and Lilac, for light posts', Shader: 'Glass, chrome and light drawn live by WebGL on simple shapes (orb, ring, bars, arch). Make your own in the shader lab below' };
   loops.innerHTML = Object.entries(fams).map(([f, list]) => `<p class="fam-h">${f} · ${NOTE[f] || ''}</p><div class="g" style="--c:${Math.min(5, Math.max(3, list.length))}">${list.map(([k, b]) => {
     const id = b.loop, base = `downloads/backgrounds/minimal-effort_loop_${id}`;
     return `<div class="card flush"><video src="${b.video}" poster="${b.still}" muted loop playsinline autoplay preload="none" style="aspect-ratio:4/5;object-fit:cover;width:100%;display:block"></video><div class="cap"><span class="lab">${b.label}</span><span style="display:flex;gap:6px;flex-wrap:wrap"><a class="dl" href="${mp4(base + '_feed-1080x1350.mp4')}" download>Feed</a><a class="dl" href="${mp4(base + '_story-1080x1920.mp4')}" download>Story</a><a class="dl" href="${mp4(base + '_master-1440x1920.mp4')}" download>2K</a></span></div></div>`;
@@ -89,7 +89,7 @@ if (groups) {
   Promise.all([fetch('tools/examples/templates.json').then(r => r.json()), fetch('tools/examples/groups.json').then(r => r.json())]).then(([list, G]) => {
     groups.innerHTML = G.map(g => {
       const cells = list.filter(e => e.group === g.id).flatMap(e => e.formats.map(f => {
-        const { name, formats, group, ...spec } = e; const moving = !!BACKGROUNDS[spec.bg]?.video || (spec.anim && spec.anim !== 'none') || (spec.bg === 'fx' && ['ascii', 'glyph', 'dither', 'halftone', 'dots', 'lines', 'pixel'].includes(spec.fx?.mode));
+        const { name, formats, group, ...spec } = e; const moving = !!BACKGROUNDS[spec.bg]?.video || (spec.anim && spec.anim !== 'none') || (spec.bg === 'fx' && ['ascii', 'glyph', 'dither', 'halftone', 'dots', 'lines', 'pixel', 'field', 'bloom'].includes(spec.fx?.mode));
         const file = `downloads/templates/${name}_${f}`;
         return `<div class="tp${f === 'landscape' ? ' wide2' : ''}"><div class="frame" data-tpl='${attr({ ...spec, format: f })}'></div><div class="meta-r"><span class="lab">${name.replace(/_/g, ' · ')} · ${f}</span><span style="display:flex;gap:6px">${moving ? `<a class="dl" href="${mp4(file + '.mp4')}" download>MP4</a>` : ''}<a class="dl" href="${file}.png" download>PNG</a></span></div></div>`;
       }));
@@ -132,6 +132,23 @@ const grid = $('#ig-grid'), hl = $('#ig-hl'), car = $('#carousel');
 if (grid) grid.innerHTML = feed.map(s => `<div class="${s.car ? 'car' : ''}" data-f='${attr(s)}'></div>`).join('');
 const scr = $('#ig-scr'), sl = $('#ig-slide');
 if (scr && sl) { sl.addEventListener('input', () => { scr.scrollTop = (scr.scrollHeight - scr.clientHeight) * sl.value / 1000; }); scr.addEventListener('scroll', () => { sl.value = Math.round(1000 * scr.scrollTop / Math.max(1, scr.scrollHeight - scr.clientHeight)); }); }
+// the phone scrolls on its own (data-lenis-prevent lets the wheel reach it; at its end the page carries on), and a mouse
+// can drag it like a thumb
+if (scr) {
+  let y0 = null, t0 = 0, moved = false;
+  scr.addEventListener('pointerdown', e => { if (e.pointerType !== 'mouse' || e.button) return; y0 = e.clientY; t0 = scr.scrollTop; moved = false; scr.setPointerCapture(e.pointerId); scr.style.cursor = 'grabbing'; });
+  scr.addEventListener('pointermove', e => { if (y0 === null) return; const d = e.clientY - y0; if (Math.abs(d) > 3) moved = true; scr.scrollTop = t0 - d; });
+  const end = () => { y0 = null; scr.style.cursor = ''; };
+  scr.addEventListener('pointerup', end); scr.addEventListener('pointercancel', end);
+  scr.addEventListener('click', e => { if (moved) { e.preventDefault(); e.stopPropagation(); moved = false; } }, true);
+}
+// thirty more posts: a spread of the page's own examples (feed size), so the grid shows the whole system
+if (grid) fetch('tools/examples/templates.json').then(r => r.json()).then(list => {
+  const pool = list.filter(e => [].concat(e.formats || 'feed').includes('feed') && !/^carousel-(case|article)-0[2-9]/.test(e.name));
+  const step = pool.length / 30, pick = Array.from({ length: 30 }, (_, i) => pool[Math.floor(i * step + step / 2)]).filter(Boolean);
+  grid.insertAdjacentHTML('beforeend', pick.map(e => { const { name, formats, group, ...spec } = e; return `<div data-f='${attr({ ...spec, format: 'feed' })}'></div>`; }).join(''));
+  dispatchEvent(new Event('scroll'));
+}).catch(() => { });
 const st = $('#ig-story');
 if (st) {
   st.innerHTML = `<div class="bars">${stories.map(() => '<i><b></b></i>').join('')}</div><div class="who"><i>${LOGO['me-mark']}</i>minimaleffortla <span style="opacity:.6;font-weight:500">2h</span></div>` + stories.map((s, i) => `<div class="st-slide${i ? '' : ' on'}" data-f='${attr(s)}' data-story></div>`).join('');

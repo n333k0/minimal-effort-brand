@@ -17,10 +17,20 @@ export const GRADS = {
   'violet': { label: 'Violet (MAZE)', stops: ['#0D0A18', '#5233C9', '#9A62E8', '#E6E8F5'] },
   'night-lime': { label: 'Night lime', stops: ['#14141A', '#1B2A0E', '#5A7A22', '#B4F152'] },
   'blue': { label: 'Signal blue', stops: ['#0D0A18', '#1C22C9', '#5A7CFF', '#B4F152'] },
+  // round 6: more maps, all from the brand and THE MAZE colours
+  'chrome': { label: 'Chrome silver', stops: ['#0B0B10', '#4A4C56', '#E6E8F5', '#8A8C96', '#F5F6FC'] },
+  'lilac-light': { label: 'Lilac light', stops: ['#F5F6FC', '#C9C2F6', '#A79BEE', '#3A2E7A'] },
+  'lime-light': { label: 'Lime light', stops: ['#F5F6FC', '#DDF7B0', '#B4F152', '#2F4214'] },
+  'midnight-blue': { label: 'Midnight blue', stops: ['#0B0B10', '#181D3A', '#3A2E7A', '#A79BEE'] },
+  'maze-ice': { label: 'Ice (MAZE)', stops: ['#5233C9', '#9A8CF0', '#DCE2F5', '#F5F6FC'] },
+  'maze-lime': { label: 'Lime (MAZE)', stops: ['#1E1550', '#5233C9', '#9BE04A', '#D9F7A0'] },
+  'ember-glow': { label: 'Ember glow', stops: ['#0B0B10', '#5A1408', '#FF4A1A', '#FFC24A', '#F5F6FC'] },
+  'infrared': { label: 'Infrared', stops: ['#0B0B10', '#3A0D2E', '#E5301A', '#B4F152'] },
 };
 export const FX_MODES = {
   none: 'None', gradmap: 'Gradient map', duotone: 'Duotone', posterize: 'Posterize', halftone: 'Halftone', dots: 'Dot matrix',
   dither: 'Dither', ascii: 'ASCII', glyph: 'Glyphs', pixel: 'Pixel', lines: 'Scan lines', thermal: 'Thermal',
+  field: 'Colour field', bloom: 'Bloom',
 };
 export const FX_DEFAULT = { mode: 'gradmap', grad: 'lime-lilac', cell: 12, contrast: 1.15, brightness: 0, blur: 0, invert: false, grain: .08, chars: '', angle: 45, animate: true, zoom: 1, x: .5, y: .5 };
 
@@ -68,6 +78,18 @@ export function drawFx(canvas, src, opts = {}, t = 0) {
     const sw = src.videoWidth || src.naturalWidth || src.width, sh = src.videoHeight || src.naturalHeight || src.height; if (!sw) return;
     const k = Math.max(W / sw, H / sh) * (o.zoom || 1), dw = sw * k, dh = sh * k;
     ctx.filter = o.blur ? `blur(${o.blur}px)` : 'none'; ctx.drawImage(src, (W - dw) * (o.x ?? .5), (H - dh) * (o.y ?? .5), dw, dh); ctx.filter = 'none';
+    return grain(ctx, W, H, o.grain, T);
+  }
+  if (o.mode === 'field') {
+    // colour field: the source blurred to pure colour and mapped to the palette; it breathes slowly through the loop
+    const L = sample(src, W, H, { ...o, blur: Math.max(+o.blur || 0, W * .06), zoom: (o.zoom || 1) * (1.12 + .05 * Math.sin(TAU * T)) }, W, H); if (!L) return;
+    return fullMap(ctx, L, W, H, lut(stops), o, T);
+  }
+  if (o.mode === 'bloom') {
+    // bloom: the gradient map, with its own light blurred back over it
+    const L = sample(src, W, H, o, W, H); if (!L) return;
+    fullMap(ctx, L, W, H, lut(stops), { ...o, grain: 0 }, T);
+    ctx.save(); ctx.filter = `blur(${Math.round(W * .03)}px)`; ctx.globalCompositeOperation = 'screen'; ctx.globalAlpha = .55 + .1 * Math.sin(TAU * T); ctx.drawImage(ctx.canvas, 0, 0); ctx.restore();
     return grain(ctx, W, H, o.grain, T);
   }
   if (['gradmap', 'duotone', 'posterize', 'thermal'].includes(o.mode)) {

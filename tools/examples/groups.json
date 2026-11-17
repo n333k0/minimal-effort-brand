@@ -98,5 +98,25 @@
   "id": "statements",
   "title": "Statements",
   "note": "Type-led posts on every kind of background: loops, shaders, solids, photo effects. Five compositions: low, centred, top, quote, split photo. The ME takes the colour that reads, never boxed."
+ },
+ {
+  "id": "fields",
+  "title": "Colour fields · bloom · new gradient maps",
+  "note": "Photos blurred to pure colour (colour field), lit from inside (bloom), and eight new gradient maps from the brand and MAZE colours: chrome silver, lilac light, lime light, midnight blue, MAZE ice, MAZE lime, ember glow, infrared."
+ },
+ {
+  "id": "textures",
+  "title": "Textures",
+  "note": "A texture over the background, under the type: dust, film grain, toner, film burn, paper, scan lines, halftone dots, noise. One click in the builder."
+ },
+ {
+  "id": "maze-more",
+  "title": "THE MAZE · on loops and photos",
+  "note": "Pick any background loop or photo and it becomes the MAZE field, mapped to the palette (a loop keeps moving). Story and landscape covers keep the logo clear of the type."
+ },
+ {
+  "id": "shape-loops",
+  "title": "Shader loops · shapes",
+  "note": "The WebGL loops now light simple shapes (ring, pill, rings, blob) instead of a big logo, so the flyer's own logo stays the only one."
  }
 ]

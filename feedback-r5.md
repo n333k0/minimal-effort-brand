@@ -36,6 +36,15 @@
 - [x] ME construction: mark + MINIMAL/EFFORT text centred as one group inside the inner square; both descriptions three lines; a horizontal line under the 90°.
 - [x] Builder: Export MP4 (in the browser, 10 s loop, 24 fps, H.264).
 
+## Round 6 (2026-11-17)
+- [x] Blocks with descenders (p, g, y…) get room for them at the bottom, only then.
+- [x] Builder hides every control that would not change the current flyer (tested live per template / layout / background); logo size now works on the poster family.
+- [x] Browse all templates: an album of every example in the editor.
+- [x] THE MAZE: logo always in the cell above the text (story overlap fixed, moves with the text), one-column landscape, softer field and grain; a chosen loop or photo becomes the MAZE field.
+- [x] Shader loops light shapes (orb, ring, pill, arch, bars, blob, square) instead of the big ME; the lab presets use shapes too.
+- [x] Feed: the phone scrolls on its own (wheel and mouse drag), the page carries on at the end; sixty posts.
+- [x] 8 new gradient maps, Colour field and Bloom effects, a texture picker (dust, film grain, toner, film burn, paper, scan lines, halftone dots, noise), 19 new examples.
+
 ## Final
 - [x] Render (360 files + 24 animated MP4s), kit, PDF (80 pages).
 - [x] Publish — owner chose to publish with Quzie included (2026-11-17); big MP4s moved to the release for the Pages limit.

@@ -16,6 +16,16 @@
 .ab.no-bg .bg, .ab.no-bg .dust { display: none; }
 .ab.no-bg { background: transparent !important; }
 .ab .dust { position: absolute; inset: 0; background: url(../tex/dust.jpg) center / cover; mix-blend-mode: screen; opacity: .5; pointer-events: none; }
+/* textures (spec.tex): over the background, under the type */
+.ab .tex { position: absolute; inset: 0; pointer-events: none; }
+.ab .tex-grain { background: url(../tex/film-grain.jpg) center / cover; mix-blend-mode: overlay; opacity: .55; }
+.ab .tex-toner { background: url(../tex/toner.jpg) center / cover; mix-blend-mode: overlay; opacity: .5; }
+.ab .tex-burn { background: url(../tex/film-burn.jpg) center / cover; mix-blend-mode: screen; opacity: .6; }
+.ab .tex-paper { background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .5 0 0 0 0 .48 0 0 0 0 .44 0 0 0 .55 0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E"); mix-blend-mode: multiply; opacity: .55; }
+.ab .tex-scan { background: repeating-linear-gradient(0deg, rgba(0, 0, 0, .22) 0 2px, transparent 2px 6px); mix-blend-mode: multiply; }
+.ab .tex-dots { background: radial-gradient(circle, rgba(0, 0, 0, .3) 1.6px, transparent 2.1px) 0 0 / 10px 10px; mix-blend-mode: multiply; }
+.ab .tex-noise { background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='turbulence' baseFrequency='.75' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23n)'/%3E%3C/svg%3E"); mix-blend-mode: overlay; opacity: .35; }
+.ab.no-bg .tex { display: none; }
 
 /* type roles (px at 1080) */
 .ab .t-hero { font-size: 150px; line-height: .92; letter-spacing: -0.045em; }
@@ -134,7 +144,7 @@
 .ab { --maze-disp: '403 Quzie', 'Saira Stencil One', 'ABC Normal', sans-serif; }
 .ab .mz, .ab .mz > * { position: absolute; inset: 0; width: 100%; height: 100%; }
 .ab .mz-field { filter: saturate(1.1); }
-.ab .mz-grain { background: url(../tex/toner.jpg) center / cover; mix-blend-mode: overlay; opacity: .55; }
+.ab .mz-grain { background: url(../tex/toner.jpg) center / cover; mix-blend-mode: overlay; opacity: .28; }
 .ab canvas.mz-field { position: absolute; inset: 0; width: 100%; height: 100%; }
 .ab.mz-blur .bg > * { filter: blur(22px) saturate(1.5); transform: scale(1.12); }
 .ab .mz-logo { position: absolute; }

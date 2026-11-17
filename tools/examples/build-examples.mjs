@@ -85,6 +85,23 @@ group('statements', 'Statements', 'Type-led posts on every kind of background: l
   [CO('leak', 'low', 'leak', ['feed', 'story']), CO('lime', 'low', 'limesolid'), CO('glass', 'centre', 'glass'), CO('quote-lilac', 'quote', 'lilacsolid', ['feed'], { statement: 'Turn it down until people lean in.' }), CO('ascii', 'top', 'fx', ['feed'], { fx: { mode: 'ascii', grad: 'acid', cell: 13, contrast: 1.3 }, photo: 'party-01', statement: 'Nothing to prove. Everything to hear.' }),
     CO('split', 'split', 'midnight', ['feed', 'story'], { photo: 'party-06', statement: 'The real ones are in the back.' }), CO('halftone', 'centre', 'fx', ['feed'], { fx: { mode: 'halftone', grad: 'lilac', cell: 12, contrast: 1.3 }, photo: 'party-04', statement: 'Less, but louder.' }), CO('chrome', 'low', 'chrome', ['feed'], { statement: 'Culture moves quietly.' }), CO('melt', 'top', 'melt', ['feed'], { statement: 'A different kind of front row.' }), CO('quote-ice', 'quote', 'icesolid', ['feed'], { statement: 'The best nights feel like nobody planned them.' })]);
 
+// round 6: colour fields, bloom and the new gradient maps; textures; more MAZE; the shader loops on shapes
+const FXP = (n, template, layout, fx, photo, x = {}) => ({ name: `field_${n}`, template, layout, bg: 'fx', fx, photo, formats: ['feed'], ...x });
+group('fields', 'Colour fields · bloom · new gradient maps', 'Photos blurred to pure colour (colour field), lit from inside (bloom), and eight new gradient maps from the brand and MAZE colours: chrome silver, lilac light, lime light, midnight blue, MAZE ice, MAZE lime, ember glow, infrared.',
+  [FXP('ember', 'poster', 'portrait', { mode: 'field', grad: 'ember-glow' }, 'lee-burridge-2'), FXP('lilac-light', 'lineup', 'center', { mode: 'field', grad: 'lilac-light' }, 'party-02'),
+    FXP('chrome-bloom', 'cover', 'centre', { mode: 'bloom', grad: 'chrome' }, 'party-07', { statement: 'Less, but louder.' }), FXP('maze-ice', 'status', 'centre', { mode: 'field', grad: 'maze-ice' }, 'party-03', { status: 'SOLD OUT' }),
+    FXP('infrared', 'poster', 'glow', { mode: 'bloom', grad: 'infrared' }, 'party-04'), FXP('midnight-blue', 'giveaway', 'full', { mode: 'field', grad: 'midnight-blue' }, 'party-05'),
+    FXP('lime-light', 'poster', 'halftone', { mode: 'gradmap', grad: 'lime-light' }, 'party-06'), FXP('maze-lime', 'lineup', 'left', { mode: 'field', grad: 'maze-lime' }, 'party-01')]);
+group('textures', 'Textures', 'A texture over the background, under the type: dust, film grain, toner, film burn, paper, scan lines, halftone dots, noise. One click in the builder.',
+  [{ name: 'texture_grain', template: 'lineup', layout: 'left', bg: 'lilac', tex: 'grain', formats: ['feed'] }, { name: 'texture_scan', template: 'status', layout: 'centre', status: 'TICKETS LIVE', bg: 'limesolid', tex: 'scan', formats: ['feed'] },
+    { name: 'texture_paper', template: 'cover', layout: 'quote', bg: 'icesolid', tex: 'paper', statement: 'Turn it down until people lean in.', formats: ['feed'] }, { name: 'texture_dots', template: 'poster', layout: 'wall', tex: 'dots', formats: ['feed'] }]);
+group('maze-more', 'THE MAZE · on loops and photos', 'Pick any background loop or photo and it becomes the MAZE field, mapped to the palette (a loop keeps moving). Story and landscape covers keep the logo clear of the type.',
+  [{ name: 'the-maze_on-waves', ...MZ, layout: 'orange', bg: 'waves', formats: ['feed'], seed: 9 }, { name: 'the-maze_on-photo', ...MZ, layout: 'violet', bg: 'photo', photo: 'party-02', formats: ['feed'], seed: 15 },
+    { name: 'the-maze_night-landscape', ...MZ, layout: 'night', date: 'DEC 31', title: "NEW YEAR'S EVE", formats: ['landscape'], seed: 27 }]);
+group('shape-loops', 'Shader loops · shapes', 'The WebGL loops now light simple shapes (ring, pill, rings, blob) instead of a big logo, so the flyer\'s own logo stays the only one.',
+  [{ name: 'loop_chrome-ring', template: 'cover', layout: 'centre', bg: 'chrome', statement: 'A different kind of front row.', formats: ['feed'] }, { name: 'loop_neon-rings', template: 'status', layout: 'low', status: 'PRESALE LIVE', bg: 'neon', formats: ['feed'] },
+    { name: 'loop_holo-pill', template: 'lineup', layout: 'center', bg: 'holome', formats: ['feed'] }, { name: 'loop_melt-blob', template: 'status', layout: 'centre', status: 'LAST TICKETS', bg: 'melt', formats: ['feed'] }]);
+
 // row check (landscape = 2 cells), then write
 const cells = f => f === 'landscape' ? 2 : 1;
 let bad = 0;

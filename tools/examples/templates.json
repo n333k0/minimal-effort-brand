@@ -3015,5 +3015,311 @@
    "feed"
   ],
   "statement": "The best nights feel like nobody planned them."
+ },
+ {
+  "group": "fields",
+  "name": "field_ember",
+  "template": "poster",
+  "layout": "portrait",
+  "bg": "fx",
+  "fx": {
+   "mode": "field",
+   "grad": "ember-glow"
+  },
+  "photo": "lee-burridge-2",
+  "formats": [
+   "feed"
+  ]
+ },
+ {
+  "group": "fields",
+  "name": "field_lilac-light",
+  "template": "lineup",
+  "layout": "center",
+  "bg": "fx",
+  "fx": {
+   "mode": "field",
+   "grad": "lilac-light"
+  },
+  "photo": "party-02",
+  "formats": [
+   "feed"
+  ]
+ },
+ {
+  "group": "fields",
+  "name": "field_chrome-bloom",
+  "template": "cover",
+  "layout": "centre",
+  "bg": "fx",
+  "fx": {
+   "mode": "bloom",
+   "grad": "chrome"
+  },
+  "photo": "party-07",
+  "formats": [
+   "feed"
+  ],
+  "statement": "Less, but louder."
+ },
+ {
+  "group": "fields",
+  "name": "field_maze-ice",
+  "template": "status",
+  "layout": "centre",
+  "bg": "fx",
+  "fx": {
+   "mode": "field",
+   "grad": "maze-ice"
+  },
+  "photo": "party-03",
+  "formats": [
+   "feed"
+  ],
+  "status": "SOLD OUT"
+ },
+ {
+  "group": "fields",
+  "name": "field_infrared",
+  "template": "poster",
+  "layout": "glow",
+  "bg": "fx",
+  "fx": {
+   "mode": "bloom",
+   "grad": "infrared"
+  },
+  "photo": "party-04",
+  "formats": [
+   "feed"
+  ]
+ },
+ {
+  "group": "fields",
+  "name": "field_midnight-blue",
+  "template": "giveaway",
+  "layout": "full",
+  "bg": "fx",
+  "fx": {
+   "mode": "field",
+   "grad": "midnight-blue"
+  },
+  "photo": "party-05",
+  "formats": [
+   "feed"
+  ]
+ },
+ {
+  "group": "fields",
+  "name": "field_lime-light",
+  "template": "poster",
+  "layout": "halftone",
+  "bg": "fx",
+  "fx": {
+   "mode": "gradmap",
+   "grad": "lime-light"
+  },
+  "photo": "party-06",
+  "formats": [
+   "feed"
+  ]
+ },
+ {
+  "group": "fields",
+  "name": "field_maze-lime",
+  "template": "lineup",
+  "layout": "left",
+  "bg": "fx",
+  "fx": {
+   "mode": "field",
+   "grad": "maze-lime"
+  },
+  "photo": "party-01",
+  "formats": [
+   "feed"
+  ]
+ },
+ {
+  "group": "textures",
+  "name": "texture_grain",
+  "template": "lineup",
+  "layout": "left",
+  "bg": "lilac",
+  "tex": "grain",
+  "formats": [
+   "feed"
+  ]
+ },
+ {
+  "group": "textures",
+  "name": "texture_scan",
+  "template": "status",
+  "layout": "centre",
+  "status": "TICKETS LIVE",
+  "bg": "limesolid",
+  "tex": "scan",
+  "formats": [
+   "feed"
+  ]
+ },
+ {
+  "group": "textures",
+  "name": "texture_paper",
+  "template": "cover",
+  "layout": "quote",
+  "bg": "icesolid",
+  "tex": "paper",
+  "statement": "Turn it down until people lean in.",
+  "formats": [
+   "feed"
+  ]
+ },
+ {
+  "group": "textures",
+  "name": "texture_dots",
+  "template": "poster",
+  "layout": "wall",
+  "tex": "dots",
+  "formats": [
+   "feed"
+  ]
+ },
+ {
+  "group": "maze-more",
+  "name": "the-maze_on-waves",
+  "template": "maze",
+  "labels": false,
+  "date": "OCT 31",
+  "title": "HALLOWEEN NIGHT",
+  "artists": [
+   {
+    "name": "GUY GERBER"
+   },
+   {
+    "name": "LEE BURRIDGE"
+   },
+   {
+    "name": "DEER JADE"
+   },
+   {
+    "name": "THE BITAR BROTHERS"
+   }
+  ],
+  "venue": [
+   "THE TRAIN STATION",
+   "800 N. Alameda St. Los Angeles, CA"
+  ],
+  "layout": "orange",
+  "bg": "waves",
+  "formats": [
+   "feed"
+  ],
+  "seed": 9
+ },
+ {
+  "group": "maze-more",
+  "name": "the-maze_on-photo",
+  "template": "maze",
+  "labels": false,
+  "date": "OCT 31",
+  "title": "HALLOWEEN NIGHT",
+  "artists": [
+   {
+    "name": "GUY GERBER"
+   },
+   {
+    "name": "LEE BURRIDGE"
+   },
+   {
+    "name": "DEER JADE"
+   },
+   {
+    "name": "THE BITAR BROTHERS"
+   }
+  ],
+  "venue": [
+   "THE TRAIN STATION",
+   "800 N. Alameda St. Los Angeles, CA"
+  ],
+  "layout": "violet",
+  "bg": "photo",
+  "photo": "party-02",
+  "formats": [
+   "feed"
+  ],
+  "seed": 15
+ },
+ {
+  "group": "maze-more",
+  "name": "the-maze_night-landscape",
+  "template": "maze",
+  "labels": false,
+  "date": "DEC 31",
+  "title": "NEW YEAR'S EVE",
+  "artists": [
+   {
+    "name": "GUY GERBER"
+   },
+   {
+    "name": "LEE BURRIDGE"
+   },
+   {
+    "name": "DEER JADE"
+   },
+   {
+    "name": "THE BITAR BROTHERS"
+   }
+  ],
+  "venue": [
+   "THE TRAIN STATION",
+   "800 N. Alameda St. Los Angeles, CA"
+  ],
+  "layout": "night",
+  "formats": [
+   "landscape"
+  ],
+  "seed": 27
+ },
+ {
+  "group": "shape-loops",
+  "name": "loop_chrome-ring",
+  "template": "cover",
+  "layout": "centre",
+  "bg": "chrome",
+  "statement": "A different kind of front row.",
+  "formats": [
+   "feed"
+  ]
+ },
+ {
+  "group": "shape-loops",
+  "name": "loop_neon-rings",
+  "template": "status",
+  "layout": "low",
+  "status": "PRESALE LIVE",
+  "bg": "neon",
+  "formats": [
+   "feed"
+  ]
+ },
+ {
+  "group": "shape-loops",
+  "name": "loop_holo-pill",
+  "template": "lineup",
+  "layout": "center",
+  "bg": "holome",
+  "formats": [
+   "feed"
+  ]
+ },
+ {
+  "group": "shape-loops",
+  "name": "loop_melt-blob",
+  "template": "status",
+  "layout": "centre",
+  "status": "LAST TICKETS",
+  "bg": "melt",
+  "formats": [
+   "feed"
+  ]
  }
 ]

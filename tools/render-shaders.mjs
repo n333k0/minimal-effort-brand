@@ -10,10 +10,10 @@ import { chromium } from 'playwright';
 
 const ROOT = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..');
 // grain is kept low here: per-frame noise does not compress (the live lab can add more)
-const LOOPS = { glass: ['bg15-shader-glass', { palette: 'brand', scale: .7, grain: .012 }], pixel: ['bg16-shader-pixel', { palette: 'brand', scale: .72, cell: 14, grain: .01 }], grit: ['bg17-shader-grit', { palette: 'brand', scale: .7, grain: .012 }],
-  chrome: ['bg18-shader-chrome', { palette: 'brand', scale: .72, grain: .01 }], holo: ['bg19-shader-holo', { palette: 'ice', scale: .72, grain: .01 }], glitch: ['bg20-shader-glitch', { palette: 'acid', scale: .7, grain: .01 }],
-  melt: ['bg21-shader-melt', { palette: 'lime', scale: .7, grain: .01 }], echo: ['bg22-shader-echo', { palette: 'brand', scale: .7, grain: .01 }], neon: ['bg23-shader-neon', { palette: 'violet', scale: .72, grain: .01 }],
-  wave: ['bg24-shader-wave', { palette: 'lilac', scale: .7, grain: .01 }], ripple: ['bg25-shader-ripple', { palette: 'brand', scale: .66, grain: .01 }], halftone: ['bg26-shader-halftone', { palette: 'mono', scale: .74, cell: 14, grain: .01 }], 'chrome-maze': ['bg27-shader-chrome-maze', { mode: 'chrome', palette: 'maze', mark: 'maze', scale: .55, grain: .01 }] };
+const LOOPS = { glass: ['bg15-shader-glass', { mark: 'orb', palette: 'brand', scale: .7, grain: .012 }], pixel: ['bg16-shader-pixel', { mark: 'bars', palette: 'brand', scale: .72, cell: 14, grain: .01 }], grit: ['bg17-shader-grit', { mark: 'arch', palette: 'brand', scale: .7, grain: .012 }],
+  chrome: ['bg18-shader-chrome', { mark: 'ring', palette: 'brand', scale: .72, grain: .01 }], holo: ['bg19-shader-holo', { mark: 'pill', palette: 'ice', scale: .72, grain: .01 }], glitch: ['bg20-shader-glitch', { mark: 'bars', palette: 'acid', scale: .7, grain: .01 }],
+  melt: ['bg21-shader-melt', { mark: 'blob', palette: 'lime', scale: .7, grain: .01 }], echo: ['bg22-shader-echo', { mark: 'square', palette: 'brand', scale: .5, grain: .01 }], neon: ['bg23-shader-neon', { mark: 'ring', palette: 'violet', scale: .72, grain: .01 }],
+  wave: ['bg24-shader-wave', { mark: 'bars', palette: 'lilac', scale: .7, grain: .01 }], ripple: ['bg25-shader-ripple', { mark: 'orb', palette: 'brand', scale: .66, grain: .01 }], halftone: ['bg26-shader-halftone', { mark: 'orb', palette: 'mono', scale: .74, cell: 14, grain: .01 }], 'chrome-maze': ['bg27-shader-chrome-maze', { mode: 'chrome', palette: 'maze', mark: 'blob', scale: .74, grain: .01 }] };
 const want = (process.argv[2] || 'glass,pixel,grit').split(',');
 // --w 1280 --h 640 --to file.mp4 renders one look at another size to one file (used for the LED-wall mockup)
 const arg = (k, d) => { const i = process.argv.indexOf('--' + k); return i > 0 ? process.argv[i + 1] : d; };

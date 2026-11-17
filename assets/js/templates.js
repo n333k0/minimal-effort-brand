@@ -4,7 +4,7 @@
 // vertical nudge for the main text (spec.offsetY). Our marks are never boxed by default: they take the colour that reads on the
 // background. Templates can have several compositions (TEMPLATES[t].layouts, picked with spec.layout).
 import { LOGO, LOGO_META, ICON_RECTS } from './logos.js';
-import { EXT, EXT_ROLES, EXT_DEFAULT, CW, compose, shapes as drawShapes, POSTER, LABEL_STYLES, FONTS, ANIMS, SHAPES } from './compose.js?v=20261117d';
+import { EXT, EXT_ROLES, EXT_DEFAULT, CW, compose, shapes as drawShapes, POSTER, LABEL_STYLES, FONTS, ANIMS, SHAPES } from './compose.js?v=20261117e';
 export { CW, POSTER, LABEL_STYLES, FONTS, ANIMS, SHAPES };
 
 export const FORMATS = { feed: [1080, 1350], story: [1080, 1920], square: [1080, 1080], landscape: [1920, 1080] };
@@ -19,10 +19,10 @@ export const BACKGROUNDS = {
   rainbow: V('bg02-rainbow', 'Rainbow', 'Prism'), spectrum: V('bg04-spectrum', 'Spectrum', 'Prism'), bloom: V('bg10-prism-bloom', 'Bloom', 'Prism'),
   holo: V('bg11-holo-film', 'Holo film', 'Film'), leak: V('bg12-film-leak', 'Film leak', 'Film'), ember: V('bg13-film-ember', 'Ember', 'Film'),
   lilac: V('bg05-lilac', 'Lilac beam', 'Brand light'), lime: V('bg06-lime', 'Lime field', 'Brand light', 'light'), glow: V('bg14-brand-glow', 'Lilac × Lime glow', 'Brand light', 'light'),
-  glass: V('bg15-shader-glass', 'Glass ME', 'Shader'), pixel: V('bg16-shader-pixel', 'Pixel ME', 'Shader'), grit: V('bg17-shader-grit', 'Grit ME', 'Shader'),
-  chrome: V('bg18-shader-chrome', 'Chrome ME', 'Shader'), holome: V('bg19-shader-holo', 'Holo ME', 'Shader', 'light'), glitch: V('bg20-shader-glitch', 'Glitch ME', 'Shader'), melt: V('bg21-shader-melt', 'Melt ME', 'Shader', 'light'),
-  echo: V('bg22-shader-echo', 'Echo ME', 'Shader'), neon: V('bg23-shader-neon', 'Neon ME', 'Shader'), wave: V('bg24-shader-wave', 'Wave ME', 'Shader', 'light'), ripple: V('bg25-shader-ripple', 'Ripple ME', 'Shader'),
-  halftone: V('bg26-shader-halftone', 'Halftone ME', 'Shader'), chromemaze: V('bg27-shader-chrome-maze', 'Chrome MAZE', 'Shader', 'light'),
+  glass: V('bg15-shader-glass', 'Glass orb', 'Shader'), pixel: V('bg16-shader-pixel', 'Pixel bars', 'Shader'), grit: V('bg17-shader-grit', 'Grit arch', 'Shader'),
+  chrome: V('bg18-shader-chrome', 'Chrome ring', 'Shader'), holome: V('bg19-shader-holo', 'Holo pill', 'Shader', 'light'), glitch: V('bg20-shader-glitch', 'Glitch bars', 'Shader'), melt: V('bg21-shader-melt', 'Melt blob', 'Shader', 'light'),
+  echo: V('bg22-shader-echo', 'Echo square', 'Shader'), neon: V('bg23-shader-neon', 'Neon rings', 'Shader'), wave: V('bg24-shader-wave', 'Wave bars', 'Shader', 'light'), ripple: V('bg25-shader-ripple', 'Ripple orb', 'Shader'),
+  halftone: V('bg26-shader-halftone', 'Halftone orb', 'Shader'), chromemaze: V('bg27-shader-chrome-maze', 'Chrome blob', 'Shader', 'light'),
   dust: { label: 'Dust', family: 'Texture', still: 'assets/tex/dust.jpg', tone: 'dark' },
   toner: { label: 'Toner', family: 'Texture', still: 'assets/tex/toner.jpg', tone: 'dark' },
   midnight: { label: 'Midnight', family: 'Solid', color: '#14141A', tone: 'dark' },
@@ -181,7 +181,7 @@ function background(s, { forExport } = {}) {
   else if (b.still) inner = `<img src="${b.still}" alt="">`;
   const sh = +s.shade || 0;
   const shade = sh ? `<div class="shade" style="background:linear-gradient(180deg,rgba(10,10,14,${sh}),rgba(10,10,14,${sh * .45}) 45%,rgba(10,10,14,${sh}))"></div>` : '';
-  return { html: `<div class="bg" style="background:${b.cw ? (CW[s.cw] || CW.midnight).bg : b.color || '#14141A'}">${inner}</div>${shade}${s.dust ? '<div class="dust"></div>' : ''}`, tone: b.cw ? (CW[s.cw] || CW.midnight).tone : b.fx ? (s.fxTone || 'dark') : b.tone };
+  return { html: `<div class="bg" style="background:${b.cw ? (CW[s.cw] || CW.midnight).bg : b.color || '#14141A'}">${inner}</div>${shade}${texLayer(s)}`, tone: b.cw ? (CW[s.cw] || CW.midnight).tone : b.fx ? (s.fxTone || 'dark') : b.tone };
 }
 export function wrapText(t, max) {
   const out = []; let cur = '';
@@ -283,8 +283,11 @@ function maze(s) {
   const W = fw(s), H = fh(s), ls = s.format === 'landscape', st = s.format === 'story', sq = s.format === 'square';
   const P = MAZE[s.layout] || MAZE.orange, c = 140;
   const ox = ls ? -10 : ((W / 2 - c / 2) % c) - c, oy = st ? -60 : -20;
-  // the logo block: top centre (left middle on the landscape cover)
-  const lx = ls ? 1 : Math.round((W / 2 - c / 2 - ox) / c), ly = ls ? Math.round((H / 2 - c / 2 - oy) / c) : (st ? 4 : 1);
+  // the logo block: in the cell right above the text (it moves with "Move the text up / down", never under the date line);
+  // on the landscape cover, in the left column next to the first line
+  const top = st ? 600 : sq ? 285 : 390, tTop = (ls ? 96 : top) + (+s.offsetY || 0), mz0 = Math.round(c * .78 * zk('mazelogo'));
+  const lx = ls ? 1 : Math.round((W / 2 - c / 2 - ox) / c);
+  const ly = ls ? Math.max(0, Math.round((tTop + 40 - oy - c / 2) / c)) : Math.max(0, Math.floor((tTop - 36 - mz0 / 2 - oy - c / 2) / c));
   const g = mazeBlocks(W, H, c, +s.seed || 7);
   g.on[ly][lx] = true;
   let rects = '';
@@ -293,13 +296,15 @@ function maze(s) {
   // colour field: soft blobs (or the chosen photo / loop, blurred and tinted)
   const Rb = rng((+s.seed || 7) * 31 + 11);
   const blobs = P.blobs.map(col => `radial-gradient(${Math.round(260 + Rb() * 380)}px ${Math.round(220 + Rb() * 320)}px at ${Math.round(Rb() * 100)}% ${Math.round(Rb() * 100)}%, ${col}, transparent 70%)`).join(',');
-  const own = s.bg === 'maze' || !BACKGROUNDS[s.bg];
-  // the field, as on the real flyers: a photo blurred to colour, gradient-mapped to the palette, with heavy grain
-  const fxo = JSON.stringify({ mode: 'gradmap', grad: 'custom', stops: P.grad, blur: 34, contrast: 1.25, grain: .38, zoom: 1.15 });
-  const field = own && s.mazeField !== 'blobs' ? `<canvas class="fxc mz-field" data-fx='${fxo}' data-src="${photoSrc(s.mazePhoto || s.photo || 'party-05')}" data-w="${W}" data-h="${H}" width="${W}" height="${H}" style="background:${P.base}"></canvas>`
+  const own = true;
+  // the field, as on the real flyers: a photo blurred to colour and gradient-mapped to the palette, with a fine grain.
+  // A background loop or photo chosen in the builder becomes that field (a loop keeps moving), so picking one always shows.
+  const B = BACKGROUNDS[s.bg], fsrc = B?.video ? B.video + '#video' : s.bg === 'custom' && s.bgSrc ? s.bgSrc : photoSrc(s.mazePhoto || s.photo || 'party-05');
+  const fxo = JSON.stringify({ mode: 'gradmap', grad: 'custom', stops: P.grad, blur: 40, contrast: 1.1, grain: .14, zoom: 1.15 });
+  const field = s.mazeField !== 'blobs' ? `<canvas class="fxc mz-field" data-fx='${fxo}' data-src="${esc(fsrc)}" data-w="${W}" data-h="${H}" width="${W}" height="${H}" style="background:${P.base}"></canvas>`
     : `<div class="mz-field" style="background:${blobs},${P.base};${own ? '' : 'mix-blend-mode:color;opacity:.72'}"></div>`;
   const ink = s.textColor || P.ink || '#B4F152';
-  const mz = Math.round(c * .78 * zk('mazelogo'));
+  const mz = mz0;
   const logo = `<div class="mz-logo" style="left:${ox + lx * c + c / 2 - mz / 2}px;top:${oy + ly * c + c / 2 - mz / 2}px;width:${mz}px;height:${mz}px;color:${s.logoColor || ink}">${LOGO['the-maze']}</div>`;
   const names = s.artists.map(a => { const t = a.name + (a.note ? ' ' + a.note : ''); const base = ls ? 130 : sq ? 128 : 165, px = Math.min(base, (ls ? 1000 : W - 2 * M + 40) / (Math.max(4, t.length) * .42)); return `<div class="mz-n" style="font-size:${px.toFixed(1)}px">${esc(t)}</div>`; }).join('');
   const support = s.support ? Z('artists', `<div class="mz-mono" style="font-size:32px">SUPPORT BY:&nbsp;&nbsp;${esc(s.support)}</div>`) : '';
@@ -310,11 +315,10 @@ function maze(s) {
   const ven = Z('venue', (v0 ? `<div class="mz-n" style="font-size:48px">${esc(v0)}</div>` : '') + vr.map(v => `<div class="mz-mono" style="font-size:21px;font-family:var(--disp);font-weight:700;letter-spacing:0">${esc(v)}</div>`).join(''));
   let text;
   if (ls) {
-    text = `<div class="stack l main" style="left:385px;right:${M}px;top:96px">${dateL}${gap(18)}${sub}${Z('artists', names)}</div>
-    <div class="stack l" style="left:385px;top:auto;bottom:${M + 20}px">${pill}</div>
-    <div class="stack l" style="left:1010px;top:auto;bottom:${M + 6}px">${ven}</div>`;
+    // one column next to the logo: date, names, pill, venue
+    text = `<div class="stack l main" style="left:385px;right:${M}px;top:96px">${dateL}${gap(18)}${sub}${Z('artists', names)}${support ? gap(22) + support : ''}${gap(30)}${pill}${gap(44)}${ven}</div>`;
   } else {
-    const top = st ? 600 : sq ? 250 : 390, above = s.pillPos === 'above';
+    const above = s.pillPos === 'above';
     text = `<div class="stack c main" style="top:${top}px;padding:0 ${M - 24}px">${dateL}${gap(sub ? 10 : 22)}${sub}${gap(sub ? 18 : 0)}${above ? pill + gap(24) : ''}${Z('artists', names)}${support ? gap(26) + support : ''}${above ? '' : gap(sq ? 26 : 34) + pill}${gap(sq ? 30 : st ? 70 : 90)}${ven}</div>`;
   }
   return `<div class="mz">${own ? field : field}<svg class="mz-blocks" shape-rendering="crispEdges" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none">${rects}</svg><div class="mz-grain"></div></div>${logo}<div class="mz-ink" style="color:${ink};--mzc:${ink}">${text}</div>`;
@@ -563,7 +567,8 @@ export function render(spec, opts = {}) {
   if (s.noLogo) s.logos = [];
   CUR = s; SP = +s.spacing || 1; M = Math.round(+s.margin || 64);
   if (X) return renderExt(s, opts);
-  const b = s.template === 'maze' && s.bg === 'maze' ? { html: '', tone: MAZE[s.layout]?.ink ? 'light' : 'dark' } : background(s, opts), light = b.tone === 'light';
+  // THE MAZE draws its own field (any chosen loop or photo goes through it), so no background layer under it
+  const b = s.template === 'maze' ? { html: '', tone: MAZE[s.layout]?.ink ? 'light' : 'dark' } : background(s, opts), light = b.tone === 'light';
   const labelOn = s.labels && s.labelColor !== 'none';
   const label = labelOn ? s.labelColor : 'transparent';
   const ink = s.textColor || (labelOn ? (isLight(label) ? '#14141A' : '#F5F5F5') : (light ? '#14141A' : '#F5F5F5'));
@@ -575,6 +580,9 @@ export function render(spec, opts = {}) {
   return `<div class="${cls}${an ? ' an-' + an : ''}" data-format="${s.format}" data-template="${s.template}"${an ? ` data-anim="${an}"` : ''}${xtra(s)} style="${style}">${b.html}<div class="layer">${RENDER[s.template](s)}${placedLogos(s)}</div></div>`;
 }
 
+// a texture over the background, under the type (spec.tex; the older dust: true = 'dust')
+export const TEXTURES = { '': 'None', dust: 'Dust', grain: 'Film grain', toner: 'Toner', burn: 'Film burn', paper: 'Paper', scan: 'Scan lines', dots: 'Halftone dots', noise: 'Noise' };
+const texLayer = s => { const t = s.tex || (s.dust ? 'dust' : ''); return t && TEXTURES[t] ? `<div class="tex tex-${t}${t === 'dust' ? ' dust' : ''}"></div>` : ''; };
 // extra label on any template (hydrate.js draws it in the post's own label style): spec.extra = "A TO Z", extraPos = top | bottom | tl | tr | bl | br
 // extras = [{ t: "A TO Z", x, y, size: s|m|l|xl }]: free labels at x / y (the block's top-left, in post px), dragged in the builder
 const xtra = s => (String(s.extra ?? '').trim() ? ` data-extra="${esc(String(s.extra).trim())}" data-extra-pos="${esc(s.extraPos || 'top')}"` : '')

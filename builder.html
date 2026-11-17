@@ -154,7 +154,7 @@
     <label class="tog"><span class="lab" style="margin:0">Our marks on a black box (off: they take the colour that reads)</span><input type="checkbox" id="logoLabel"></label>
   </div>
   <div class="grp"><span class="lab">Background</span><div id="bgs"></div><input type="file" id="bgFile" accept="image/*,video/*">
-    <label class="tog"><span class="lab" style="margin:0">Dust texture</span><input type="checkbox" id="dust"></label>
+    <span class="lab sub-l" style="margin-top:12px">Texture (over the background, under the type)</span><div class="seg" id="texc"></div>
     <label class="f"><span class="lab">Darken background</span><input type="range" id="shade" min="0" max="0.8" step="0.05"></label>
   </div>
   <div class="grp" id="fxG"><span class="lab">Background lab — a photo, GIF or video through an effect</span>
@@ -235,10 +235,10 @@
 
 <script src="assets/vendor/html-to-image.js"></script>
 <script type="module">
-  import { render, DEFAULT, TEMPLATES, ROLES, MAZE, BACKGROUNDS, PHOTOS, EVENTS, FORMATS, ICONS, LOGO, LOGO_META, LABEL_COLORS, TEXT_COLORS, CW, LABEL_STYLES, FONTS, ANIMS, SHAPES } from './assets/js/templates.js?v=20261117d';
-  import { EXT } from './assets/js/compose.js?v=20261117d';
-  import { FX_MODES, GRADS, FX_DEFAULT } from './assets/js/fx.js';
-  import { hydrate, fxFrame, seekTo, xlBlocks, xlMain, XL_SIZE } from './assets/js/hydrate.js?v=20261117d';
+  import { render, DEFAULT, TEMPLATES, ROLES, MAZE, BACKGROUNDS, PHOTOS, EVENTS, FORMATS, ICONS, LOGO, LOGO_META, LABEL_COLORS, TEXT_COLORS, CW, LABEL_STYLES, FONTS, ANIMS, SHAPES, TEXTURES } from './assets/js/templates.js?v=20261117e';
+  import { EXT } from './assets/js/compose.js?v=20261117e';
+  import { FX_MODES, GRADS, FX_DEFAULT } from './assets/js/fx.js?v=20261117e';
+  import { hydrate, fxFrame, seekTo, xlBlocks, xlMain, XL_SIZE } from './assets/js/hydrate.js?v=20261117e';
   import { Muxer, ArrayBufferTarget } from './assets/vendor/mp4-muxer.mjs';
   const $ = s => document.querySelector(s);
   const clone = o => JSON.parse(JSON.stringify(o));
@@ -451,6 +451,7 @@
   cwEl.innerHTML = Object.entries(CW).map(([k, v]) => `<button type="button" title="${v.label}" data-v="${k}" style="background:linear-gradient(135deg,${v.bg} 50%,${v.blk === v.bg ? v.fg : v.blk} 50%)"></button>`).join('');
   cwEl.addEventListener('click', e => { const b = e.target.closest('button'); if (b) { S.cw = b.dataset.v; if (S.bg !== 'fx' && !BACKGROUNDS[S.bg]?.video && !BACKGROUNDS[S.bg]?.photo) S.bg = 'cw'; sync(); } });
   seg($('#lsc'), Object.entries(LABEL_STYLES), 'ls');
+  seg($('#texc'), Object.entries(TEXTURES), 'tex', () => { S.dust = false; });
   seg($('#ffc'), Object.entries(FONTS), 'font');
   seg($('#anc'), Object.entries(ANIMS), 'anim');
   seg($('#wrapc'), [['words', 'One block per word'], ['line', 'One line']], 'wrap');
@@ -475,7 +476,7 @@
   $('#fxFile').addEventListener('change', e => { const f = e.target.files[0]; if (!f) return; uploads.fxSrc = URL.createObjectURL(f) + (f.type.startsWith('video') ? '#video' : f.type === 'image/gif' ? '#gif' : ''); fxo(); S.bg = 'fx'; S.fxSrc = 'upload'; S.fxFile = f.name; sync(); toast(f.type.startsWith('video') || f.type === 'image/gif' ? 'Moving source loaded — it plays through the effect' : 'Image loaded'); });
 
   $('#iconSel').innerHTML = ['none', 'maze-logo', ...Object.keys(ICONS)].map(n => `<option value="${n}">${n === 'none' ? 'No icon (word)' : n === 'maze-logo' ? 'THE MAZE logo' : n}</option>`).join('');
-  for (const id of ['labels', 'dust', 'logoLabel']) $('#' + id).addEventListener('change', e => { S[id] = e.target.checked; if (id === 'labels' && S.labels && S.labelColor === 'none') S.labelColor = '#181D20'; sync(); });
+  for (const id of ['labels', 'logoLabel']) $('#' + id).addEventListener('change', e => { S[id] = e.target.checked; if (id === 'labels' && S.labels && S.labelColor === 'none') S.labelColor = '#181D20'; sync(); });
   $('#shade').addEventListener('input', e => { S.shade = +e.target.value; draw(); save(); });
   $('#logoSize').addEventListener('input', e => { S.logoSize = +e.target.value; draw(); save(); });
   document.querySelectorAll('[data-k]').forEach(el => el.addEventListener('input', () => { const k = el.dataset.k; S[k] = fromText[k] ? fromText[k](el.value) : el.value; draw(); save(); }));
@@ -486,10 +487,10 @@
     $('#margin').value = S.margin ?? 64; $('#spacing').value = S.spacing ?? 1; $('#offsetY').value = S.offsetY ?? 0; $('#seed').value = S.seed ?? 7;
     $('#vMargin').textContent = (S.margin ?? 64) + ' px'; $('#vSpacing').textContent = '× ' + (+(S.spacing ?? 1)).toFixed(2); $('#vOffsetY').textContent = (S.offsetY ?? 0) + ' px';
     drawLay(); drawSizes();
-    $('#labels').checked = !!S.labels; $('#dust').checked = !!S.dust; $('#shade').value = S.shade || 0; $('#logoSize').value = S.logoSize || 62; $('#logoLabel').checked = !!S.logoLabel;
+    $('#labels').checked = !!S.labels; $('#shade').value = S.shade || 0; $('#logoSize').value = S.logoSize || 62; $('#logoLabel').checked = !!S.logoLabel;
     const press = (sel, v) => document.querySelectorAll(sel + ' [data-v]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.v === v)));
     press('#tpl', S.template); press('#fmt', S.format); press('#evt', EVENTS[S.event] ? S.event : 'OTHER');
-    press('#lblc', S.labels ? S.labelColor : 'none'); press('#txtc', S.textColor || ''); press('#accc', S.accent); press('#bgs', S.bg); press('#photos', (S.photo || '').startsWith('upload:') ? 'upload' : S.photo);
+    press('#lblc', S.labels ? S.labelColor : 'none'); press('#txtc', S.textColor || ''); press('#accc', S.accent); press('#bgs', S.bg); press('#texc', S.tex || (S.dust ? 'dust' : '')); press('#photos', (S.photo || '').startsWith('upload:') ? 'upload' : S.photo);
     const allowed = TEMPLATES[S.template].formats; document.querySelectorAll('#fmt button').forEach(b => b.disabled = !allowed.includes(b.dataset.v));
     if (!allowed.includes(S.format)) S.format = allowed[0];
     document.querySelectorAll('[data-only]').forEach(el => { const on = el.dataset.only.split(' '); el.style.display = on.includes(S.template) || (on.includes('photo') && S.bg === 'photo') ? 'block' : 'none'; });
@@ -511,11 +512,13 @@
   const CHECKS = [
     ['#ctaOn', s => { s.ctaOn = s.ctaOn === false; }, rowT], ['#logoOn', s => { s.noLogo = !s.noLogo; }, rowT],
     ['#logoLabel', s => { s.logoLabel = !s.logoLabel; }, rowT], ['#logoSize', s => { s.logoSize = (+s.logoSize || 62) + 30; }, rowT],
-    ['#dust', s => { s.dust = !s.dust; }, rowT], ['#shade', s => { s.shade = (+s.shade || 0) > .4 ? 0 : .6; }, rowT],
+ ['#shade', s => { s.shade = (+s.shade || 0) > .4 ? 0 : .6; }, rowT],
     ['#margin', s => { s.margin = (+s.margin || 64) + 40; }, rowT], ['#spacing', s => { s.spacing = (+s.spacing || 1) + .5; }, rowT], ['#offsetY', s => { s.offsetY = (+s.offsetY || 0) + 60; }, rowT],
     ['#lsc', s => { s.ls = other(Object.keys(LABEL_STYLES), s.ls || 'block'); }, segT], ['#cwc', s => { s.cw = other(Object.keys(CW), s.cw); }, segT],
     ['#ffc', s => { s.font = other(Object.keys(FONTS), s.font || 'normal'); }, segT], ['#shc', s => { s.shapes = (s.shapes || []).length ? [] : [Object.keys(SHAPES)[0]]; }, segT],
+    ['#texc', s => { s.dust = false; s.tex = s.tex === 'grain' ? 'scan' : 'grain'; }, segT],
     ['#wrapc', s => { s.wrap = s.wrap === 'words' ? 'letters' : 'words'; }, segT],
+    ['#evt', s => { s.event = other(Object.keys(EVENTS), s.event); }, el => [el.closest('.grp')]],
     ['#lblc', s => { s.labels = true; s.labelColor = s.labelColor === '#F5F5F5' ? '#181D20' : '#F5F5F5'; }, segT],
     ['#txtc', s => { s.textColor = s.textColor === '#E5484D' ? '#14141A' : '#E5484D'; }, segT], ['#accc', s => { s.accent = s.accent === '#A79BEE' ? '#B4F152' : '#A79BEE'; }, segT],
   ];

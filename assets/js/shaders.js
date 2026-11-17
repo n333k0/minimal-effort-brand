@@ -16,7 +16,24 @@ export const PALETTES = {
 };
 // round 5: nine more looks. All periodic in one loop.
 export const MODES = { glass: 'Glass', pixel: 'Pixel', grit: 'Grit', chrome: 'Chrome', holo: 'Holo film', halftone: 'Halftone', ripple: 'Ripple', echo: 'Echo tunnel', neon: 'Neon', wave: 'Flag wave', glitch: 'Glitch', melt: 'Melt' };
-export const MARKS = { me: ['ME', 'assets/logo/me-mark.svg'], wordmark: ['MINIMAL EFFORT', 'assets/logo/wordmark.svg'], mnml: ['MNML EFFRT', 'assets/logo/mnml-effrt.svg'], maze: ['THE MAZE', 'assets/logo/the-maze.svg'] };
+// the marks the light falls on: our logos, or abstract shapes (the loops use the shapes, so a background never fights
+// the flyer's own logo). Shapes keep the brand geometry: the E's three bars, the M's arch, flat round forms.
+export const MARKS = { orb: ['Orb', 'shape:orb'], ring: ['Ring', 'shape:ring'], pill: ['Pill', 'shape:pill'], arch: ['Arch', 'shape:arch'], bars: ['Bars', 'shape:bars'], blob: ['Blob', 'shape:blob'], square: ['Square', 'shape:square'],
+  me: ['ME', 'assets/logo/me-mark.svg'], wordmark: ['MINIMAL EFFORT', 'assets/logo/wordmark.svg'], mnml: ['MNML EFFRT', 'assets/logo/mnml-effrt.svg'], maze: ['THE MAZE', 'assets/logo/the-maze.svg'] };
+// a shape drawn white on transparent, with its aspect ratio
+function shapeImg(kind) {
+  const asp = { orb: 1, ring: 1, pill: .62, arch: .86, bars: 1.1, blob: 1.2, square: 1 }[kind] || 1, H = 900, W = Math.round(H * asp);
+  const c = document.createElement('canvas'); c.width = W; c.height = H; const x = c.getContext('2d'); x.fillStyle = '#fff';
+  const rr = (X, Y, w, h, r) => { x.beginPath(); x.roundRect(X, Y, w, h, r); x.fill(); };
+  if (kind === 'orb') { x.beginPath(); x.arc(W / 2, H / 2, H * .46, 0, Math.PI * 2); x.fill(); }
+  else if (kind === 'ring') { x.beginPath(); x.arc(W / 2, H / 2, H * .46, 0, Math.PI * 2); x.arc(W / 2, H / 2, H * .25, 0, Math.PI * 2, true); x.fill('evenodd'); }
+  else if (kind === 'pill') rr(W * .04, H * .02, W * .92, H * .96, W * .46);
+  else if (kind === 'arch') { const t = W * .3; x.beginPath(); x.moveTo(0, H); x.lineTo(0, W / 2); x.arc(W / 2, W / 2, W / 2, Math.PI, 0); x.lineTo(W, H); x.lineTo(W - t, H); x.lineTo(W - t, W / 2); x.arc(W / 2, W / 2, W / 2 - t, 0, Math.PI, true); x.lineTo(t, H); x.closePath(); x.fill(); }
+  else if (kind === 'bars') { const b = H * .26; for (let i = 0; i < 3; i++) rr(0, i * (H - b) / 2, W, b, b * .08); }
+  else if (kind === 'blob') { x.beginPath(); const n = 7; for (let i = 0; i <= 64; i++) { const a = i / 64 * Math.PI * 2, r = .42 + .07 * Math.sin(a * 3 + 1) + .04 * Math.sin(a * 5 + 2); const px = W / 2 + Math.cos(a) * r * H * asp * .95, py = H / 2 + Math.sin(a) * r * H; i ? x.lineTo(px, py) : x.moveTo(px, py); } x.closePath(); x.fill(); }
+  else rr(W * .03, H * .03, W * .94, H * .94, H * .1);
+  c.asp = asp; return c;
+}
 
 const VERT = 'attribute vec2 p; void main(){ gl_Position = vec4(p, 0., 1.); }';
 const FRAG = `precision highp float;
@@ -148,10 +165,14 @@ const hex = h => { const n = parseInt(h.replace('#', ''), 16); return [(n >> 16 
 
 // the ME as a texture: red = sharp, green = blurred height
 async function markCanvas(src = 'assets/logo/me-mark.svg') {
-  const svg = await fetch(src).then(r => r.text());
-  const vb = (svg.match(/viewBox="([^"]+)"/) || [])[1]?.split(/[\s,]+/).map(Number), asp = vb ? vb[2] / vb[3] : 2.0713;
-  const img = new Image(); img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg.replace(/fill="[^"]*"/g, 'fill="#fff"'));
-  await img.decode();
+  let img, asp;
+  if (src.startsWith('shape:')) { img = shapeImg(src.slice(6)); asp = img.asp; }
+  else {
+    const svg = await fetch(src).then(r => r.text());
+    const vb = (svg.match(/viewBox="([^"]+)"/) || [])[1]?.split(/[\s,]+/).map(Number); asp = vb ? vb[2] / vb[3] : 2.0713;
+    img = new Image(); img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg.replace(/fill="[^"]*"/g, 'fill="#fff"'));
+    await img.decode();
+  }
   const W = 1024, H = Math.round(W / asp), pad = 40;
   const c = document.createElement('canvas'); c.width = W; c.height = H; const x = c.getContext('2d');
   const sharp = document.createElement('canvas'); sharp.width = W; sharp.height = H; const sx = sharp.getContext('2d');
