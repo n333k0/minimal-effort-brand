@@ -4,7 +4,7 @@
 // vertical nudge for the main text (spec.offsetY). Our marks are never boxed by default: they take the colour that reads on the
 // background. Templates can have several compositions (TEMPLATES[t].layouts, picked with spec.layout).
 import { LOGO, LOGO_META, ICON_RECTS } from './logos.js';
-import { EXT, EXT_ROLES, EXT_DEFAULT, CW, compose, shapes as drawShapes, POSTER, LABEL_STYLES, FONTS, ANIMS, SHAPES } from './compose.js';
+import { EXT, EXT_ROLES, EXT_DEFAULT, CW, compose, shapes as drawShapes, POSTER, LABEL_STYLES, FONTS, ANIMS, SHAPES } from './compose.js?v=20261117d';
 export { CW, POSTER, LABEL_STYLES, FONTS, ANIMS, SHAPES };
 
 export const FORMATS = { feed: [1080, 1350], story: [1080, 1920], square: [1080, 1080], landscape: [1920, 1080] };

@@ -57,7 +57,7 @@ const grow = (k = 2, role = 'artists') => +(C.s.size?.[role] || 0) ? '' : `data-
 const mono = (t, st = '') => t ? `<div class="mn" style="${st}">${esc(t)}</div>` : '';
 const names = s => (s.artists || []).filter(a => a && a.name);
 const nm = a => a.name + (a.note ? ' ' + a.note : '');
-const logo = (pos = 'bc', size) => { const s = C.s; if (s.noLogo || !(s.logos || []).length) return ''; const top = pos[0] === 't'; return C.logoRow({ ...s, logos: s.logos.map(l => ({ ...l, pos: undefined })) }, C.B, pos[1] === 'l' ? 'l' : pos[1] === 'r' ? 'r' : 'c', top ? { top: C.T, size } : { size }); };
+const logo = (pos = 'bc', size) => { const s = C.s; if (s.noLogo || !(s.logos || []).length) return ''; const top = pos[0] === 't'; if (size) size *= (+s.logoSize || 62) / 62; /* the builder's logo size scales each composition's own size */ return C.logoRow({ ...s, logos: s.logos.map(l => ({ ...l, pos: undefined })) }, C.B, pos[1] === 'l' ? 'l' : pos[1] === 'r' ? 'r' : 'c', top ? { top: C.T, size } : { size }); };
 const venueLine = s => (s.venue || []).filter(Boolean);
 const cta = (st = '') => C.s.ctaOn === false || !C.s.cta ? '' : `<div class="cta2 an" style="${st}">${esc(C.s.cta)}</div>`;
 

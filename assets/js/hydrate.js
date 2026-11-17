@@ -109,6 +109,22 @@ function bearings(el, c) {
   const a = mctx.measureText(txt[0]), z = mctx.measureText(txt[txt.length - 1]);
   return { lsb: -a.actualBoundingBoxLeft, rsb: z.width - z.actualBoundingBoxRight };
 }
+// how far the last line's letters drop below the baseline (p, g, y, j, q…). Blocks are trimmed to the baseline, so a
+// descender would hang out of its block; the block gets that much more room at the bottom, only when it has one.
+function descent(el, c) {
+  let txt = el.textContent.replace(/[ \t]+/g, ' ').trim().split('\n').pop().trim(); if (!txt) return 0;
+  if (c.textTransform === 'uppercase') txt = txt.toUpperCase();
+  mctx ||= document.createElement('canvas').getContext('2d');
+  mctx.font = `${c.fontStyle} ${c.fontWeight} ${c.fontSize} ${c.fontFamily}`;
+  const d = mctx.measureText(txt).actualBoundingBoxDescent, fs = parseFloat(c.fontSize);
+  return d > fs * .06 ? d : 0;
+}
+export function deepenForDescenders(root) {
+  root.querySelectorAll('.ab.x5 .pb').forEach(el => {
+    if (!el.offsetWidth) return; el.style.paddingBottom = '';
+    const c = getComputedStyle(el), d = descent(el, c); if (d) el.style.paddingBottom = (parseFloat(c.paddingBottom) + d).toFixed(2) + 'px';
+  });
+}
 const textEdges = el => { const n = [...el.childNodes].filter(n => n.nodeType !== 3 || n.data.trim()); return { first: n[0]?.nodeType === 3, last: n[n.length - 1]?.nodeType === 3 }; };
 export function opticalMargins(root) {
   const set = (el, px, fs) => { if (Math.abs(px) < .5) return; el.style.translate = `${(px / fs).toFixed(4)}em 0`; el.dataset.om = '1'; };
@@ -181,7 +197,7 @@ export function labelBoxes(root) {
     if (el.closest('.band')) { const B = .17 * fs; side(B - lsb, B - rsb); return; }
     const P = LPAD * Math.min(ab.offsetWidth, ab.offsetHeight) / 1080 / z; // in the block's own (zoomed) px
     const py = Math.min(.2 * fs, 1.3 * P);
-    el.style.paddingTop = el.style.paddingBottom = py.toFixed(2) + 'px';
+    el.style.paddingTop = py.toFixed(2) + 'px'; el.style.paddingBottom = (py + descent(el, c)).toFixed(2) + 'px';
     side(P - lsb, P - rsb); // a huge first letter has more side space than the padding: text-indent takes the rest
     const p = el.parentElement, st = p?.classList.contains('stack') ? p : p?.classList.contains('zr') && p.parentElement?.classList.contains('stack') ? p.parentElement : null;
     el.dataset.hang = st ? P.toFixed(2) : '0'; // fit (data-fit="w") makes such a block 2P wider than its column: letters margin to margin
@@ -260,6 +276,7 @@ export async function hydrate(root, { scale = 1, animate = true } = {}) {
   balanceTracking(root);
   fit(root);
   labelBoxes(root); fit(root); labelBoxes(root); // the side space follows the fitted size; a second pass settles it
+  deepenForDescenders(root);
   opticalMargins(root); // after the fit: it measures where each line ends up (the shifts are in em, so later fits keep them)
   const cvs = [...root.querySelectorAll('canvas[data-fx]')];
   await Promise.all(cvs.map(async c => {
