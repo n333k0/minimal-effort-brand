@@ -94,7 +94,7 @@ export const ROLES = {
 
 export const DEFAULT = {
   template: 'lineup', format: 'feed', layout: 'center', labels: true, bg: 'waves', photo: 'lee-burridge-1',
-  accent: '#B4F152', labelColor: '#181D20', textColor: '', dust: false, shade: 0,
+  accent: '#B4F152', labelColor: '#181D20', textColor: '', dust: false, shade: 0, extra: '', extraPos: 'top',
   logos: [{ id: 'origin-mark', scale: 1 }], logoSize: 62, logoLabel: false,
   size: {}, margin: 64, spacing: 1, offsetY: 0,
   event: 'SECOND WIND', presenter: 'MNML EFFRT', partner: 'SBCTLR', presents: 'PRESENTS',
@@ -399,7 +399,7 @@ function status(s) {
   }
   if (L === 'full') {
     // the message as wide as the frame, one line, the title under it
-    return `${head}<div class="stack c main" style="top:${free0}px;height:${free1 - free0}px;justify-content:center;padding:0 ${M - 10}px"><div class="lbx" data-fit="w" data-grow="4" style="font-size:${big * .6}px;letter-spacing:-0.055em;white-space:nowrap">${esc(s.status)}</div>${gap(16)}${T}</div>${cta}${logoRow(s, bot)}`;
+    return `${head}<div class="stack c main" style="top:${free0}px;height:${free1 - free0}px;justify-content:center;padding:0 ${M}px"><div class="lbx" data-fit="w" data-grow="4" style="font-size:${big * .6}px;letter-spacing:-0.055em;white-space:nowrap">${esc(s.status)}</div>${gap(16)}${T}</div>${cta}${logoRow(s, bot)}`;
   }
   const just = { centre: 'center', low: 'flex-end', top: 'flex-start', left: 'center' }[L] || 'center';
   // low sits a little above the button (a fifth of the free space), centre is the optical middle of the whole post
@@ -572,8 +572,11 @@ export function render(spec, opts = {}) {
   const cls = ['ab', labelOn ? 'labels' : '', s.template === 'highlight' ? 'hl' : '', s.template === 'maze' && s.bg !== 'maze' ? 'mz-blur' : '', opts.textOnly ? 'no-bg' : ''].join(' ');
   const style = `--acc:${s.accent};--ink:${ink};--label:${label};--meta:${metaC};--logo:${logo};--m:${M}px;--oy:${+s.offsetY || 0}px;color:${ink}`;
   const an = s.anim && s.anim !== 'none' ? s.anim : '';
-  return `<div class="${cls}${an ? ' an-' + an : ''}" data-format="${s.format}" data-template="${s.template}"${an ? ` data-anim="${an}"` : ''} style="${style}">${b.html}<div class="layer">${RENDER[s.template](s)}${placedLogos(s)}</div></div>`;
+  return `<div class="${cls}${an ? ' an-' + an : ''}" data-format="${s.format}" data-template="${s.template}"${an ? ` data-anim="${an}"` : ''}${xtra(s)} style="${style}">${b.html}<div class="layer">${RENDER[s.template](s)}${placedLogos(s)}</div></div>`;
 }
+
+// extra label on any template (hydrate.js draws it in the post's own label style): spec.extra = "A TO Z", extraPos = top | bottom | tl | tr | bl | br
+const xtra = s => String(s.extra ?? '').trim() ? ` data-extra="${esc(String(s.extra).trim())}" data-extra-pos="${esc(s.extraPos || 'top')}"` : '';
 
 // round 5 templates (compose.js): colourway, label style, font, shapes, effects, animation
 function renderExt(s, opts) {
@@ -583,7 +586,7 @@ function renderExt(s, opts) {
   const vars = `--bgc:${c.bg};--fg:${fg};--blk:${c.blk};--btx:${c.btx};--acc:${c.acc};--shp:${s.shapeColor || c.shp};--b2:${c.b2};--a2:${s.accent2 || c.acc};--ink:${fg};--label:${c.blk};--meta:${fg};--logo:${logo};--m:${M}px;--oy:${+s.offsetY || 0}px;--sp:${SP};color:${fg}`;
   const ctx = { s, W, H, T: e.top, B: e.bottom, M, SP, zk, photoSrc, logoRow, photos: PHOTOS };
   const cls = ['ab', 'x5', 'ls-' + (s.ls || 'block'), 'ff-' + (s.font || 'normal'), s.anim && s.anim !== 'none' ? 'an-' + s.anim : '', opts.textOnly ? 'no-bg' : ''].join(' ');
-  return `<div class="${cls}" data-format="${s.format}" data-template="${s.template}" data-layout="${s.layout}"${s.anim && s.anim !== 'none' ? ` data-anim="${s.anim}"` : ''} style="${vars}">${b.html}<div class="layer">${drawShapes(s.shapes, s, ctx)}${compose(s, ctx)}${placedLogos(s)}</div></div>`;
+  return `<div class="${cls}" data-format="${s.format}" data-template="${s.template}" data-layout="${s.layout}"${s.anim && s.anim !== 'none' ? ` data-anim="${s.anim}"` : ''}${xtra(s)} style="${vars}">${b.html}<div class="layer">${drawShapes(s.shapes, s, ctx)}${compose(s, ctx)}${placedLogos(s)}</div></div>`;
 }
 
 export function preview(spec, boxW, opts = {}) {

@@ -43,6 +43,7 @@ The human alternative is `builder.html` (open it from a local server: `npm run s
 | `bgType`, `bgFile` | `"video"` / `"image"`, path to the file | with `bg:"custom"`: your own background (a video loops for 10 s in the MP4) |
 | `photo` | `lee-burridge-1..3` `ry-x` `jamiie` `party-01..07` `venue-01` `extra-01..04`, or a path | announce, giveaway, `bg:"photo"`. Real press photos for artists, party photos for giveaways |
 | `presenter` / `partner` / `presents` | `MNML EFFRT` / `SBCTLR` / `PRESENTS` | partner empty = no × co-brand |
+| `extra` / `extraPos` | `""` / `top` | an extra label on ANY template, in the post's own label style (e.g. `"A TO Z"`; a new line is a new block). `extraPos`: `top` / `bottom` of the main text, or a corner `tl` `tr` `bl` `br`. Builder: Words → Extra label |
 | `title`, `date`, `time` | `Second Wind`, `Jan 2`, `6pm to 3am` | "Jan 2" style; announce posts always show the date |
 | `artists` | `[{"name":"LEE BURRIDGE"},{"name":"RY X","note":"[DJ SET]"}]` | names UPPERCASE; notes in [brackets]; as many as fit |
 | `venue` | `["613 Imperial Street","Arts District Los Angeles","Day to Night"]` | up to 3 lines |
@@ -89,6 +90,8 @@ Shader loops instead come from `assets/js/shaders.js`: `node tools/render-shader
 - FLOAT and Clinic are on hold until their logos exist: don't make posts for them.
 - Motion: backgrounds move. Type either holds still or uses one of the six `anim` loops (build, hold, clear in 10 s). No other text animation without asking.
 - Centring: label blocks get optical padding after render (`balanceTracking` in `hydrate.js`): the letters, not just the block, sit on the centre line. Check with `node tools/dev/centre.mjs <dir> all` (renders the type layers) and measure the ink.
+- Label blocks: `labelBoxes` (in `hydrate.js`) gives every label block the same padding, 7 px on a 1080 post whatever the text size, less its own first/last letter side space. In left/right stacks every block hangs out by that padding, so the letters sit on the margin AND the block edges line up 7 px outside it; big names get a tight box. Full-width words (`data-fit="w"`) fill margin to margin with the box 7 px outside.
+- Margins: `opticalMargins` (also in `hydrate.js`) shifts each line by its first/last letter's side space so the letters land exactly on the margin (big type starts several px in otherwise); full-width lines grow a touch so the ink touches both margins; filled boxes inside the page keep their box edge. Audit every layout with `node tools/dev/align.mjs <out.json>` (ink of every line against the margins and the centre line).
 - Rows: when you add examples to the guidelines, every group fills whole rows of four (`build-examples.mjs` checks).
 - Story safe zones: nothing important in the top 250 px or bottom 340 px.
 

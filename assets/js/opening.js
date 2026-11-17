@@ -38,8 +38,13 @@ function frame() {
       $$('.op4 .w').forEach((w, i) => { const a = ease(seg(p, .05 + i * .03, .2 + i * .03)); w.style.opacity = a * (1 - out); w.style.transform = `translateY(${(1 - a) * 40}px)`; w.style.filter = `blur(${((1 - a) * 8 + out * 6).toFixed(1)}px)`; });
       // target: the ME inside the construction square (viewBox 1600×900, slice; square 560..1040 × 250..730)
       const k = Math.max(vw / 1600, vh / 900), ox = (vw - 1600 * k) / 2, oy = (vh - 900 * k) / 2;
-      const sqW = 480 * k, cx = ox + 800 * k, cy = oy + 490 * k;
-      const MEw = Math.min(sqW * .78, vw * .8), MEh = MEw * MH / MW, kk = MEw / MW, x0 = cx - MEw / 2;
+      // the ME and its two labels are one group, centred in the inner square (360 units, centre 800,490) and kept inside it
+      const isq = 360 * k, cx = ox + 800 * k, cy = oy + 490 * k, GAP = Math.max(14, isq * .05);
+      const labs = $$('.op4 .lab2'), labH = Math.max(0, ...labs.map(l => l.offsetHeight));
+      let MEw = Math.min(isq * .8, vw * .8), MEh = MEw * MH / MW;
+      const room = isq * .86 - GAP - labH; if (MEh > room) { MEh = Math.max(40, room); MEw = MEh * MW / MH; }
+      const gTop = cy - (MEh + GAP + labH) / 2, mcy = gTop + MEh / 2;
+      const kk = MEw / MW, x0 = cx - MEw / 2;
       const mX = x0 + M_INK[0] * kk, mW = (M_INK[1] - M_INK[0]) * kk, eX = x0 + E_INK[0] * kk, eW = (E_INK[1] - E_INK[0]) * kk;
       const fly = ease(seg(p, .44, .7));
       // the E of FRONE is the M turned a quarter anticlockwise (it faces right); ROW's W is the E turned a quarter anticlockwise.
@@ -51,14 +56,14 @@ function frame() {
         const s = pl.getBoundingClientRect();
         // start: the unrotated box is the placeholder with its sides swapped, on the same centre
         const w = lerp(s.height, tw, fly), h = lerp(s.width, MEh, fly);
-        const ccx = lerp(s.left + s.width / 2, tx + tw / 2, fly), ccy = lerp(s.top + s.height / 2, cy, fly);
+        const ccx = lerp(s.left + s.width / 2, tx + tw / 2, fly), ccy = lerp(s.top + s.height / 2, mcy, fly);
         el.style.width = w + 'px'; el.style.height = h + 'px';
         el.style.transform = `translate(${(ccx - w / 2).toFixed(1)}px, ${(ccy - h / 2).toFixed(1)}px) rotate(${(from * (1 - fly)).toFixed(2)}deg)`;
         el.style.opacity = rise;
         el.style.filter = `blur(${((1 - rise) * 8).toFixed(1)}px)`;
       }
       const lab = ease(seg(p, .7, .8));
-      $$('.op4 .lab2').forEach((l, i) => { l.style.opacity = lab; const x = i ? eX + eW / 2 : mX + mW / 2; const lw = l.offsetWidth || 190; l.style.left = clamp(x - lw / 2, 8, vw - lw - 8) + 'px'; l.style.top = (cy + MEh / 2 + 22) + 'px'; });
+      $$('.op4 .lab2').forEach((l, i) => { l.style.opacity = lab; const x = i ? eX + eW / 2 : mX + mW / 2; const lw = l.offsetWidth || 190; l.style.left = clamp(x - lw / 2, 8, vw - lw - 8) + 'px'; l.style.top = (gTop + MEh + GAP) + 'px'; });
       const deg = $('.op4 .deg'); if (deg) deg.style.opacity = ease(seg(p, .3, .4));
       const vt = $('.op4 .vt'); if (vt) vt.style.opacity = .7 * ease(seg(p, .16, .26)) * (1 - out);
       const cap = $('.op4 .cap4'); if (cap) { const c = ease(seg(p, .84, .94)); cap.style.opacity = c; cap.style.transform = `translate(-50%, ${(1 - c) * 14}px)`; }
