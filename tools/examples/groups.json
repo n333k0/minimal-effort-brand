@@ -1,0 +1,102 @@
+[
+ {
+  "id": "second-wind",
+  "title": "The Second Wind flyer · every size",
+  "note": "The flyer we made, adapted to feed 4:5, story 9:16, square 1:1 and landscape 16:9 — and on three of the new shader loops."
+ },
+ {
+  "id": "lineup",
+  "title": "Lineup · compositions",
+  "note": "The same night in eight compositions (A–H) and backgrounds. Black label blocks by default, Lime as an option."
+ },
+ {
+  "id": "poster",
+  "title": "Posters · one composition per reference",
+  "note": "Every image in the ME Refs folder became a named composition (the reference number is in the builder). Same building blocks underneath: colourway, wrapping, type, shapes, background effect. Text adapts: one name or twenty."
+ },
+ {
+  "id": "poster-sizes",
+  "title": "Posters · stories, squares, landscape",
+  "note": "The compositions keep their idea at every size; the text boxes refit."
+ },
+ {
+  "id": "wrapping",
+  "title": "How the text is wrapped",
+  "note": "One composition, nine ways to hold the words: block, tight (no padding), glow, spectrum stripe, halftone dots, soft focus, outline, band to the edge, no block."
+ },
+ {
+  "id": "colourways",
+  "title": "Colourways",
+  "note": "Twelve colour combinations of the four brand colours (plus THE MAZE orange): field, text, label block, accent."
+ },
+ {
+  "id": "effects",
+  "title": "Background lab · photo effects",
+  "note": "The background creator: any photo, GIF or video through a gradient map, duotone, posterize, halftone, dot matrix, dither, ASCII, glyphs, pixel, scan lines or thermal. Upload yours in the builder."
+ },
+ {
+  "id": "shapes",
+  "title": "Shapes · vector layers",
+  "note": "Layers that sit between the background and the type. Mix as many as you like in the builder."
+ },
+ {
+  "id": "quzie",
+  "title": "Type · 403 Quzie",
+  "note": "THE MAZE's typeface opens up to every poster: Regular, Condensed and Wide, set against ABC Normal."
+ },
+ {
+  "id": "animated",
+  "title": "Animated posts",
+  "note": "The type builds once, holds, and clears on a 10 s loop: blur in, rise, wipe, type, flicker, drift. Effect backgrounds can move too (ASCII flicker, dither crawl). MP4 for each."
+ },
+ {
+  "id": "maze",
+  "title": "THE MAZE · its own flyer",
+  "note": "Built from the real MAZE flyers: maze blocks over a blurred, gradient-mapped photo with heavy grain, the MAZE logo in its block, 403 Quzie names, IN ORDER OF APPEARANCE, the venue. Five palettes, every size; try another maze pattern in the builder."
+ },
+ {
+  "id": "formats",
+  "title": "Set times · tours · menus · mix covers",
+  "note": "New post types: the timetable (rows, faces, big times), a series of dates, the bar menu, covers for mixes and playlists."
+ },
+ {
+  "id": "carousel-case",
+  "title": "Carousel · case study",
+  "note": "Eight slides for a recap or a case: cover, text, image, numbers, quote, list, image, end card. Swipe order left to right."
+ },
+ {
+  "id": "carousel-article",
+  "title": "Carousel · journal article",
+  "note": "The same slides as an article in squares, with colourways per slide."
+ },
+ {
+  "id": "announce",
+  "title": "Just announced",
+  "note": "Real press photos. The ME on top, the venue logo at the bottom, and all the info: night, date, time, place."
+ },
+ {
+  "id": "giveaway",
+  "title": "Ticket giveaway",
+  "note": "Photo window, full photo (centred, words low), ticket stub — on photos, solids and effect backgrounds."
+ },
+ {
+  "id": "status",
+  "title": "Ticket messaging",
+  "note": "Presale live, tickets live, on sale now, final release, last tickets, sold out. Seven compositions: low, centred, top, left, band (full width or hugging), one line full width. The button can be switched off; the message can be one block per word or one line."
+ },
+ {
+  "id": "calendar",
+  "title": "Monthly calendar",
+  "note": "One month of nights in one post, five ways: rows, big dates, label blocks, a month grid, photo + rows."
+ },
+ {
+  "id": "hiring",
+  "title": "Now hiring",
+  "note": "Five ways to say it: an object in a framed grid (walkie-talkie, flight case, headphones, crew pass, gaffer tape), a statement on a photo, the open roles, a big headline, a crew pass. Text on the left means the logo on the left."
+ },
+ {
+  "id": "statements",
+  "title": "Statements",
+  "note": "Type-led posts on every kind of background: loops, shaders, solids, photo effects. Five compositions: low, centred, top, quote, split photo. The ME takes the colour that reads, never boxed."
+ }
+]

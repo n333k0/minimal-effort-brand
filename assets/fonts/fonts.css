@@ -8,7 +8,12 @@
 @font-face { font-family: 'Manrope'; src: url(Manrope-var.woff2) format('woff2'); font-weight: 300 800; font-display: swap; }
 @font-face { font-family: 'IBM Plex Mono'; src: url(IBMPlexMono-400.woff2) format('woff2'); font-weight: 400; font-display: swap; }
 @font-face { font-family: 'IBM Plex Mono'; src: url(IBMPlexMono-500.woff2) format('woff2'); font-weight: 500; font-display: swap; }
-/* THE MAZE display type: the real flyers use 403 Quzie (commercial, not bundled). If it is installed on the machine it is
-   used; otherwise Saira Stencil One (SIL OFL) stands in. */
-@font-face { font-family: '403 Quzie'; src: local('403 Quzie'), local('403Quzie-Regular'); }
+/* THE MAZE display type: 403 Quzie by 403TF (commercial: licence it before using it elsewhere). Saira Stencil One (SIL OFL)
+   stands in if the files are missing. */
+@font-face { font-family: '403 Quzie'; src: local('403 Quzie'), local('403Quzie-Regular'), url(quzie/403Quzie-Regular.woff2) format('woff2'); font-display: swap; }
+@font-face { font-family: '403 Quzie Condensed'; src: url(quzie/403Quzie-Condensed.woff2) format('woff2'); font-display: swap; }
+@font-face { font-family: '403 Quzie Narrow'; src: url(quzie/403Quzie-Narrow.woff2) format('woff2'); font-display: swap; }
+@font-face { font-family: '403 Quzie Wide'; src: url(quzie/403Quzie-Wide.woff2) format('woff2'); font-display: swap; }
+@font-face { font-family: '403 Quzie Expanded'; src: url(quzie/403Quzie-Expanded.woff2) format('woff2'); font-display: swap; }
+@font-face { font-family: '403 Quzie Slant'; src: url(quzie/403Quzie-RegularSlant.woff2) format('woff2'); font-display: swap; }
 @font-face { font-family: 'Saira Stencil One'; src: url(SairaStencilOne-Regular.woff2) format('woff2'); font-weight: 400; font-display: swap; }

@@ -11,11 +11,11 @@ await p.goto(`${base}/index.html?print=1`, { waitUntil: 'networkidle' });
 await p.evaluate(() => document.fonts.ready);
 // make sure every video shows its poster frame and every preview is drawn
 await p.evaluate(async () => {
-  document.querySelectorAll('video').forEach(v => { const img = document.createElement('img'); img.src = v.poster; img.style.cssText = v.style.cssText; img.className = v.className; img.style.width = '100%'; img.style.height = '100%'; img.style.objectFit = 'cover'; v.replaceWith(img); });
+  document.querySelectorAll('video').forEach(v => { if (!v.poster) { v.remove(); return; } const img = document.createElement('img'); img.src = v.poster; img.style.cssText = v.style.cssText; img.className = v.className; img.style.width = '100%'; img.style.height = '100%'; img.style.objectFit = 'cover'; v.replaceWith(img); });
   await Promise.all([...document.images].map(i => i.complete ? 0 : new Promise(r => { i.onload = i.onerror = r; })));
 });
 await p.waitForFunction(() => document.documentElement.dataset.logos === '1', null, { timeout: 15000 });
-await p.waitForTimeout(1500);
+await p.waitForTimeout(6000);
 await p.pdf({ path: path.join(ROOT, 'downloads/minimal-effort-brand-guidelines.pdf'), width: '1600px', height: '1000px', printBackground: true, margin: { top: 0, right: 0, bottom: 0, left: 0 } });
 await b.close();
 console.log('pdf written');

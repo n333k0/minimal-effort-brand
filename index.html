@@ -298,14 +298,11 @@
     <p class="note">Every post is built on a 1080 px artboard with a <b>64 px margin</b>. Pick one composition and keep it for the whole campaign; the logo row always sits on the bottom margin. Logos can also go top left, centre or right.</p></div>
   <div class="sub"><h3>Compositions<small>A–H, all live in the builder. Click one to edit it; sizes, margins and spacing are adjustable there.</small></h3>
     <div class="body g" style="--c:4" id="comps"></div></div>
-  <div class="sub"><h3>Grid<small>Feed 1080×1350 · margins 64 · 12 columns · 24 gutter</small></h3>
-    <div class="body g" style="--c:2">
-      <div class="card flush" style="aspect-ratio:4/5;position:relative;background:#000">
-        <div data-tpl='{"template":"lineup","layout":"left","bg":"midnight"}' data-still style="position:absolute;inset:0"></div>
-        <svg viewBox="0 0 1080 1350" preserveAspectRatio="none" style="position:absolute;inset:0;width:100%;height:100%"><g fill="rgba(180,241,82,.12)"><rect x="64" y="64" width="57.3" height="1222"/><rect x="145.3" y="64" width="57.3" height="1222"/><rect x="226.7" y="64" width="57.3" height="1222"/><rect x="308" y="64" width="57.3" height="1222"/><rect x="389.3" y="64" width="57.3" height="1222"/><rect x="470.7" y="64" width="57.3" height="1222"/><rect x="552" y="64" width="57.3" height="1222"/><rect x="633.3" y="64" width="57.3" height="1222"/><rect x="714.7" y="64" width="57.3" height="1222"/><rect x="796" y="64" width="57.3" height="1222"/><rect x="877.3" y="64" width="57.3" height="1222"/><rect x="958.7" y="64" width="57.3" height="1222"/></g><rect x="64" y="64" width="952" height="1222" fill="none" stroke="#B4F152" stroke-width="3"/></svg>
-      </div>
-      <div class="card"><ul class="rule-list"><li><b>Margins</b> 64 px on every side; in composition C every line starts exactly on the 64 px margin (column 1).</li><li><b>Columns</b> 12, gutter 24; text never runs past 10 columns.</li><li><b>Rhythm</b> stacked lines touch; groups are 44 or 88 apart.</li><li><b>Logo row</b> on the bottom margin, centred (A, B, D) or left (C, E, F).</li></ul>
-        <div class="dls"><a class="dl" href="downloads/layout/minimal-effort_grid_feed-1080x1350.png" download>Feed grid PNG</a><a class="dl" href="downloads/layout/minimal-effort_grid_story-1080x1920.png" download>Story grid PNG</a></div></div>
+  <div class="sub"><h3>Grid<small>Feed 1080×1350 · margins 64 · 12 columns · 24 gutter — on eight compositions, every kind of wrapping and background</small></h3>
+    <div class="body"><div class="g" style="--c:4" id="gridshow"></div>
+      <div class="g" style="--c:2;margin-top:12px"><div class="card"><ul class="rule-list"><li><b>Margins</b> 64 px on every side. Letters (not the block edges) sit on the margin: left stacks start exactly on column 1, right stacks end exactly on column 12, the blocks hang into the margin by their padding.</li><li><b>Columns</b> 12, gutter 24; text never runs past 10 columns unless it is meant to bleed (Wall, Bands, Mirror).</li></ul></div>
+      <div class="card"><ul class="rule-list"><li><b>Rhythm</b> stacked lines touch; groups are 44 or 88 apart.</li><li><b>Logo row</b> on the bottom margin: centred with centred text, left with left text, right with right text.</li></ul>
+        <div class="dls"><button type="button" class="dl" id="gridToggle">Grid on / off</button><a class="dl" href="downloads/layout/minimal-effort_grid_feed-1080x1350.png" download>Feed grid PNG</a><a class="dl" href="downloads/layout/minimal-effort_grid_story-1080x1920.png" download>Story grid PNG</a></div></div></div>
     </div></div>
   <div class="sub" id="safe"><h3>Story safe zones<small>Instagram covers the top 250 px and the bottom 340 px</small></h3>
     <div class="body g" style="--c:3">
@@ -326,29 +323,32 @@
   <div class="sec-h"><span class="n">08 — Backgrounds &amp; motion</span><h2 id="mo-h" class="goo">Liquid light.</h2>
     <p class="note">One family of moving backgrounds in five groups: <b>Chrome</b> (liquid iridescent forms), <b>Prism</b> (spectrum light), <b>Film</b> (analog leaks), <b>Brand light</b> (Lime and Lilac) and <b>Shader</b> (the ME drawn live by WebGL). Every loop is 9–10 s, locked camera, ends on its first frame. Type holds still on top.</p></div>
   <div class="body" id="loops"></div>
-  <div class="sub"><h3>Shader lab<small>A tool, not a file: the ME in glass, pixels or grit, drawn live. Pick a look, a palette and a size, then export a PNG or record one seamless loop.</small></h3>
+  <div class="sub"><h3>Shader lab<small>A tool, not a file: the ME (or MINIMAL EFFORT, MNML EFFRT, THE MAZE) drawn live by WebGL in twelve looks — glass, pixel, grit, chrome, holo film, halftone, ripple, echo tunnel, neon, flag wave, glitch, melt. Start from a preset or shuffle, tweak, then export a PNG or record one seamless loop.</small></h3>
     <div class="body"><div class="lab-ui" id="lab">
       <div class="lab-view"><canvas aria-label="Live shader preview of the ME"></canvas><p class="lab lab-err"></p></div>
       <div class="lab-ctl">
+        <span class="lab">Presets</span><div class="lab-seg" data-k="preset"></div>
         <span class="lab">Look</span><div class="lab-seg" data-k="mode"></div>
+        <span class="lab">Mark</span><div class="lab-seg" data-k="mark"></div>
         <span class="lab">Palette</span><div class="lab-seg" data-k="palette"></div>
         <span class="lab">Format</span><div class="lab-seg" data-k="format"></div>
         <label><span class="lab">Mark size</span><input type="range" name="scale" min="0.2" max="0.95" step="0.01" value="0.62"></label>
         <label><span class="lab">Grain</span><input type="range" name="grain" min="0" max="0.25" step="0.01" value="0.06"></label>
-        <label><span class="lab">Pixel size (Pixel)</span><input type="range" name="cell" min="4" max="40" step="1" value="12"></label>
+        <label><span class="lab">Pixel / dot size (Pixel, Halftone)</span><input type="range" name="cell" min="4" max="40" step="1" value="12"></label>
+        <label><span class="lab">Distortion (Chrome, Holo, Ripple, Wave, Glitch, Melt)</span><input type="range" name="amt" min="0" max="2.5" step="0.05" value="1"></label>
         <label><span class="lab">Speed</span><input type="range" name="speed" min="0.25" max="3" step="0.25" value="1"></label>
-        <div class="lab-acts"><button type="button" class="pill pill-l acc lab-rec">Record one loop</button><button type="button" class="pill pill-l pill-o lab-png">Export PNG</button></div>
-        <p class="lab" style="line-height:1.6;margin:0">Recording runs in real time (10 s at speed 1) and saves an MP4 or WebM at full size. The three rendered loops above (Glass ME, Pixel ME, Grit ME) are also backgrounds in the builder.</p>
+        <div class="lab-acts"><button type="button" class="pill pill-l pill-o lab-rnd">Shuffle</button><button type="button" class="pill pill-l acc lab-rec">Record one loop</button><button type="button" class="pill pill-l pill-o lab-png">Export PNG</button></div>
+        <p class="lab" style="line-height:1.6;margin:0">Recording runs in real time (10 s at speed 1) and saves an MP4 or WebM at full size. The rendered Shader loops above are also backgrounds in the builder.</p>
       </div>
     </div></div></div>
   <div class="sub"><h3>Motion rules<small>How things move</small></h3>
-    <div class="body"><ul class="rule-list"><li><b>Backgrounds move, type holds.</b> The only text motion: a single rise-in at the start (≤ 0.6 s, no fades).</li><li><b>Slow and seamless:</b> no zooms, no cuts, no beat-synced flashing.</li><li><b>New loops</b> come from a still with Higgsfield (MiniMax H3, 2K, 10 s, start frame = end frame) and must belong to one of the four groups.</li></ul></div></div>
+    <div class="body"><ul class="rule-list"><li><b>Backgrounds move; type builds once, holds, clears.</b> Six text animations in the builder (blur in, rise, wipe, type, flicker, drift), all on one 10 s loop so posts loop cleanly.</li><li><b>Slow and seamless:</b> no zooms, no cuts, no beat-synced flashing.</li><li><b>New loops</b> come from a still with Higgsfield (MiniMax H3, 2K, 10 s, start frame = end frame) and must belong to one of the four groups.</li></ul></div></div>
 </section>
 
 <!-- ============================================================ 09 TEMPLATES -->
 <section class="sec" id="templates" aria-labelledby="tp-h">
   <div class="sec-h"><span class="n">09 — Social templates</span><h2 id="tp-h" class="goo">Reusable for every night.</h2>
-    <p class="note">Every template works for Second Wind, THE MAZE and what comes next: change the words, photo, background, colours and logos in the <b>builder</b>. <b>Click any example to open it in the builder</b>; each one downloads as PNG, and the moving ones as MP4.</p></div>
+    <p class="note">Every template works for Second Wind, THE MAZE and what comes next: change the words, photo, background, colours and logos in the <b>builder</b>. <b>Click any example to open it in the builder</b>; each one downloads as PNG, the moving ones as MP4. New this round: a poster for every reference in the ME Refs folder, the building blocks they share (colourways, wrapping, type, shapes, photo effects, animation), set times, tours, menus, mix covers and carousels.</p></div>
   <div id="tpl-groups"></div>
   <div class="dls"><a class="pill acc" href="builder.html">Open the flyer builder →</a><a class="pill pill-o" href="https://github.com/n333k0/minimal-effort-brand/releases/latest/download/second-wind_flyer_all-sizes.zip">Second Wind flyer · all sizes .zip</a></div>
 </section>
@@ -365,26 +365,38 @@
 <section class="sec" id="feed" aria-labelledby="fd-h">
   <div class="sec-h"><span class="n">11 — Feed</span><h2 id="fd-h" class="goo">Nine at a time.</h2>
     <p class="note">Plan the grid in threes: one artist, one type-led post, one moving background per row. Accents alternate by event. Carousels are marked; the first slide is always type-led.</p></div>
-  <div class="body g one" style="--c:2;align-items:start">
-    <div class="phone"><div class="scr">
+  <div class="body phones">
+    <div class="ph-col"><div class="phone tall"><div class="scr" id="ig-scr">
       <div class="ig-head"><div class="ig-av"><i class="lg lg-mark"></i></div><div><p style="margin:0 0 8px;font:700 .95rem/1 var(--sans)">minimaleffortla</p><div class="ig-stats"><span><b>48</b>posts</span><span><b>12.4k</b>followers</span><span><b>310</b>following</span></div></div></div>
       <p class="ig-bio"><b>Minimal Effort</b><br>Cultural events label · Los Angeles<br>THE MAZE · Second Wind<br><span style="color:var(--lime)">minimaleffort.com/tickets</span></p>
       <div class="ig-hl" id="ig-hl"></div>
+      <div class="ig-tabs"><i class="on"></i><i></i><i></i></div>
       <div class="ig-grid" id="ig-grid"></div>
-    </div></div>
-    <div><ul class="rule-list"><li><b>Row 1</b> · Just announced · Second Wind lineup (loop) · Calendar.</li><li><b>Row 2</b> · On sale now · RY X announce · Statement carousel.</li><li><b>Row 3</b> · Giveaway · THE MAZE lineup · Sold out.</li><li><b>Carousel</b> · cover → lineup → tickets. One format per carousel.</li></ul>
-      <div class="g" style="--c:3;margin-top:24px" id="carousel"></div></div>
+    </div></div><input type="range" class="ph-slide" id="ig-slide" min="0" max="1000" value="0" aria-label="Scroll the grid"><p class="lab">Grid · drag to scroll thirty posts</p></div>
+    <div class="ph-col"><div class="phone tall"><div class="scr ig-story" id="ig-story"></div></div><input type="range" class="ph-slide" id="st-slide" min="0" max="11" value="0" step="1" aria-label="Pick a story"><p class="lab">Stories · they play on their own, or drag</p></div>
+    <div class="ph-col"><div class="phone tall"><div class="scr ig-post" id="ig-post"></div></div><input type="range" class="ph-slide" id="po-slide" min="0" max="7" value="0" step="1" aria-label="Swipe the carousel"><p class="lab">A carousel post · drag to swipe</p></div>
   </div>
+  <div class="sub"><h3>How to plan it<small>Rows of three</small></h3><div class="body"><ul class="rule-list"><li><b>One row, three kinds:</b> an artist photo, a type-led post, a moving background.</li><li><b>Alternate the events:</b> THE MAZE (orange, Quzie) never twice in a row; Second Wind and the other nights carry Lime.</li><li><b>Carousels</b> open type-led (cover), then image, numbers, quote, end card. One format per carousel.</li><li><b>Stories</b> carry the countdown: presale live → tickets live → final release → sold out.</li></ul>
+      <div class="g" style="--c:3;margin-top:24px" id="carousel"></div></div></div>
 </section>
 
 <!-- ============================================================ 12 APPLICATIONS -->
 <section class="sec" id="applications" aria-labelledby="ap-h">
   <div class="sec-h"><span class="n">12 — Applications</span><h2 id="ap-h" class="goo">Out in the world.</h2>
     <p class="note">Street posters, cards, signatures, merch, signage and the website, all from the same four colours and three logos.</p></div>
-  <div class="sub"><h3>Street<small>The Second Wind flyer, wheat-pasted in the Arts District. Venue flyers carry the venue’s logo (ORIGIN) at the bottom.</small></h3>
+  <div class="sub"><h3>Street<small>Wheat-pasted in the Arts District, a run of eight posters, a bus-shelter lightbox playing a story, a billboard. Every piece is our real artwork composited into the photo; the moving ones play.</small></h3>
     <div class="body g" style="--c:2">
-      <div class="card flush"><img class="lb-open" src="assets/mock/street-01.jpg" alt="The Second Wind flyer on a street wall" style="aspect-ratio:4/5;object-fit:cover;width:100%"></div>
-      <div class="card"><ul class="rule-list"><li>Print the feed artwork (4:5) at 18 × 24 in; keep the 64 px margin as bleed-safe.</li><li>Nothing extra on the wall: the flyer is the message.</li></ul><div class="dls"><a class="dl" href="downloads/mockups/minimal-effort_street-01.jpg" download>Street JPG</a></div></div>
+      <div class="card flush"><img class="lb-open" src="assets/mock/street-01.jpg" alt="The Second Wind flyer on a street wall" style="aspect-ratio:880/1168;object-fit:cover;width:100%;display:block"><div class="cap"><span class="lab">One flyer</span><a class="dl" href="downloads/mockups/minimal-effort_street-01.jpg" download>JPG</a></div></div>
+      <div class="card flush"><div class="mock-live" data-screen="shelter"></div><div class="cap"><span class="lab">Bus shelter · the story plays</span><a class="dl" href="downloads/mockups/minimal-effort_shelter.jpg" download>JPG</a></div></div>
+      <div class="card flush"><img class="lb-open" src="assets/mock/posters.jpg" alt="Eight Minimal Effort posters wheat-pasted in a row" style="aspect-ratio:16/9;object-fit:cover;width:100%;display:block"><div class="cap"><span class="lab">A run of eight</span><a class="dl" href="downloads/mockups/minimal-effort_posters.jpg" download>JPG</a></div></div>
+      <div class="card flush"><img class="lb-open" src="assets/mock/billboard.jpg" alt="THE MAZE on a billboard" style="aspect-ratio:16/9;object-fit:cover;width:100%;display:block"><div class="cap"><span class="lab">Billboard · THE MAZE</span><a class="dl" href="downloads/mockups/minimal-effort_billboard.jpg" download>JPG</a></div></div>
+    </div></div>
+  <div class="sub"><h3>At the party<small>The screens on the night: the LED wall runs a shader loop of the ME, the booth panel runs the wordmark, the talk runs the slides, phones run the stories.</small></h3>
+    <div class="body g" style="--c:2">
+      <div class="card flush"><div class="mock-live" data-screen="ledwall"></div><div class="cap"><span class="lab">LED wall · Chrome ME loop</span><span style="display:flex;gap:6px"><a class="dl" href="downloads/mockups/minimal-effort_ledwall.jpg" download>JPG</a><a class="dl" href="assets/mock/led-chrome.mp4" download>Loop MP4</a></span></div></div>
+      <div class="card flush"><div class="mock-live" data-screen="booth"></div><div class="cap"><span class="lab">DJ booth front panel</span><a class="dl" href="downloads/mockups/minimal-effort_booth.jpg" download>JPG</a></div></div>
+      <div class="card flush"><div class="mock-live" data-screen="talk"></div><div class="cap"><span class="lab">A talk · the slides</span><a class="dl" href="downloads/mockups/minimal-effort_talk.jpg" download>JPG</a></div></div>
+      <div class="card flush"><div class="mock-live" data-screen="phone"></div><div class="cap"><span class="lab">Phone · the story</span><a class="dl" href="downloads/mockups/minimal-effort_phone.jpg" download>JPG</a></div></div>
     </div></div>
   <div class="sub"><h3>Business cards<small>3.5 × 2 in, print-ready PDF with bleed</small></h3>
     <div class="body"><div class="g" style="--c:2">
@@ -414,11 +426,10 @@
           <div style="position:absolute;left:4%;right:4%;bottom:6%;display:flex;justify-content:space-between;font:500 1.5cqw/1.4 var(--mono);text-transform:uppercase"><span>Artist · All Day I Dream<br>Second Wind · Jan 2</span><span>01 / 12</span></div>
         </div><div class="cap"><span class="lab">Artist page</span></div></div>
     </div></div>
-  <div class="sub"><h3>Merch &amp; signage<small>With the current mark. Click to open.</small></h3>
-    <div class="body g" style="--c:3">
+  <div class="sub"><h3>Merch<small>With the current mark. Click to open.</small></h3>
+    <div class="body g" style="--c:2">
       <div class="card flush"><img class="lb-open" src="assets/mock/tee.jpg" alt="Black tee with the ME mark" style="aspect-ratio:1;object-fit:cover;width:100%"><div class="cap"><span class="lab">Tee</span><a class="dl" href="downloads/mockups/minimal-effort_tee.jpg" download>JPG</a></div></div>
-      <div class="card flush"><img class="lb-open" src="assets/mock/sign-cube.jpg" alt="Lime cube sign" style="aspect-ratio:1;object-fit:cover;width:100%"><div class="cap"><span class="lab">Cube sign</span><a class="dl" href="downloads/mockups/minimal-effort_sign-cube.jpg" download>JPG</a></div></div>
-      <div class="card flush"><img class="lb-open" src="assets/mock/phone.jpg" alt="Phone with the ME mark" style="aspect-ratio:1;object-fit:cover;width:100%"><div class="cap"><span class="lab">Phone</span><a class="dl" href="downloads/mockups/minimal-effort_phone.jpg" download>JPG</a></div></div>
+      <div class="card"><ul class="rule-list"><li><b>One mark per piece:</b> the ME small on the chest, or MINIMAL EFFORT across the back. Never both.</li><li><b>Colours</b> as on the posts: Ice on Midnight, Midnight on Lime, Midnight on Lilac.</li><li><b>Screens</b> (LED walls, booth panels) play the shader loops, never a static logo for longer than a song.</li></ul></div>
     </div></div>
   <div class="sub"><h3>Profile &amp; app icons<small>Black with a small Lime ME, safe for circle crops</small></h3>
     <div class="body g keep2" style="--c:4">

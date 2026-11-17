@@ -1,0 +1,13 @@
+import { chromium } from 'playwright';
+const b = await chromium.launch({ channel: 'chrome' }); const p = await b.newPage({ viewport: { width: 1500, height: 950 } });
+const errs = []; p.on('pageerror', e => errs.push(e.message)); p.on('console', m => m.type() === 'error' && errs.push(m.text()));
+await p.goto('http://127.0.0.1:8790/builder.html', { waitUntil: 'networkidle' }); await p.waitForTimeout(800);
+await p.click('#tpl [data-v="poster"]'); await p.waitForTimeout(300);
+await p.click('#lay [data-v="mirror"]'); await p.waitForTimeout(1200);
+await p.screenshot({ path: process.argv[2] + '/b1.png' });
+await p.click('#fxm [data-v="ascii"]'); await p.waitForTimeout(1500);
+await p.evaluate(() => document.querySelector('.panel').scrollTop = 600);
+await p.screenshot({ path: process.argv[2] + '/b2.png' });
+await p.click('#tpl [data-v="status"]'); await p.waitForTimeout(800);
+await p.screenshot({ path: process.argv[2] + '/b3.png' });
+console.log(JSON.stringify(errs)); await b.close();

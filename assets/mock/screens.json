@@ -1,0 +1,57 @@
+{
+ "ledwall": {
+  "img": "assets/mock/ledwall.jpg",
+  "mask": "assets/mock/ledwall-mask.png",
+  "aspect": "1168 / 880",
+  "left": 14.298,
+  "top": 16.591,
+  "width": 71.575,
+  "height": 42.273,
+  "video": "assets/mock/led-chrome.mp4"
+ },
+ "booth": {
+  "img": "assets/mock/booth.jpg",
+  "mask": "assets/mock/booth-mask.png",
+  "aspect": "1168 / 880",
+  "left": 2.226,
+  "top": 30.795,
+  "width": 95.548,
+  "height": 40.682,
+  "ticker": true
+ },
+ "talk": {
+  "img": "assets/mock/talk.jpg",
+  "mask": "assets/mock/talk-mask.png",
+  "aspect": "1168 / 880",
+  "left": 29.709,
+  "top": 11.477,
+  "width": 51.627,
+  "height": 43.182,
+  "slides": [
+   "downloads/templates/second-wind_waves_landscape.png",
+   "downloads/templates/the-maze_halloween_landscape.png",
+   "downloads/templates/poster-wall-landscape_landscape.png",
+   "downloads/templates/poster-bands-landscape_landscape.png"
+  ]
+ },
+ "shelter": {
+  "img": "assets/mock/shelter.jpg",
+  "mask": "assets/mock/shelter-mask.png",
+  "aspect": "880 / 1168",
+  "left": 37.273,
+  "top": 38.955,
+  "width": 27.273,
+  "height": 34.332,
+  "video": "assets/mock/shelter.mp4"
+ },
+ "phone": {
+  "img": "assets/mock/phone.jpg",
+  "mask": "assets/mock/phone-mask.png",
+  "aspect": "1364 / 1024",
+  "left": 36.364,
+  "top": 6.445,
+  "width": 28.152,
+  "height": 84.57,
+  "video": "assets/mock/phone.mp4"
+ }
+}

@@ -1,5 +1,6 @@
 [
  {
+  "group": "second-wind",
   "name": "second-wind_waves",
   "template": "lineup",
   "layout": "center",
@@ -12,6 +13,34 @@
   ]
  },
  {
+  "group": "second-wind",
+  "name": "second-wind_chrome",
+  "template": "lineup",
+  "bg": "chrome",
+  "formats": [
+   "feed"
+  ]
+ },
+ {
+  "group": "second-wind",
+  "name": "second-wind_holo-me",
+  "template": "lineup",
+  "bg": "holome",
+  "formats": [
+   "feed"
+  ]
+ },
+ {
+  "group": "second-wind",
+  "name": "second-wind_neon",
+  "template": "lineup",
+  "bg": "neon",
+  "formats": [
+   "feed"
+  ]
+ },
+ {
+  "group": "lineup",
   "name": "lineup-b_rainbow",
   "template": "lineup",
   "layout": "header",
@@ -22,6 +51,7 @@
   ]
  },
  {
+  "group": "lineup",
   "name": "lineup-c_lilac",
   "template": "lineup",
   "layout": "left",
@@ -32,6 +62,7 @@
   ]
  },
  {
+  "group": "lineup",
   "name": "lineup-d_bubbles",
   "template": "lineup",
   "layout": "headliner",
@@ -42,6 +73,7 @@
   ]
  },
  {
+  "group": "lineup",
   "name": "lineup-e_flow",
   "template": "lineup",
   "layout": "split",
@@ -51,6 +83,7 @@
   ]
  },
  {
+  "group": "lineup",
   "name": "lineup-f_bloom",
   "template": "lineup",
   "layout": "bottom",
@@ -60,6 +93,7 @@
   ]
  },
  {
+  "group": "lineup",
   "name": "lineup-lime_spectrum",
   "template": "lineup",
   "bg": "spectrum",
@@ -69,6 +103,7 @@
   ]
  },
  {
+  "group": "lineup",
   "name": "lineup-i_ribbon",
   "template": "lineup",
   "layout": "left",
@@ -79,6 +114,7 @@
   ]
  },
  {
+  "group": "lineup",
   "name": "lineup-j_holo",
   "template": "lineup",
   "layout": "headliner",
@@ -88,6 +124,7 @@
   ]
  },
  {
+  "group": "lineup",
   "name": "lineup-g_half",
   "template": "lineup",
   "layout": "half",
@@ -100,6 +137,7 @@
   ]
  },
  {
+  "group": "lineup",
   "name": "lineup-h_window",
   "template": "lineup",
   "layout": "window",
@@ -112,6 +150,1604 @@
   ]
  },
  {
+  "group": "poster",
+  "name": "poster-halftone",
+  "template": "poster",
+  "layout": "halftone",
+  "formats": [
+   "feed"
+  ]
+ },
+ {
+  "group": "poster",
+  "name": "poster-square",
+  "template": "poster",
+  "layout": "square",
+  "formats": [
+   "feed"
+  ]
+ },
+ {
+  "group": "poster",
+  "name": "poster-glow",
+  "template": "poster",
+  "layout": "glow",
+  "formats": [
+   "feed"
+  ]
+ },
+ {
+  "group": "poster",
+  "name": "poster-soft",
+  "template": "poster",
+  "layout": "soft",
+  "formats": [
+   "feed"
+  ]
+ },
+ {
+  "group": "poster",
+  "name": "poster-corners",
+  "template": "poster",
+  "layout": "corners",
+  "formats": [
+   "feed"
+  ]
+ },
+ {
+  "group": "poster",
+  "name": "poster-stagger",
+  "template": "poster",
+  "layout": "stagger",
+  "formats": [
+   "feed"
+  ]
+ },
+ {
+  "group": "poster",
+  "name": "poster-card",
+  "template": "poster",
+  "layout": "card",
+  "formats": [
+   "feed"
+  ]
+ },
+ {
+  "group": "poster",
+  "name": "poster-column",
+  "template": "poster",
+  "layout": "column",
+  "formats": [
+   "feed"
+  ]
+ },
+ {
+  "group": "poster",
+  "name": "poster-datecard",
+  "template": "poster",
+  "layout": "datecard",
+  "formats": [
+   "feed"
+  ]
+ },
+ {
+  "group": "poster",
+  "name": "poster-collab",
+  "template": "poster",
+  "layout": "collab",
+  "formats": [
+   "feed"
+  ]
+ },
+ {
+  "group": "poster",
+  "name": "poster-mono",
+  "template": "poster",
+  "layout": "mono",
+  "formats": [
+   "feed"
+  ]
+ },
+ {
+  "group": "poster",
+  "name": "poster-gridsheet",
+  "template": "poster",
+  "layout": "gridsheet",
+  "formats": [
+   "feed"
+  ]
+ },
+ {
+  "group": "poster",
+  "name": "poster-collage",
+  "template": "poster",
+  "layout": "collage",
+  "formats": [
+   "feed"
+  ]
+ },
+ {
+  "group": "poster",
+  "name": "poster-plusgrid",
+  "template": "poster",
+  "layout": "plusgrid",
+  "formats": [
+   "feed"
+  ]
+ },
+ {
+  "group": "poster",
+  "name": "poster-wall",
+  "template": "poster",
+  "layout": "wall",
+  "formats": [
+   "feed"
+  ]
+ },
+ {
+  "group": "poster",
+  "name": "poster-portrait",
+  "template": "poster",
+  "layout": "portrait",
+  "formats": [
+   "feed"
+  ]
+ },
+ {
+  "group": "poster",
+  "name": "poster-gallery",
+  "template": "poster",
+  "layout": "gallery",
+  "formats": [
+   "feed"
+  ]
+ },
+ {
+  "group": "poster",
+  "name": "poster-bands",
+  "template": "poster",
+  "layout": "bands",
+  "formats": [
+   "feed"
+  ]
+ },
+ {
+  "group": "poster",
+  "name": "poster-beam",
+  "template": "poster",
+  "layout": "beam",
+  "formats": [
+   "feed"
+  ]
+ },
+ {
+  "group": "poster",
+  "name": "poster-numbers",
+  "template": "poster",
+  "layout": "numbers",
+  "formats": [
+   "feed"
+  ]
+ },
+ {
+  "group": "poster",
+  "name": "poster-bleed",
+  "template": "poster",
+  "layout": "bleed",
+  "formats": [
+   "feed"
+  ]
+ },
+ {
+  "group": "poster",
+  "name": "poster-mirror",
+  "template": "poster",
+  "layout": "mirror",
+  "formats": [
+   "feed"
+  ]
+ },
+ {
+  "group": "poster",
+  "name": "poster-marquee",
+  "template": "poster",
+  "layout": "marquee",
+  "formats": [
+   "feed"
+  ]
+ },
+ {
+  "group": "poster",
+  "name": "poster-wall-long-lineup",
+  "template": "poster",
+  "layout": "wall",
+  "formats": [
+   "feed"
+  ],
+  "title": "Summer Weekender",
+  "date": "Jul 18",
+  "time": "Noon to 4am",
+  "artists": [
+   {
+    "name": "LEE BURRIDGE"
+   },
+   {
+    "name": "RY X",
+    "note": "LIVE"
+   },
+   {
+    "name": "GUY GERBER"
+   },
+   {
+    "name": "JAMIIE"
+   },
+   {
+    "name": "DEER JADE"
+   },
+   {
+    "name": "THE BITAR BROTHERS"
+   },
+   {
+    "name": "LEE BURRIDGE B2B GUY GERBER"
+   },
+   {
+    "name": "RY X",
+    "note": "DJ SET"
+   },
+   {
+    "name": "ME RESIDENTS"
+   },
+   {
+    "name": "SPECIAL GUEST"
+   },
+   {
+    "name": "SUNRISE SET",
+    "note": "LIVE"
+   }
+  ],
+  "venue": [
+   "The Train Station",
+   "Los Angeles"
+  ],
+  "partner": ""
+ },
+ {
+  "group": "poster-sizes",
+  "name": "poster-glow-story",
+  "template": "poster",
+  "layout": "glow",
+  "formats": [
+   "story"
+  ],
+  "title": "Rooftop Sessions",
+  "date": "May 24",
+  "time": "4pm to 11pm",
+  "dow": "Sat",
+  "artists": [
+   {
+    "name": "JAMIIE"
+   },
+   {
+    "name": "DEER JADE"
+   },
+   {
+    "name": "ME RESIDENTS"
+   }
+  ],
+  "venue": [
+   "The Rooftop",
+   "Downtown Los Angeles"
+  ],
+  "tag": "Sunset series",
+  "partner": "",
+  "cw": "lime"
+ },
+ {
+  "group": "poster-sizes",
+  "name": "poster-mirror-story",
+  "template": "poster",
+  "layout": "mirror",
+  "formats": [
+   "story"
+  ]
+ },
+ {
+  "group": "poster-sizes",
+  "name": "poster-stagger-story",
+  "template": "poster",
+  "layout": "stagger",
+  "formats": [
+   "story"
+  ],
+  "event": "THE MAZE",
+  "presenter": "THE MAZE",
+  "partner": "",
+  "date": "OCT 31",
+  "title": "Halloween Night",
+  "time": "8pm to 4am",
+  "artists": [
+   {
+    "name": "GUY GERBER"
+   },
+   {
+    "name": "LEE BURRIDGE"
+   },
+   {
+    "name": "DEER JADE"
+   },
+   {
+    "name": "THE BITAR BROTHERS"
+   }
+  ],
+  "venue": [
+   "The Train Station",
+   "800 N. Alameda St",
+   "Los Angeles, CA"
+  ],
+  "logos": [
+   {
+    "id": "the-maze"
+   }
+  ]
+ },
+ {
+  "group": "poster-sizes",
+  "name": "poster-plusgrid-story",
+  "template": "poster",
+  "layout": "plusgrid",
+  "formats": [
+   "story"
+  ]
+ },
+ {
+  "group": "poster-sizes",
+  "name": "poster-bands-landscape",
+  "template": "poster",
+  "layout": "bands",
+  "formats": [
+   "landscape"
+  ],
+  "title": "Rooftop Sessions",
+  "date": "May 24",
+  "time": "4pm to 11pm",
+  "dow": "Sat",
+  "artists": [
+   {
+    "name": "JAMIIE"
+   },
+   {
+    "name": "DEER JADE"
+   },
+   {
+    "name": "ME RESIDENTS"
+   }
+  ],
+  "venue": [
+   "The Rooftop",
+   "Downtown Los Angeles"
+  ],
+  "tag": "Sunset series",
+  "partner": ""
+ },
+ {
+  "group": "poster-sizes",
+  "name": "poster-wall-landscape",
+  "template": "poster",
+  "layout": "wall",
+  "formats": [
+   "landscape"
+  ],
+  "title": "Summer Weekender",
+  "date": "Jul 18",
+  "time": "Noon to 4am",
+  "artists": [
+   {
+    "name": "LEE BURRIDGE"
+   },
+   {
+    "name": "RY X",
+    "note": "LIVE"
+   },
+   {
+    "name": "GUY GERBER"
+   },
+   {
+    "name": "JAMIIE"
+   },
+   {
+    "name": "DEER JADE"
+   },
+   {
+    "name": "THE BITAR BROTHERS"
+   },
+   {
+    "name": "LEE BURRIDGE B2B GUY GERBER"
+   },
+   {
+    "name": "RY X",
+    "note": "DJ SET"
+   },
+   {
+    "name": "ME RESIDENTS"
+   },
+   {
+    "name": "SPECIAL GUEST"
+   },
+   {
+    "name": "SUNRISE SET",
+    "note": "LIVE"
+   }
+  ],
+  "venue": [
+   "The Train Station",
+   "Los Angeles"
+  ],
+  "partner": ""
+ },
+ {
+  "group": "poster-sizes",
+  "name": "poster-collage-square",
+  "template": "poster",
+  "layout": "collage",
+  "formats": [
+   "square"
+  ]
+ },
+ {
+  "group": "poster-sizes",
+  "name": "poster-bleed-square",
+  "template": "poster",
+  "layout": "bleed",
+  "formats": [
+   "square"
+  ],
+  "title": "Listening Session",
+  "date": "Mar 06",
+  "time": "8pm to 1am",
+  "dow": "Fri",
+  "artists": [
+   {
+    "name": "RY X",
+    "note": "[LIVE]"
+   }
+  ],
+  "venue": [
+   "613 Imperial Street",
+   "Arts District Los Angeles"
+  ],
+  "tag": "Seated · phones away",
+  "partner": ""
+ },
+ {
+  "group": "poster-sizes",
+  "name": "poster-soft-square",
+  "template": "poster",
+  "layout": "soft",
+  "formats": [
+   "square"
+  ],
+  "title": "Rooftop Sessions",
+  "date": "May 24",
+  "time": "4pm to 11pm",
+  "dow": "Sat",
+  "artists": [
+   {
+    "name": "JAMIIE"
+   },
+   {
+    "name": "DEER JADE"
+   },
+   {
+    "name": "ME RESIDENTS"
+   }
+  ],
+  "venue": [
+   "The Rooftop",
+   "Downtown Los Angeles"
+  ],
+  "tag": "Sunset series",
+  "partner": ""
+ },
+ {
+  "group": "poster-sizes",
+  "name": "poster-datecard-square",
+  "template": "poster",
+  "layout": "datecard",
+  "formats": [
+   "square"
+  ],
+  "title": "Listening Session",
+  "date": "Mar 06",
+  "time": "8pm to 1am",
+  "dow": "Fri",
+  "artists": [
+   {
+    "name": "RY X",
+    "note": "[LIVE]"
+   }
+  ],
+  "venue": [
+   "613 Imperial Street",
+   "Arts District Los Angeles"
+  ],
+  "tag": "Seated · phones away",
+  "partner": ""
+ },
+ {
+  "group": "wrapping",
+  "name": "poster-stagger-ls-block",
+  "template": "poster",
+  "layout": "stagger",
+  "formats": [
+   "feed"
+  ],
+  "ls": "block"
+ },
+ {
+  "group": "wrapping",
+  "name": "poster-stagger-ls-tight",
+  "template": "poster",
+  "layout": "stagger",
+  "formats": [
+   "feed"
+  ],
+  "ls": "tight"
+ },
+ {
+  "group": "wrapping",
+  "name": "poster-stagger-ls-glow",
+  "template": "poster",
+  "layout": "stagger",
+  "formats": [
+   "feed"
+  ],
+  "ls": "glow",
+  "bg": "cw",
+  "cw": "lime"
+ },
+ {
+  "group": "wrapping",
+  "name": "poster-stagger-ls-stripe",
+  "template": "poster",
+  "layout": "stagger",
+  "formats": [
+   "feed"
+  ],
+  "ls": "stripe"
+ },
+ {
+  "group": "wrapping",
+  "name": "poster-stagger-ls-dots",
+  "template": "poster",
+  "layout": "stagger",
+  "formats": [
+   "feed"
+  ],
+  "ls": "dots"
+ },
+ {
+  "group": "wrapping",
+  "name": "poster-stagger-ls-soft",
+  "template": "poster",
+  "layout": "stagger",
+  "formats": [
+   "feed"
+  ],
+  "ls": "soft",
+  "bg": "cw",
+  "cw": "paper"
+ },
+ {
+  "group": "wrapping",
+  "name": "poster-stagger-ls-outline",
+  "template": "poster",
+  "layout": "stagger",
+  "formats": [
+   "feed"
+  ],
+  "ls": "outline"
+ },
+ {
+  "group": "wrapping",
+  "name": "poster-stagger-ls-band",
+  "template": "poster",
+  "layout": "stagger",
+  "formats": [
+   "feed"
+  ],
+  "ls": "band"
+ },
+ {
+  "group": "wrapping",
+  "name": "poster-stagger-ls-none",
+  "template": "poster",
+  "layout": "stagger",
+  "formats": [
+   "feed"
+  ],
+  "ls": "none"
+ },
+ {
+  "group": "wrapping",
+  "name": "poster-stagger-ls-tight-lilac",
+  "template": "poster",
+  "layout": "stagger",
+  "formats": [
+   "feed"
+  ],
+  "ls": "tight",
+  "cw": "lilacblock"
+ },
+ {
+  "group": "wrapping",
+  "name": "poster-stagger-ls-dots-ice",
+  "template": "poster",
+  "layout": "stagger",
+  "formats": [
+   "feed"
+  ],
+  "ls": "dots",
+  "cw": "iceblock",
+  "fx": {
+   "mode": "duotone",
+   "grad": "ice",
+   "contrast": 1.3
+  }
+ },
+ {
+  "group": "wrapping",
+  "name": "poster-stagger-ls-band-orange",
+  "template": "poster",
+  "layout": "stagger",
+  "formats": [
+   "feed"
+  ],
+  "ls": "band",
+  "cw": "orange",
+  "bg": "cw"
+ },
+ {
+  "group": "colourways",
+  "name": "poster-glow-cw-midnight",
+  "template": "poster",
+  "layout": "glow",
+  "formats": [
+   "feed"
+  ],
+  "cw": "midnight",
+  "bg": "cw",
+  "ls": "stripe"
+ },
+ {
+  "group": "colourways",
+  "name": "poster-glow-cw-ice",
+  "template": "poster",
+  "layout": "glow",
+  "formats": [
+   "feed"
+  ],
+  "cw": "ice",
+  "bg": "cw",
+  "ls": "glow"
+ },
+ {
+  "group": "colourways",
+  "name": "poster-glow-cw-paper",
+  "template": "poster",
+  "layout": "glow",
+  "formats": [
+   "feed"
+  ],
+  "cw": "paper",
+  "bg": "cw",
+  "ls": "glow"
+ },
+ {
+  "group": "colourways",
+  "name": "poster-glow-cw-lime",
+  "template": "poster",
+  "layout": "glow",
+  "formats": [
+   "feed"
+  ],
+  "cw": "lime",
+  "bg": "cw",
+  "ls": "glow"
+ },
+ {
+  "group": "colourways",
+  "name": "poster-glow-cw-lilac",
+  "template": "poster",
+  "layout": "glow",
+  "formats": [
+   "feed"
+  ],
+  "cw": "lilac",
+  "bg": "cw",
+  "ls": "glow"
+ },
+ {
+  "group": "colourways",
+  "name": "poster-glow-cw-limeblock",
+  "template": "poster",
+  "layout": "glow",
+  "formats": [
+   "feed"
+  ],
+  "cw": "limeblock",
+  "bg": "cw",
+  "ls": "stripe"
+ },
+ {
+  "group": "colourways",
+  "name": "poster-glow-cw-lilacblock",
+  "template": "poster",
+  "layout": "glow",
+  "formats": [
+   "feed"
+  ],
+  "cw": "lilacblock",
+  "bg": "cw",
+  "ls": "stripe"
+ },
+ {
+  "group": "colourways",
+  "name": "poster-glow-cw-iceblock",
+  "template": "poster",
+  "layout": "glow",
+  "formats": [
+   "feed"
+  ],
+  "cw": "iceblock",
+  "bg": "cw",
+  "ls": "stripe"
+ },
+ {
+  "group": "colourways",
+  "name": "poster-glow-cw-night",
+  "template": "poster",
+  "layout": "glow",
+  "formats": [
+   "feed"
+  ],
+  "cw": "night",
+  "bg": "cw",
+  "ls": "stripe"
+ },
+ {
+  "group": "colourways",
+  "name": "poster-glow-cw-grey",
+  "template": "poster",
+  "layout": "glow",
+  "formats": [
+   "feed"
+  ],
+  "cw": "grey",
+  "bg": "cw",
+  "ls": "stripe"
+ },
+ {
+  "group": "colourways",
+  "name": "poster-glow-cw-iron",
+  "template": "poster",
+  "layout": "glow",
+  "formats": [
+   "feed"
+  ],
+  "cw": "iron",
+  "bg": "cw",
+  "ls": "stripe"
+ },
+ {
+  "group": "colourways",
+  "name": "poster-glow-cw-orange",
+  "template": "poster",
+  "layout": "glow",
+  "formats": [
+   "feed"
+  ],
+  "cw": "orange",
+  "bg": "cw",
+  "ls": "glow"
+ },
+ {
+  "group": "effects",
+  "name": "poster-portrait-fx-gradmap",
+  "template": "poster",
+  "layout": "portrait",
+  "formats": [
+   "feed"
+  ],
+  "bg": "fx",
+  "fx": {
+   "mode": "gradmap",
+   "grad": "lime-lilac",
+   "cell": 10,
+   "contrast": 1.25,
+   "brightness": 0,
+   "grain": 0.1
+  },
+  "photo": "ry-x",
+  "shapes": [
+   "cross"
+  ],
+  "cw": "night",
+  "artists": [
+   {
+    "name": "LEE BURRIDGE"
+   }
+  ]
+ },
+ {
+  "group": "effects",
+  "name": "poster-portrait-fx-duotone",
+  "template": "poster",
+  "layout": "portrait",
+  "formats": [
+   "feed"
+  ],
+  "bg": "fx",
+  "fx": {
+   "mode": "duotone",
+   "grad": "acid",
+   "cell": 10,
+   "contrast": 1.25,
+   "brightness": 0,
+   "grain": 0.1
+  },
+  "photo": "lee-burridge-2",
+  "shapes": [
+   "cross"
+  ],
+  "cw": "limeblock",
+  "artists": [
+   {
+    "name": "RY X"
+   }
+  ]
+ },
+ {
+  "group": "effects",
+  "name": "poster-portrait-fx-posterize",
+  "template": "poster",
+  "layout": "portrait",
+  "formats": [
+   "feed"
+  ],
+  "bg": "fx",
+  "fx": {
+   "mode": "posterize",
+   "grad": "thermal",
+   "cell": 10,
+   "contrast": 1.25,
+   "brightness": 0,
+   "grain": 0.1
+  },
+  "photo": "jamiie",
+  "shapes": [
+   "cross"
+  ],
+  "cw": "night",
+  "artists": [
+   {
+    "name": "JAMIIE"
+   }
+  ]
+ },
+ {
+  "group": "effects",
+  "name": "poster-portrait-fx-halftone",
+  "template": "poster",
+  "layout": "portrait",
+  "formats": [
+   "feed"
+  ],
+  "bg": "fx",
+  "fx": {
+   "mode": "halftone",
+   "grad": "mono",
+   "cell": 10,
+   "contrast": 1.25,
+   "brightness": 0,
+   "grain": 0.1
+  },
+  "photo": "lee-burridge-3",
+  "shapes": [
+   "cross"
+  ],
+  "cw": "limeblock",
+  "artists": [
+   {
+    "name": "LEE BURRIDGE"
+   }
+  ]
+ },
+ {
+  "group": "effects",
+  "name": "poster-portrait-fx-dots",
+  "template": "poster",
+  "layout": "portrait",
+  "formats": [
+   "feed"
+  ],
+  "bg": "fx",
+  "fx": {
+   "mode": "dots",
+   "grad": "lilac",
+   "cell": 10,
+   "contrast": 1.6,
+   "brightness": 0.12,
+   "grain": 0.1
+  },
+  "photo": "ry-x",
+  "shapes": [
+   "cross"
+  ],
+  "cw": "night",
+  "artists": [
+   {
+    "name": "RY X"
+   }
+  ]
+ },
+ {
+  "group": "effects",
+  "name": "poster-portrait-fx-dither",
+  "template": "poster",
+  "layout": "portrait",
+  "formats": [
+   "feed"
+  ],
+  "bg": "fx",
+  "fx": {
+   "mode": "dither",
+   "grad": "night-lime",
+   "cell": 10,
+   "contrast": 1.25,
+   "brightness": 0,
+   "grain": 0.1
+  },
+  "photo": "party-01",
+  "shapes": [
+   "cross"
+  ],
+  "cw": "limeblock",
+  "artists": [
+   {
+    "name": "JAMIIE"
+   }
+  ]
+ },
+ {
+  "group": "effects",
+  "name": "poster-portrait-fx-ascii",
+  "template": "poster",
+  "layout": "portrait",
+  "formats": [
+   "feed"
+  ],
+  "bg": "fx",
+  "fx": {
+   "mode": "ascii",
+   "grad": "acid",
+   "cell": 13,
+   "contrast": 1.6,
+   "brightness": 0.12,
+   "grain": 0.1
+  },
+  "photo": "lee-burridge-1",
+  "shapes": [
+   "cross"
+  ],
+  "cw": "night",
+  "artists": [
+   {
+    "name": "LEE BURRIDGE"
+   }
+  ]
+ },
+ {
+  "group": "effects",
+  "name": "poster-portrait-fx-glyph",
+  "template": "poster",
+  "layout": "portrait",
+  "formats": [
+   "feed"
+  ],
+  "bg": "fx",
+  "fx": {
+   "mode": "glyph",
+   "grad": "ice",
+   "cell": 13,
+   "contrast": 1.6,
+   "brightness": 0.12,
+   "grain": 0.1
+  },
+  "photo": "party-05",
+  "shapes": [
+   "cross"
+  ],
+  "cw": "limeblock",
+  "artists": [
+   {
+    "name": "RY X"
+   }
+  ]
+ },
+ {
+  "group": "effects",
+  "name": "poster-portrait-fx-pixel",
+  "template": "poster",
+  "layout": "portrait",
+  "formats": [
+   "feed"
+  ],
+  "bg": "fx",
+  "fx": {
+   "mode": "pixel",
+   "grad": "thermal",
+   "cell": 16,
+   "contrast": 1.25,
+   "brightness": 0,
+   "grain": 0.1
+  },
+  "photo": "party-07",
+  "shapes": [
+   "cross"
+  ],
+  "cw": "night",
+  "artists": [
+   {
+    "name": "JAMIIE"
+   }
+  ]
+ },
+ {
+  "group": "effects",
+  "name": "poster-portrait-fx-lines",
+  "template": "poster",
+  "layout": "portrait",
+  "formats": [
+   "feed"
+  ],
+  "bg": "fx",
+  "fx": {
+   "mode": "lines",
+   "grad": "blue",
+   "cell": 10,
+   "contrast": 1.25,
+   "brightness": 0,
+   "grain": 0.1
+  },
+  "photo": "jamiie",
+  "shapes": [
+   "cross"
+  ],
+  "cw": "limeblock",
+  "artists": [
+   {
+    "name": "LEE BURRIDGE"
+   }
+  ]
+ },
+ {
+  "group": "effects",
+  "name": "poster-portrait-fx-thermal",
+  "template": "poster",
+  "layout": "portrait",
+  "formats": [
+   "feed"
+  ],
+  "bg": "fx",
+  "fx": {
+   "mode": "thermal",
+   "grad": "thermal",
+   "cell": 10,
+   "contrast": 1.25,
+   "brightness": 0,
+   "grain": 0.1
+  },
+  "photo": "lee-burridge-2",
+  "shapes": [
+   "cross"
+  ],
+  "cw": "night",
+  "artists": [
+   {
+    "name": "RY X"
+   }
+  ]
+ },
+ {
+  "group": "effects",
+  "name": "poster-portrait-fx-ascii-word",
+  "template": "poster",
+  "layout": "portrait",
+  "formats": [
+   "feed"
+  ],
+  "bg": "fx",
+  "fx": {
+   "mode": "ascii",
+   "grad": "ember",
+   "cell": 13,
+   "contrast": 1.6,
+   "brightness": 0.12,
+   "grain": 0.1,
+   "chars": " MNMLEFFRT"
+  },
+  "photo": "party-02",
+  "shapes": [
+   "cross"
+  ],
+  "cw": "limeblock",
+  "artists": [
+   {
+    "name": "JAMIIE"
+   }
+  ]
+ },
+ {
+  "group": "shapes",
+  "name": "poster-bleed-shape-cross",
+  "template": "poster",
+  "layout": "bleed",
+  "formats": [
+   "feed"
+  ],
+  "shapes": [
+   "cross"
+  ],
+  "cw": "paper"
+ },
+ {
+  "group": "shapes",
+  "name": "poster-bleed-shape-plus",
+  "template": "poster",
+  "layout": "bleed",
+  "formats": [
+   "feed"
+  ],
+  "shapes": [
+   "plus"
+  ],
+  "cw": "ice"
+ },
+ {
+  "group": "shapes",
+  "name": "poster-bleed-shape-corners",
+  "template": "poster",
+  "layout": "bleed",
+  "formats": [
+   "feed"
+  ],
+  "shapes": [
+   "corners"
+  ],
+  "cw": "lime"
+ },
+ {
+  "group": "shapes",
+  "name": "poster-bleed-shape-grid",
+  "template": "poster",
+  "layout": "bleed",
+  "formats": [
+   "feed"
+  ],
+  "shapes": [
+   "grid"
+  ],
+  "cw": "lilac"
+ },
+ {
+  "group": "shapes",
+  "name": "poster-bleed-shape-rings",
+  "template": "poster",
+  "layout": "bleed",
+  "formats": [
+   "feed"
+  ],
+  "shapes": [
+   "rings"
+  ],
+  "cw": "paper"
+ },
+ {
+  "group": "shapes",
+  "name": "poster-bleed-shape-vinyl",
+  "template": "poster",
+  "layout": "bleed",
+  "formats": [
+   "feed"
+  ],
+  "shapes": [
+   "vinyl"
+  ],
+  "cw": "ice"
+ },
+ {
+  "group": "shapes",
+  "name": "poster-bleed-shape-square",
+  "template": "poster",
+  "layout": "bleed",
+  "formats": [
+   "feed"
+  ],
+  "shapes": [
+   "square"
+  ],
+  "cw": "lime"
+ },
+ {
+  "group": "shapes",
+  "name": "poster-bleed-shape-checker",
+  "template": "poster",
+  "layout": "bleed",
+  "formats": [
+   "feed"
+  ],
+  "shapes": [
+   "checker"
+  ],
+  "cw": "lilac"
+ },
+ {
+  "group": "shapes",
+  "name": "poster-bleed-shape-blocks",
+  "template": "poster",
+  "layout": "bleed",
+  "formats": [
+   "feed"
+  ],
+  "shapes": [
+   "blocks"
+  ],
+  "cw": "paper"
+ },
+ {
+  "group": "shapes",
+  "name": "poster-bleed-shape-trail",
+  "template": "poster",
+  "layout": "bleed",
+  "formats": [
+   "feed"
+  ],
+  "shapes": [
+   "trail"
+  ],
+  "cw": "ice"
+ },
+ {
+  "group": "shapes",
+  "name": "poster-bleed-shape-beam",
+  "template": "poster",
+  "layout": "bleed",
+  "formats": [
+   "feed"
+  ],
+  "shapes": [
+   "beam"
+  ],
+  "cw": "lime",
+  "shapeColor": ""
+ },
+ {
+  "group": "shapes",
+  "name": "poster-bleed-shape-mark",
+  "template": "poster",
+  "layout": "bleed",
+  "formats": [
+   "feed"
+  ],
+  "shapes": [
+   "mark"
+  ],
+  "cw": "lilac",
+  "shapeColor": ""
+ },
+ {
+  "group": "quzie",
+  "name": "poster-wall-quzie",
+  "template": "poster",
+  "layout": "wall",
+  "formats": [
+   "feed"
+  ],
+  "font": "quzie",
+  "title": "Summer Weekender",
+  "date": "Jul 18",
+  "time": "Noon to 4am",
+  "artists": [
+   {
+    "name": "LEE BURRIDGE"
+   },
+   {
+    "name": "RY X",
+    "note": "LIVE"
+   },
+   {
+    "name": "GUY GERBER"
+   },
+   {
+    "name": "JAMIIE"
+   },
+   {
+    "name": "DEER JADE"
+   },
+   {
+    "name": "THE BITAR BROTHERS"
+   },
+   {
+    "name": "LEE BURRIDGE B2B GUY GERBER"
+   },
+   {
+    "name": "RY X",
+    "note": "DJ SET"
+   },
+   {
+    "name": "ME RESIDENTS"
+   },
+   {
+    "name": "SPECIAL GUEST"
+   },
+   {
+    "name": "SUNRISE SET",
+    "note": "LIVE"
+   }
+  ],
+  "venue": [
+   "The Train Station",
+   "Los Angeles"
+  ],
+  "partner": ""
+ },
+ {
+  "group": "quzie",
+  "name": "poster-stagger-quzie-c",
+  "template": "poster",
+  "layout": "stagger",
+  "formats": [
+   "feed"
+  ],
+  "font": "quzie-c"
+ },
+ {
+  "group": "quzie",
+  "name": "poster-plusgrid-quzie",
+  "template": "poster",
+  "layout": "plusgrid",
+  "formats": [
+   "feed"
+  ],
+  "font": "quzie"
+ },
+ {
+  "group": "quzie",
+  "name": "poster-glow-quzie-w",
+  "template": "poster",
+  "layout": "glow",
+  "formats": [
+   "feed"
+  ],
+  "font": "quzie-w",
+  "cw": "lime",
+  "ls": "glow"
+ },
+ {
+  "group": "quzie",
+  "name": "poster-bands-quzie",
+  "template": "poster",
+  "layout": "bands",
+  "formats": [
+   "feed"
+  ],
+  "font": "quzie",
+  "event": "THE MAZE",
+  "presenter": "THE MAZE",
+  "partner": "",
+  "date": "OCT 31",
+  "title": "Halloween Night",
+  "time": "8pm to 4am",
+  "artists": [
+   {
+    "name": "GUY GERBER"
+   },
+   {
+    "name": "LEE BURRIDGE"
+   },
+   {
+    "name": "DEER JADE"
+   },
+   {
+    "name": "THE BITAR BROTHERS"
+   }
+  ],
+  "venue": [
+   "The Train Station",
+   "800 N. Alameda St",
+   "Los Angeles, CA"
+  ],
+  "logos": [
+   {
+    "id": "the-maze"
+   }
+  ]
+ },
+ {
+  "group": "quzie",
+  "name": "poster-numbers-quzie-c",
+  "template": "poster",
+  "layout": "numbers",
+  "formats": [
+   "feed"
+  ],
+  "font": "quzie-c"
+ },
+ {
+  "group": "quzie",
+  "name": "poster-collage-mono",
+  "template": "poster",
+  "layout": "collage",
+  "formats": [
+   "feed"
+  ],
+  "font": "mono"
+ },
+ {
+  "group": "quzie",
+  "name": "poster-corners-quzie",
+  "template": "poster",
+  "layout": "corners",
+  "formats": [
+   "feed"
+  ],
+  "font": "quzie"
+ },
+ {
+  "group": "animated",
+  "name": "poster-soft-anim-blur",
+  "template": "poster",
+  "layout": "soft",
+  "formats": [
+   "feed"
+  ],
+  "anim": "blur"
+ },
+ {
+  "group": "animated",
+  "name": "poster-stagger-anim-rise",
+  "template": "poster",
+  "layout": "stagger",
+  "formats": [
+   "feed"
+  ],
+  "anim": "rise"
+ },
+ {
+  "group": "animated",
+  "name": "poster-glow-anim-wipe",
+  "template": "poster",
+  "layout": "glow",
+  "formats": [
+   "feed"
+  ],
+  "anim": "wipe",
+  "cw": "lime"
+ },
+ {
+  "group": "animated",
+  "name": "poster-wall-anim-type",
+  "template": "poster",
+  "layout": "wall",
+  "formats": [
+   "feed"
+  ],
+  "anim": "type",
+  "title": "Summer Weekender",
+  "date": "Jul 18",
+  "time": "Noon to 4am",
+  "artists": [
+   {
+    "name": "LEE BURRIDGE"
+   },
+   {
+    "name": "RY X",
+    "note": "LIVE"
+   },
+   {
+    "name": "GUY GERBER"
+   },
+   {
+    "name": "JAMIIE"
+   },
+   {
+    "name": "DEER JADE"
+   },
+   {
+    "name": "THE BITAR BROTHERS"
+   },
+   {
+    "name": "LEE BURRIDGE B2B GUY GERBER"
+   },
+   {
+    "name": "RY X",
+    "note": "DJ SET"
+   },
+   {
+    "name": "ME RESIDENTS"
+   },
+   {
+    "name": "SPECIAL GUEST"
+   },
+   {
+    "name": "SUNRISE SET",
+    "note": "LIVE"
+   }
+  ],
+  "venue": [
+   "The Train Station",
+   "Los Angeles"
+  ],
+  "partner": ""
+ },
+ {
+  "group": "animated",
+  "name": "poster-plusgrid-anim-flicker",
+  "template": "poster",
+  "layout": "plusgrid",
+  "formats": [
+   "feed"
+  ],
+  "anim": "flicker"
+ },
+ {
+  "group": "animated",
+  "name": "poster-bands-anim-drift",
+  "template": "poster",
+  "layout": "bands",
+  "formats": [
+   "feed"
+  ],
+  "anim": "drift"
+ },
+ {
+  "group": "animated",
+  "name": "poster-portrait-anim-ascii",
+  "template": "poster",
+  "layout": "portrait",
+  "formats": [
+   "feed"
+  ],
+  "bg": "fx",
+  "fx": {
+   "mode": "ascii",
+   "grad": "acid",
+   "cell": 13,
+   "contrast": 1.3
+  },
+  "photo": "lee-burridge-1",
+  "anim": "blur"
+ },
+ {
+  "group": "animated",
+  "name": "poster-mono-anim-dither",
+  "template": "poster",
+  "layout": "mono",
+  "formats": [
+   "feed"
+  ],
+  "bg": "fx",
+  "fx": {
+   "mode": "dither",
+   "grad": "night-lime",
+   "cell": 7,
+   "contrast": 1.3
+  },
+  "photo": "party-01",
+  "anim": "rise"
+ },
+ {
+  "group": "maze",
   "name": "the-maze_halloween",
   "template": "maze",
   "layout": "orange",
@@ -144,6 +1780,7 @@
   ]
  },
  {
+  "group": "maze",
   "name": "the-maze_block-party",
   "template": "maze",
   "layout": "violet",
@@ -178,6 +1815,7 @@
   ]
  },
  {
+  "group": "maze",
   "name": "the-maze_night",
   "template": "maze",
   "layout": "night",
@@ -207,6 +1845,547 @@
   ]
  },
  {
+  "group": "maze",
+  "name": "the-maze_support-line",
+  "template": "maze",
+  "labels": false,
+  "date": "OCT 31",
+  "title": "HALLOWEEN NIGHT",
+  "artists": [
+   {
+    "name": "GUY GERBER"
+   },
+   {
+    "name": "LEE BURRIDGE"
+   },
+   {
+    "name": "DEER JADE"
+   }
+  ],
+  "venue": [
+   "THE TRAIN STATION",
+   "800 N. Alameda St. Los Angeles, CA"
+  ],
+  "layout": "orange",
+  "pillPos": "above",
+  "support": "THE BITAR BROTHERS",
+  "formats": [
+   "feed"
+  ],
+  "seed": 11
+ },
+ {
+  "group": "maze",
+  "name": "the-maze_acid-lime",
+  "template": "maze",
+  "labels": false,
+  "date": "DEC 12",
+  "title": "WINTER SOLSTICE",
+  "artists": [
+   {
+    "name": "GUY GERBER"
+   },
+   {
+    "name": "LEE BURRIDGE"
+   },
+   {
+    "name": "DEER JADE"
+   },
+   {
+    "name": "THE BITAR BROTHERS"
+   }
+  ],
+  "venue": [
+   "THE TRAIN STATION",
+   "800 N. Alameda St. Los Angeles, CA"
+  ],
+  "layout": "lime",
+  "formats": [
+   "feed"
+  ],
+  "seed": 4
+ },
+ {
+  "group": "maze",
+  "name": "the-maze_ice",
+  "template": "maze",
+  "labels": false,
+  "date": "FEB 14",
+  "title": "LOVERS",
+  "artists": [
+   {
+    "name": "GUY GERBER"
+   },
+   {
+    "name": "LEE BURRIDGE"
+   },
+   {
+    "name": "DEER JADE"
+   },
+   {
+    "name": "THE BITAR BROTHERS"
+   }
+  ],
+  "venue": [
+   "THE TRAIN STATION",
+   "800 N. Alameda St. Los Angeles, CA"
+  ],
+  "layout": "ice",
+  "formats": [
+   "feed"
+  ],
+  "seed": 19
+ },
+ {
+  "group": "formats",
+  "name": "timetable-rows",
+  "template": "timetable",
+  "layout": "rows",
+  "slots": [
+   {
+    "t": "16:00",
+    "n": "ME RESIDENTS",
+    "st": "Terrace"
+   },
+   {
+    "t": "18:00",
+    "n": "JAMIIE",
+    "st": "Terrace"
+   },
+   {
+    "t": "20:00",
+    "n": "DEER JADE",
+    "st": "Main room"
+   },
+   {
+    "t": "22:00",
+    "n": "RY X [LIVE]",
+    "st": "Main room"
+   },
+   {
+    "t": "23:30",
+    "n": "LEE BURRIDGE",
+    "st": "Main room"
+   },
+   {
+    "t": "02:00",
+    "n": "GUY GERBER",
+    "st": "Main room"
+   }
+  ],
+  "formats": [
+   "feed"
+  ]
+ },
+ {
+  "group": "formats",
+  "name": "timetable-faces",
+  "template": "timetable",
+  "layout": "faces",
+  "slots": [
+   {
+    "t": "16:00",
+    "n": "ME RESIDENTS",
+    "st": "Terrace"
+   },
+   {
+    "t": "18:00",
+    "n": "JAMIIE",
+    "st": "Terrace"
+   },
+   {
+    "t": "20:00",
+    "n": "DEER JADE",
+    "st": "Main room"
+   },
+   {
+    "t": "22:00",
+    "n": "RY X [LIVE]",
+    "st": "Main room"
+   },
+   {
+    "t": "23:30",
+    "n": "LEE BURRIDGE",
+    "st": "Main room"
+   },
+   {
+    "t": "02:00",
+    "n": "GUY GERBER",
+    "st": "Main room"
+   }
+  ],
+  "formats": [
+   "feed"
+  ]
+ },
+ {
+  "group": "formats",
+  "name": "timetable-big",
+  "template": "timetable",
+  "layout": "big",
+  "slots": [
+   {
+    "t": "16:00",
+    "n": "ME RESIDENTS",
+    "st": "Terrace"
+   },
+   {
+    "t": "18:00",
+    "n": "JAMIIE",
+    "st": "Terrace"
+   },
+   {
+    "t": "20:00",
+    "n": "DEER JADE",
+    "st": "Main room"
+   },
+   {
+    "t": "22:00",
+    "n": "RY X [LIVE]",
+    "st": "Main room"
+   },
+   {
+    "t": "23:30",
+    "n": "LEE BURRIDGE",
+    "st": "Main room"
+   },
+   {
+    "t": "02:00",
+    "n": "GUY GERBER",
+    "st": "Main room"
+   }
+  ],
+  "formats": [
+   "feed"
+  ]
+ },
+ {
+  "group": "formats",
+  "name": "timetable-rows-story",
+  "template": "timetable",
+  "layout": "rows",
+  "slots": [
+   {
+    "t": "16:00",
+    "n": "ME RESIDENTS",
+    "st": "Terrace"
+   },
+   {
+    "t": "18:00",
+    "n": "JAMIIE",
+    "st": "Terrace"
+   },
+   {
+    "t": "20:00",
+    "n": "DEER JADE",
+    "st": "Main room"
+   },
+   {
+    "t": "22:00",
+    "n": "RY X [LIVE]",
+    "st": "Main room"
+   },
+   {
+    "t": "23:30",
+    "n": "LEE BURRIDGE",
+    "st": "Main room"
+   },
+   {
+    "t": "02:00",
+    "n": "GUY GERBER",
+    "st": "Main room"
+   }
+  ],
+  "formats": [
+   "story"
+  ]
+ },
+ {
+  "group": "formats",
+  "name": "tour-columns",
+  "template": "tour",
+  "layout": "columns",
+  "title": "Minimal Effort",
+  "subtitle": "winter series",
+  "formats": [
+   "feed",
+   "story"
+  ]
+ },
+ {
+  "group": "formats",
+  "name": "tour-residency",
+  "template": "tour",
+  "layout": "residency",
+  "title": "Second Wind",
+  "subtitle": "Residency",
+  "formats": [
+   "feed"
+  ]
+ },
+ {
+  "group": "formats",
+  "name": "tour-date",
+  "template": "tour",
+  "layout": "date",
+  "formats": [
+   "feed"
+  ]
+ },
+ {
+  "group": "formats",
+  "name": "menu-stagger",
+  "template": "menu",
+  "layout": "stagger",
+  "title": "Bar",
+  "formats": [
+   "feed",
+   "story"
+  ]
+ },
+ {
+  "group": "formats",
+  "name": "menu-list",
+  "template": "menu",
+  "layout": "list",
+  "title": "Bar",
+  "formats": [
+   "feed",
+   "square"
+  ]
+ },
+ {
+  "group": "formats",
+  "name": "release-vinyl",
+  "template": "release",
+  "layout": "vinyl",
+  "formats": [
+   "square",
+   "feed"
+  ]
+ },
+ {
+  "group": "formats",
+  "name": "release-sleeve",
+  "template": "release",
+  "layout": "sleeve",
+  "artists": [
+   {
+    "name": "LEE BURRIDGE"
+   }
+  ],
+  "formats": [
+   "square",
+   "feed"
+  ]
+ },
+ {
+  "group": "carousel-case",
+  "name": "carousel-case-01_cover",
+  "template": "slide",
+  "layout": "cover",
+  "formats": [
+   "feed"
+  ]
+ },
+ {
+  "group": "carousel-case",
+  "name": "carousel-case-02_text",
+  "template": "slide",
+  "layout": "text",
+  "formats": [
+   "feed"
+  ],
+  "head": "The brief",
+  "page": "02 / 08"
+ },
+ {
+  "group": "carousel-case",
+  "name": "carousel-case-03_image",
+  "template": "slide",
+  "layout": "image",
+  "formats": [
+   "feed"
+  ],
+  "photo": "party-03",
+  "caption": "Room one, 1:40am",
+  "page": "03 / 08"
+ },
+ {
+  "group": "carousel-case",
+  "name": "carousel-case-04_stats",
+  "template": "slide",
+  "layout": "stats",
+  "formats": [
+   "feed"
+  ],
+  "page": "04 / 08"
+ },
+ {
+  "group": "carousel-case",
+  "name": "carousel-case-05_quote",
+  "template": "slide",
+  "layout": "quote",
+  "formats": [
+   "feed"
+  ],
+  "page": "05 / 08"
+ },
+ {
+  "group": "carousel-case",
+  "name": "carousel-case-06_list",
+  "template": "slide",
+  "layout": "list",
+  "formats": [
+   "feed"
+  ],
+  "page": "06 / 08"
+ },
+ {
+  "group": "carousel-case",
+  "name": "carousel-case-07_image",
+  "template": "slide",
+  "layout": "image",
+  "formats": [
+   "feed"
+  ],
+  "photo": "party-06",
+  "caption": "The terrace at sunrise",
+  "page": "07 / 08"
+ },
+ {
+  "group": "carousel-case",
+  "name": "carousel-case-08_end",
+  "template": "slide",
+  "layout": "end",
+  "formats": [
+   "feed"
+  ],
+  "page": "08 / 08"
+ },
+ {
+  "group": "carousel-article",
+  "name": "carousel-article-01_cover",
+  "template": "slide",
+  "layout": "cover",
+  "formats": [
+   "square"
+  ],
+  "kicker": "Journal",
+  "head": "Why the\nroom comes\nfirst",
+  "cw": "lime",
+  "bg": "cw",
+  "page": "01 / 08"
+ },
+ {
+  "group": "carousel-article",
+  "name": "carousel-article-02_text",
+  "template": "slide",
+  "layout": "text",
+  "formats": [
+   "square"
+  ],
+  "kicker": "Journal",
+  "head": "Sound before size",
+  "body": "A small room with a good system beats a big room with a loud one. We pick the venue for how it sounds at 3am, not how it looks on a flyer.",
+  "cw": "midnight",
+  "page": "02 / 08"
+ },
+ {
+  "group": "carousel-article",
+  "name": "carousel-article-03_quote",
+  "template": "slide",
+  "layout": "quote",
+  "formats": [
+   "square"
+  ],
+  "quote": "Turn it down until people lean in.",
+  "by": "Our sound engineer",
+  "cw": "lime",
+  "page": "03 / 08"
+ },
+ {
+  "group": "carousel-article",
+  "name": "carousel-article-04_image",
+  "template": "slide",
+  "layout": "image",
+  "formats": [
+   "square"
+  ],
+  "photo": "venue-01",
+  "caption": "The Train Station before doors",
+  "page": "04 / 08",
+  "cw": "iron"
+ },
+ {
+  "group": "carousel-article",
+  "name": "carousel-article-05_list",
+  "template": "slide",
+  "layout": "list",
+  "formats": [
+   "square"
+  ],
+  "kicker": "The rules",
+  "cw": "lilac",
+  "page": "05 / 08"
+ },
+ {
+  "group": "carousel-article",
+  "name": "carousel-article-06_stats",
+  "template": "slide",
+  "layout": "stats",
+  "formats": [
+   "square"
+  ],
+  "kicker": "One room",
+  "stats": [
+   {
+    "n": "450",
+    "l": "capacity, never oversold"
+   },
+   {
+    "n": "4",
+    "l": "speaker stacks, no line array"
+   },
+   {
+    "n": "24",
+    "l": "bit, the only number that matters"
+   },
+   {
+    "n": "1",
+    "l": "light"
+   }
+  ],
+  "cw": "ice",
+  "page": "06 / 08"
+ },
+ {
+  "group": "carousel-article",
+  "name": "carousel-article-07_quote",
+  "template": "slide",
+  "layout": "quote",
+  "formats": [
+   "square"
+  ],
+  "quote": "It felt like a living room with a better record collection.",
+  "by": "A guest, Second Wind",
+  "cw": "midnight",
+  "page": "07 / 08"
+ },
+ {
+  "group": "carousel-article",
+  "name": "carousel-article-08_end",
+  "template": "slide",
+  "layout": "end",
+  "formats": [
+   "square"
+  ],
+  "cw": "midnight",
+  "bg": "glass",
+  "page": "08 / 08"
+ },
+ {
+  "group": "announce",
   "name": "announce_lee-burridge",
   "template": "announce",
   "photo": "lee-burridge-1",
@@ -221,6 +2400,7 @@
   ]
  },
  {
+  "group": "announce",
   "name": "announce_ry-x",
   "template": "announce",
   "photo": "ry-x",
@@ -236,6 +2416,7 @@
   ]
  },
  {
+  "group": "announce",
   "name": "announce_jamiie",
   "template": "announce",
   "photo": "jamiie",
@@ -251,6 +2432,23 @@
   ]
  },
  {
+  "group": "announce",
+  "name": "announce_lee-burridge-blur",
+  "template": "announce",
+  "photo": "lee-burridge-2",
+  "artists": [
+   {
+    "name": "LEE BURRIDGE"
+   }
+  ],
+  "anim": "blur",
+  "formats": [
+   "feed",
+   "story"
+  ]
+ },
+ {
+  "group": "giveaway",
   "name": "giveaway_party",
   "template": "giveaway",
   "bg": "midnight",
@@ -262,6 +2460,7 @@
   ]
  },
  {
+  "group": "giveaway",
   "name": "giveaway_night",
   "template": "giveaway",
   "bg": "midnight",
@@ -272,6 +2471,7 @@
   ]
  },
  {
+  "group": "giveaway",
   "name": "giveaway_lime",
   "template": "giveaway",
   "bg": "limesolid",
@@ -282,6 +2482,7 @@
   ]
  },
  {
+  "group": "giveaway",
   "name": "giveaway_full",
   "template": "giveaway",
   "layout": "full",
@@ -293,6 +2494,7 @@
   ]
  },
  {
+  "group": "giveaway",
   "name": "giveaway_ticket",
   "template": "giveaway",
   "layout": "ticket",
@@ -304,6 +2506,7 @@
   ]
  },
  {
+  "group": "giveaway",
   "name": "giveaway_ticket-lilac",
   "template": "giveaway",
   "layout": "ticket",
@@ -315,8 +2518,44 @@
   ]
  },
  {
+  "group": "giveaway",
+  "name": "giveaway_ticket-ascii",
+  "template": "giveaway",
+  "layout": "ticket",
+  "bg": "fx",
+  "fx": {
+   "mode": "ascii",
+   "grad": "acid",
+   "cell": 12,
+   "contrast": 1.3
+  },
+  "photo": "party-03",
+  "formats": [
+   "feed"
+  ]
+ },
+ {
+  "group": "giveaway",
+  "name": "giveaway_full-dither",
+  "template": "giveaway",
+  "layout": "full",
+  "bg": "fx",
+  "fx": {
+   "mode": "dither",
+   "grad": "lilac",
+   "cell": 6,
+   "contrast": 1.3
+  },
+  "photo": "party-02",
+  "formats": [
+   "feed"
+  ]
+ },
+ {
+  "group": "status",
   "name": "status_sold-out",
   "template": "status",
+  "layout": "centre",
   "status": "SOLD OUT",
   "bg": "rainbow",
   "formats": [
@@ -325,143 +2564,339 @@
   ]
  },
  {
-  "name": "status_on-sale-now",
-  "template": "status",
-  "status": "ON SALE NOW",
-  "bg": "lime",
-  "formats": [
-   "feed",
-   "story"
-  ]
- },
- {
+  "group": "status",
   "name": "status_presale-live",
   "template": "status",
+  "layout": "low",
   "status": "PRESALE LIVE",
   "bg": "lilac",
-  "cta": "Presale — link in bio",
   "formats": [
    "feed",
    "story"
   ]
  },
  {
-  "name": "status_final-release",
-  "template": "status",
-  "status": "FINAL RELEASE",
-  "bg": "spectrum",
-  "formats": [
-   "feed",
-   "story"
-  ]
- },
- {
+  "group": "status",
   "name": "status_tickets-live",
   "template": "status",
   "layout": "band",
   "status": "TICKETS LIVE",
   "bg": "waves",
-  "cta": "Link in bio",
-  "formats": [
-   "feed",
-   "story"
-  ]
- },
- {
-  "name": "status_final-band",
-  "template": "status",
-  "layout": "band",
-  "status": "FINAL RELEASE",
-  "bg": "glow",
-  "cta": "Last chance",
   "formats": [
    "feed"
   ]
  },
  {
+  "group": "status",
+  "name": "status_tickets-live-hug",
+  "template": "status",
+  "layout": "bandhug",
+  "status": "TICKETS LIVE",
+  "bg": "chrome",
+  "formats": [
+   "feed"
+  ]
+ },
+ {
+  "group": "status",
+  "name": "status_final-release",
+  "template": "status",
+  "layout": "full",
+  "status": "FINAL RELEASE",
+  "bg": "spectrum",
+  "formats": [
+   "feed"
+  ]
+ },
+ {
+  "group": "status",
+  "name": "status_on-sale-now",
+  "template": "status",
+  "layout": "left",
+  "status": "ON SALE NOW",
+  "bg": "lime",
+  "formats": [
+   "feed"
+  ]
+ },
+ {
+  "group": "status",
+  "name": "status_last-tickets",
+  "template": "status",
+  "layout": "top",
+  "status": "LAST TICKETS",
+  "bg": "glass",
+  "formats": [
+   "feed"
+  ]
+ },
+ {
+  "group": "status",
+  "name": "status_sold-out-no-button",
+  "template": "status",
+  "layout": "centre",
+  "status": "SOLD OUT",
+  "bg": "midnight",
+  "formats": [
+   "feed"
+  ],
+  "ctaOn": false,
+  "dust": true
+ },
+ {
+  "group": "status",
+  "name": "status_presale-one-line",
+  "template": "status",
+  "layout": "low",
+  "status": "PRESALE LIVE",
+  "bg": "glow",
+  "formats": [
+   "feed"
+  ],
+  "wrap": "line"
+ },
+ {
+  "group": "status",
+  "name": "status_final-release-story",
+  "template": "status",
+  "layout": "band",
+  "status": "FINAL RELEASE",
+  "bg": "neon",
+  "formats": [
+   "story"
+  ]
+ },
+ {
+  "group": "status",
+  "name": "status_doors-open",
+  "template": "status",
+  "layout": "centre",
+  "status": "DOORS OPEN",
+  "bg": "fx",
+  "formats": [
+   "feed"
+  ],
+  "fx": {
+   "mode": "halftone",
+   "grad": "acid",
+   "cell": 11,
+   "contrast": 1.3
+  },
+  "photo": "party-05"
+ },
+ {
+  "group": "status",
+  "name": "status_on-sale-ascii",
+  "template": "status",
+  "layout": "full",
+  "status": "ON SALE NOW",
+  "bg": "fx",
+  "formats": [
+   "feed"
+  ],
+  "fx": {
+   "mode": "ascii",
+   "grad": "lime-lilac",
+   "cell": 12
+  },
+  "photo": "party-04"
+ },
+ {
+  "group": "status",
+  "name": "status_tickets-live-hug-story",
+  "template": "status",
+  "layout": "bandhug",
+  "status": "TICKETS LIVE",
+  "bg": "holome",
+  "formats": [
+   "story"
+  ]
+ },
+ {
+  "group": "status",
+  "name": "status_on-sale-left-story",
+  "template": "status",
+  "layout": "left",
+  "status": "ON SALE NOW",
+  "bg": "echo",
+  "formats": [
+   "story"
+  ]
+ },
+ {
+  "group": "calendar",
   "name": "calendar_midnight",
   "template": "calendar",
+  "layout": "rows",
   "bg": "midnight",
-  "dust": true,
   "formats": [
    "feed",
    "story"
   ]
  },
  {
+  "group": "calendar",
   "name": "calendar_ribbon",
   "template": "calendar",
+  "layout": "rows",
   "bg": "ribbon",
+  "formats": [
+   "feed"
+  ]
+ },
+ {
+  "group": "calendar",
+  "name": "calendar_holo",
+  "template": "calendar",
+  "layout": "rows",
+  "bg": "holo",
+  "formats": [
+   "feed"
+  ]
+ },
+ {
+  "group": "calendar",
+  "name": "calendar_big",
+  "template": "calendar",
+  "layout": "big",
+  "bg": "midnight",
+  "formats": [
+   "feed",
+   "story"
+  ],
+  "dust": true
+ },
+ {
+  "group": "calendar",
+  "name": "calendar_blocks",
+  "template": "calendar",
+  "layout": "blocks",
+  "bg": "lilac",
+  "formats": [
+   "feed"
+  ]
+ },
+ {
+  "group": "calendar",
+  "name": "calendar_grid",
+  "template": "calendar",
+  "layout": "grid",
+  "bg": "midnight",
   "formats": [
    "feed",
    "story"
   ]
  },
  {
-  "name": "calendar_lime",
+  "group": "calendar",
+  "name": "calendar_grid-lime",
   "template": "calendar",
+  "layout": "grid",
   "bg": "limesolid",
   "formats": [
    "feed"
   ]
  },
  {
-  "name": "calendar_holo",
+  "group": "calendar",
+  "name": "calendar_photo",
   "template": "calendar",
-  "bg": "holo",
-  "labels": false,
-  "shade": 0.55,
+  "layout": "photo",
+  "bg": "midnight",
+  "formats": [
+   "feed"
+  ],
+  "photo": "party-03"
+ },
+ {
+  "group": "calendar",
+  "name": "calendar_big-chrome",
+  "template": "calendar",
+  "layout": "big",
+  "bg": "chrome",
   "formats": [
    "feed"
   ]
  },
  {
+  "group": "hiring",
   "name": "hiring_object",
   "template": "hiring",
   "layout": "object",
-  "object": "radio",
   "formats": [
    "feed",
    "story"
   ]
  },
  {
+  "group": "hiring",
   "name": "hiring_case",
   "template": "hiring",
   "layout": "object",
-  "object": "case",
-  "hireHead": "CREW CALL",
-  "role": "Stage crew",
-  "hireBody": "Load-in to load-out. Strong backs, calm heads.",
-  "bg": "icesolid",
   "formats": [
    "feed"
-  ]
+  ],
+  "bg": "icesolid",
+  "object": "case",
+  "hireHead": "CREW CALL"
  },
  {
+  "group": "hiring",
+  "name": "hiring_tape",
+  "template": "hiring",
+  "layout": "object",
+  "formats": [
+   "feed"
+  ],
+  "bg": "lilacsolid",
+  "object": "tape",
+  "hireHead": "HELP WANTED"
+ },
+ {
+  "group": "hiring",
   "name": "hiring_statement",
   "template": "hiring",
   "layout": "statement",
-  "hireHead": "WE'RE HIRING",
-  "photo": "party-05",
   "formats": [
    "feed",
    "story"
   ]
  },
  {
+  "group": "hiring",
   "name": "hiring_roles",
   "template": "hiring",
   "layout": "roles",
-  "hireHead": "JOIN THE CREW",
   "formats": [
    "feed",
    "story"
   ]
  },
  {
+  "group": "hiring",
+  "name": "hiring_big",
+  "template": "hiring",
+  "layout": "big",
+  "formats": [
+   "feed",
+   "story"
+  ]
+ },
+ {
+  "group": "hiring",
+  "name": "hiring_pass",
+  "template": "hiring",
+  "layout": "pass",
+  "formats": [
+   "feed",
+   "story"
+  ]
+ },
+ {
+  "group": "statements",
   "name": "cover_leak",
   "template": "cover",
+  "layout": "low",
   "bg": "leak",
   "formats": [
    "feed",
@@ -469,39 +2904,116 @@
   ]
  },
  {
+  "group": "statements",
   "name": "cover_lime",
   "template": "cover",
+  "layout": "low",
   "bg": "limesolid",
-  "statement": "The real ones are in the back.",
   "formats": [
    "feed"
   ]
  },
  {
-  "name": "carousel-01_cover",
+  "group": "statements",
+  "name": "cover_glass",
   "template": "cover",
-  "bg": "lilac",
-  "statement": "Second Wind. Jan 2.",
+  "layout": "centre",
+  "bg": "glass",
   "formats": [
-   "square"
+   "feed"
   ]
  },
  {
-  "name": "carousel-02_lineup",
-  "template": "lineup",
-  "bg": "lilac",
-  "presents": "",
+  "group": "statements",
+  "name": "cover_quote-lilac",
+  "template": "cover",
+  "layout": "quote",
+  "bg": "lilacsolid",
   "formats": [
-   "square"
-  ]
+   "feed"
+  ],
+  "statement": "Turn it down until people lean in."
  },
  {
-  "name": "carousel-03_tickets",
-  "template": "status",
-  "status": "ON SALE NOW",
-  "bg": "lime",
+  "group": "statements",
+  "name": "cover_ascii",
+  "template": "cover",
+  "layout": "top",
+  "bg": "fx",
   "formats": [
-   "square"
-  ]
+   "feed"
+  ],
+  "fx": {
+   "mode": "ascii",
+   "grad": "acid",
+   "cell": 13,
+   "contrast": 1.3
+  },
+  "photo": "party-01",
+  "statement": "Nothing to prove. Everything to hear."
+ },
+ {
+  "group": "statements",
+  "name": "cover_split",
+  "template": "cover",
+  "layout": "split",
+  "bg": "midnight",
+  "formats": [
+   "feed",
+   "story"
+  ],
+  "photo": "party-06",
+  "statement": "The real ones are in the back."
+ },
+ {
+  "group": "statements",
+  "name": "cover_halftone",
+  "template": "cover",
+  "layout": "centre",
+  "bg": "fx",
+  "formats": [
+   "feed"
+  ],
+  "fx": {
+   "mode": "halftone",
+   "grad": "lilac",
+   "cell": 12,
+   "contrast": 1.3
+  },
+  "photo": "party-04",
+  "statement": "Less, but louder."
+ },
+ {
+  "group": "statements",
+  "name": "cover_chrome",
+  "template": "cover",
+  "layout": "low",
+  "bg": "chrome",
+  "formats": [
+   "feed"
+  ],
+  "statement": "Culture moves quietly."
+ },
+ {
+  "group": "statements",
+  "name": "cover_melt",
+  "template": "cover",
+  "layout": "top",
+  "bg": "melt",
+  "formats": [
+   "feed"
+  ],
+  "statement": "A different kind of front row."
+ },
+ {
+  "group": "statements",
+  "name": "cover_quote-ice",
+  "template": "cover",
+  "layout": "quote",
+  "bg": "icesolid",
+  "formats": [
+   "feed"
+  ],
+  "statement": "The best nights feel like nobody planned them."
  }
 ]

@@ -9,6 +9,8 @@ Plain requests like:
 - "Just announced post for RY X at Second Wind, Jan 2, use the photo they sent, story."
 - "SOLD OUT for Second Wind, rainbow loop, feed + story." · "Ticket giveaway, 5× VIP, Second Wind." · "September–October calendar with these dates: …"
 - "Now hiring: production assistant." · "Highlight cover for a new event called NOCTURNE." · "The Second Wind flyer in every size, landscape too."
+- "A poster like the Wall one for the summer weekender, 11 names, ASCII background from this photo, animated." (template `poster`)
+- "Set times for Saturday" (`timetable`) · "Winter series dates" (`tour`) · "Bar menu" (`menu`) · "Cover for mix #04" (`release`) · "An 8-slide recap carousel" (`slide`)
 
 ## How to make it
 1. Write a spec (JSON) using the fields below. One object per asset; an array for several.
@@ -18,15 +20,15 @@ Plain requests like:
 3. **Look at every PNG you produce** before handing it over. Check: no text cut off, nothing in the story unsafe zones (top 250 px / bottom 340 px), names spelled exactly as given, one accent colour only.
 4. Hand back the files and a one-line summary per file. If the request needs something the templates cannot do, say so and propose the closest template; do not invent a new layout.
 
-The human alternative is `builder.html` (open it from a local server: `npm run serve`, then http://localhost:8790/builder.html). Its "Copy spec" button produces exactly this JSON.
+The human alternative is `builder.html` (open it from a local server: `npm run serve`, then http://localhost:8790/builder.html). Its "Copy spec" button produces exactly this JSON. "Export MP4" records one post's 10 s loop in the browser (WebCodecs H.264, `assets/vendor/mp4-muxer.mjs`); for batches use the CLI.
 
 ## Spec fields (defaults in `assets/js/templates.js` → `DEFAULT`)
 | field | values | notes |
 |---|---|---|
 | `name` | string | file name stem, e.g. `the-maze_oct-31` |
-| `template` | `lineup` `maze` `announce` `giveaway` `status` `calendar` `hiring` `cover` `highlight` | see the examples in `tools/examples/templates.json` |
+| `template` | `lineup` `maze` `announce` `giveaway` `status` `calendar` `hiring` `cover` `highlight` · round 5: `poster` `timetable` `tour` `menu` `release` `slide` | see the examples in `tools/examples/templates.json` (made by `tools/examples/build-examples.mjs`) |
 | `formats` / `format` | `feed` (1080×1350) · `story` (1080×1920) · `square` (1080×1080) · `landscape` (1920×1080, lineup and maze) | not every template has every format |
-| `layout` | lineup: `center` A · `header` B (co-brands) · `left` C (long lineups) · `headliner` D (one big name) · `split` E (date-led) · `bottom` F (image-led) · `half` G (half image, text across) · `window` H (photo window). maze: `orange` `violet` `night` `ice`. giveaway: `window` `full` `ticket`. status: `low` `centre` `band`. hiring: `object` `statement` `roles` | the composition of that template |
+| `layout` | lineup: `center` A · `header` B (co-brands) · `left` C (long lineups) · `headliner` D (one big name) · `split` E (date-led) · `bottom` F (image-led) · `half` G (half image, text across) · `window` H (photo window). maze: `orange` `violet` `night` `ice`. giveaway: `window` `full` `ticket`. status: `low` `centre` `top` `left` `band` `bandhug` `full`. calendar: `rows` `big` `blocks` `grid` `photo`. hiring: `object` `statement` `roles` `big` `pass`. cover: `low` `centre` `top` `quote` `split`. poster (one per reference in ME Refs): `halftone` `square` `glow` `soft` `corners` `stagger` `card` `column` `datecard` `collab` `mono` `gridsheet` `collage` `plusgrid` `wall` `portrait` `gallery` `bands` `beam` `numbers` `bleed` `mirror` `marquee`. timetable: `rows` `faces` `big`. tour: `columns` `residency` `date`. menu: `stagger` `list`. release: `vinyl` `sleeve`. slide: `cover` `text` `quote` `image` `stats` `list` `end` | the composition of that template. Round-5 templates come with their own look (colourway, wrapping, background, shapes); every part can be overridden |
 | `size` | `{"artists":2,"title":-1}` | size step per text group, 15% a step (groups per template: `ROLES` in templates.js) |
 | `margin`, `spacing`, `offsetY` | 64 · 1 · 0 | side margin in px, multiplier for the gaps between groups, move the main text up (−) / down (+) in px |
 | `labels` | true / false | label block behind every line. On by default; off only on calm backgrounds |
@@ -37,7 +39,7 @@ The human alternative is `builder.html` (open it from a local server: `npm run s
 | `logos` | `[{"id":"origin-mark"}]`, ids: `me-mark` `mnml-effrt` `mnml-effrt-square` `wordmark` `lockup` `the-maze` `origin` `origin-mark` `sbcltr` `lee-burridge`; or `{"src":"assets/logo-extra/x.svg","aspect":2.4}` | several allowed; each takes `"scale"` (0.5–1.6) and `"pos"`: `tl` `tc` `tr` `bl` `bc` `br` (no pos = the template's logo row). Defaults: Just announced = ME top left + ORIGIN at the bottom; giveaway / hiring / calendar / cover = ME |
 | `logoSize` | 40–100 (default 62) | logos are sized optically: same visual weight whatever their shape |
 | `logoLabel` | true / false | default **false**: every logo is plain and takes the colour that reads on the background (Midnight on Lime / light, white on dark). `true` puts our marks only on a tight black box. Venue / partner / event logos are never boxed |
-| `bg` | Chrome: `waves` `bluewaves` `bubbles` `ribbon` `flow` · Prism: `rainbow` `spectrum` `bloom` · Film: `holo` `leak` `ember` · Brand light: `lilac` `lime` `glow` · Shader: `glass` `pixel` `grit` · maze only: `maze` (its own colour field) · Texture: `dust` `toner` · Solid: `midnight` `limesolid` `lilacsolid` `icesolid` · `photo` · `custom` | the 17 loops also produce MP4. In `maze` a photo or loop is blurred and tinted under the blocks |
+| `bg` | Chrome: `waves` `bluewaves` `bubbles` `ribbon` `flow` · Prism: `rainbow` `spectrum` `bloom` · Film: `holo` `leak` `ember` · Brand light: `lilac` `lime` `glow` · Shader: `glass` `pixel` `grit` `chrome` `holome` `glitch` `melt` `echo` `neon` `wave` `ripple` `halftone` `chromemaze` · Effect: `fx` · Colourway: `cw` · maze only: `maze` (its own colour field) · Texture: `dust` `toner` · Solid: `midnight` `limesolid` `lilacsolid` `icesolid` · `photo` · `custom` | the 27 loops also produce MP4. In `maze` a photo or loop is blurred and tinted under the blocks |
 | `bgType`, `bgFile` | `"video"` / `"image"`, path to the file | with `bg:"custom"`: your own background (a video loops for 10 s in the MP4) |
 | `photo` | `lee-burridge-1..3` `ry-x` `jamiie` `party-01..07` `venue-01` `extra-01..04`, or a path | announce, giveaway, `bg:"photo"`. Real press photos for artists, party photos for giveaways |
 | `presenter` / `partner` / `presents` | `MNML EFFRT` / `SBCTLR` / `PRESENTS` | partner empty = no × co-brand |
@@ -52,6 +54,16 @@ The human alternative is `builder.html` (open it from a local server: `npm run s
 | `subtitle`, `pill`, `seed` | `ARTS DISTRICT BLOCK PARTY`, `IN ORDER OF APPEARANCE`, 1–60 | maze: line under the date, the pill, the maze pattern. In maze `date` + `title` make the mono line (`OCT 31,  HALLOWEEN NIGHT`), the first `venue` line is big |
 | `highlight`, `icon` | title; icon `maze-logo` (THE MAZE) or `artists gallery tickets calendar pin clock music info arrow plus play link star waitlist`, or `none` (word only) | story format |
 | `statement`, `handle` | cover / carousel slide 1 | |
+| `cw` | `midnight` `ice` `paper` `lime` `lilac` `limeblock` `lilacblock` `iceblock` `night` `grey` `iron` `orange` `violet` | round-5 templates: the colourway (field, text, label block, accent) |
+| `ls` | `block` `tight` `glow` `stripe` `dots` `soft` `outline` `band` `none` | round-5 templates: how the text is wrapped |
+| `font` | `normal` (ABC Normal) `quzie` `quzie-c` `quzie-w` `mono` | round-5 templates: display type |
+| `shapes` | `["cross","rings"]`; any of `cross plus ticks corners grid rings vinyl square checker blocks trail beam mark ticker side star stripe halfdots frame` | round-5 templates: vector layers between background and type |
+| `bg: "fx"` + `fx` | `{"mode":"ascii","grad":"acid","cell":13,"contrast":1.3,"brightness":0,"blur":0,"grain":.1,"invert":false,"chars":" .:ME#","animate":true}`; modes `gradmap duotone posterize halftone dots dither ascii glyph pixel lines thermal none`; grads `lime-lilac lilac acid ice mono paper toner thermal ember violet night-lime blue` | any template: the photo (or `fxSrc`, a path to an image / GIF / video) through an effect. Cell effects move (MP4 via render-anim) |
+| `bg: "cw"` | | the colourway's field as a solid |
+| `anim` | `none` `blur` `rise` `wipe` `type` `flicker` `drift` | any template: the type builds, holds and clears on a 10 s loop. Render with `node tools/render-anim.mjs spec.json` |
+| `ctaOn` / `noLogo` | true / false | switch the button / the logo off |
+| `wrap` | `words` / `line` | status: one block per word or one line |
+| `tag` `city` `dow` `support` `pillPos` `slots[]` `dates[]` `menu[]` `relNo` `relKind` `relTitle` `kicker` `head` `body` `quote` `by` `caption` `page` `stats[]` `items[]` | | round-5 fields: poster tag line / city / weekday; maze support line and pill position; timetable `{"t","n","st"}`; tour `{"c","v","d"}`; menu `{"p","n","k"}`; release; carousel slides |
 | `shade` | 0–0.8 | darkens the background |
 | `dust` | true / false | dust texture over solid backgrounds |
 
@@ -72,15 +84,18 @@ Shader loops instead come from `assets/js/shaders.js`: `node tools/render-shader
 - Colour: Midnight #14141A, Ice White #F5F6FC, Lime #B4F152, Lilac #A79BEE. One accent per piece. No white or Lime text on Lilac.
 - Logos: three of ours, all in `assets/logo/`: the **ME** mark, **MINIMAL EFFORT** (wordmark) and **MNML EFFRT** (condensed, with or without its square). Event and partner logos (THE MAZE, ORIGIN, SBCLTR) only as given. Don't stretch, don't rotate, no shadows or glows. On white or Ice the wordmark is black. The old bar mark (IIIE) is retired.
 - Label blocks hug their words: one block per line, never stretched to full width; stacked lines touch; the text sits in the middle with the same padding on all four sides.
-- THE MAZE has its own flyer (`maze`): don't dress a Minimal Effort lineup as THE MAZE. Its display type is 403 Quzie when installed, Saira Stencil One otherwise.
+- THE MAZE has its own flyer (`maze`): don't dress a Minimal Effort lineup as THE MAZE. Its display type is 403 Quzie (in `assets/fonts/quzie/`), Saira Stencil One if the files are missing. 403 Quzie may also set any `poster` (`font`).
 - Copy: names, dates, places. No exclamation marks, no emoji, no hype words.
 - FLOAT and Clinic are on hold until their logos exist: don't make posts for them.
-- Motion: backgrounds move, type holds still. No new text animation without asking.
+- Motion: backgrounds move. Type either holds still or uses one of the six `anim` loops (build, hold, clear in 10 s). No other text animation without asking.
+- Centring: label blocks get optical padding after render (`balanceTracking` in `hydrate.js`): the letters, not just the block, sit on the centre line. Check with `node tools/dev/centre.mjs <dir> all` (renders the type layers) and measure the ink.
+- Rows: when you add examples to the guidelines, every group fills whole rows of four (`build-examples.mjs` checks).
 - Story safe zones: nothing important in the top 250 px or bottom 340 px.
 
 ## Files
 - `index.html` — the brand guidelines (open via `npm run serve`). Every example on it opens in the builder when clicked. `downloads/minimal-effort-brand-guidelines.pdf` — same, as PDF.
 - `builder.html` — template builder. `render.html` — render surface used by the CLI.
 - `assets/js/templates.js` — the template engine (single source of truth). `assets/css/templates.css` — template styles.
-- `tools/render.mjs` — PNG/MP4 renderer. `tools/build-logos.mjs`, `tools/build-kit.mjs` — rebuild downloads. `tools/examples/*.json` — example specs.
+- `assets/js/compose.js` — round-5 compositions (poster, timetable, tour, menu, release, slide), colourways, shapes. `assets/js/fx.js` — the background lab (effects). `assets/js/hydrate.js` — fits the adaptive text and draws effects after render.
+- `tools/render.mjs` — PNG/MP4 renderer. `tools/render-anim.mjs` — MP4 for animated type and moving effects. `tools/render-shaders.mjs` — shader loops. `tools/build-mockups5.py` — street / party mockups. `tools/build-logos.mjs`, `tools/build-kit.mjs` — rebuild downloads. `tools/examples/*.json` — example specs.
 - `downloads/` — every asset, also zipped.

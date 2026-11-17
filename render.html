@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <title>Minimal Effort — render surface</title>
+<link rel="icon" href="data:,">
 <link rel="stylesheet" href="assets/fonts/fonts.css">
 <link rel="stylesheet" href="assets/css/templates.css">
 <style>html, body { margin: 0; background: transparent; } #out { display: inline-block; }</style>
@@ -12,12 +13,19 @@
 <div id="out"></div>
 <script type="module">
   import { render } from './assets/js/templates.js';
+  import { hydrate } from './assets/js/hydrate.js';
   const q = new URLSearchParams(location.search);
   const spec = JSON.parse(decodeURIComponent(escape(atob(q.get('spec') || 'e30='))));
   const mode = q.get('mode') || 'still';
-  document.getElementById('out').innerHTML = render(spec, { forExport: true, textOnly: mode === 'overlay' });
+  await Promise.all(["800 100px 'ABC Normal'", "500 20px 'IBM Plex Mono'", "100px '403 Quzie'", "100px '403 Quzie Condensed'", "100px '403 Quzie Wide'"].map(f => document.fonts.load(f).catch(() => 0)));
+  const out = document.getElementById('out');
+  out.innerHTML = render(spec, { forExport: true, textOnly: mode === 'overlay' || mode === 'anim-overlay' });
   const imgs = [...document.images].map(i => i.complete ? 0 : new Promise(r => { i.onload = i.onerror = r; }));
-  Promise.all([document.fonts.ready, ...imgs]).then(() => { document.body.dataset.ready = '1'; });
+  await Promise.all([document.fonts.ready, ...imgs]);
+  await hydrate(out, { animate: mode.startsWith('anim') });
+  if (mode.startsWith('anim')) { document.getAnimations().forEach(a => a.pause()); window.__fxTime?.(0); }
+  else document.getAnimations().forEach(a => { a.pause(); a.currentTime = 4000; });
+  document.body.dataset.ready = '1';
 </script>
 </body>
 </html>

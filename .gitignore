@@ -9,3 +9,6 @@ downloads/minimal-effort_backgrounds.zip
 downloads/minimal-effort_templates.zip
 downloads/second-wind_flyer_all-sizes.zip
 downloads/renders/
+# MP4 downloads: over the 1 GB Pages limit, so they live on release v1.1 (sections.js links them there on github.io)
+downloads/templates/*.mp4
+downloads/backgrounds/*.mp4

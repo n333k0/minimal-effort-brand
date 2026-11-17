@@ -78,6 +78,7 @@
     .stage { position: relative; inset: auto; padding: 84px 16px 16px; min-height: 66vh; }
     .panel { position: relative; top: auto; left: auto; bottom: auto; width: auto; margin: 0 16px 16px; }
     .brand .t { display: none; }
+    #bAgent, #bSpec { display: none; }   /* hand-offs to the kit's CLI: desktop only; phones export PNG / MP4 directly */
     body { height: auto; }
   }
 </style>
@@ -91,6 +92,7 @@
     <button class="btn o" id="bAgent" title="A plain-language request for an AI agent (PNG + MP4)">Copy agent request</button>
     <button class="btn o" id="bSpec" title="JSON for tools/render.mjs">Copy spec</button>
     <button class="btn acc" id="bPng">Export PNG</button>
+    <button class="btn acc" id="bMp4" title="Records the 10 s loop (moving type, effects and video backgrounds) as an MP4 in this browser">Export MP4</button>
   </div>
 </div>
 <main class="stage" id="stage"><div class="shadow" id="preview"></div></main>
@@ -99,6 +101,17 @@
   <div class="grp"><span class="lab">Template</span><div class="seg" id="tpl"></div></div>
   <div class="grp"><span class="lab">Format</span><div class="seg" id="fmt"></div>
     <div id="layW" style="margin-top:12px"><span class="lab sub-l">Composition</span><div class="seg" id="lay"></div></div>
+  </div>
+  <div class="grp" id="lookG"><span class="lab">Look — colourway, wrapping, type, shapes</span>
+    <div data-x5><span class="lab sub-l">Colourway</span><div class="sws" id="cwc"></div>
+    <span class="lab sub-l" style="margin-top:12px">How the text is wrapped</span><div class="seg" id="lsc"></div>
+    <span class="lab sub-l" style="margin-top:12px">Display type</span><div class="seg" id="ffc"></div>
+    <span class="lab sub-l" style="margin-top:12px">Shapes (layers)</span><div class="seg" id="shc"></div></div>
+    <span class="lab sub-l" style="margin-top:12px">Animation (loops every 10 s)</span><div class="seg" id="anc"></div>
+    <div style="display:flex;gap:6px;margin-top:12px;flex-wrap:wrap"><button class="btn sm o" id="bShuffle" data-x5>Shuffle the look</button><button class="btn sm o" id="bPreset" data-x5>Back to the composition's look</button></div>
+    <label class="tog"><span class="lab" style="margin:0">Show the button (Get tickets…)</span><input type="checkbox" id="ctaOn"></label>
+    <label class="tog"><span class="lab" style="margin:0">Show the logo</span><input type="checkbox" id="logoOn"></label>
+    <div data-only="status"><span class="lab sub-l" style="margin-top:12px">Message wrapping</span><div class="seg" id="wrapc"></div></div>
   </div>
   <div class="grp"><span class="lab">Sizes — every text group, step by step</span><div id="sizes"></div>
     <span class="lab sub-l" style="margin-top:14px">Layout</span>
@@ -122,24 +135,45 @@
     <label class="tog"><span class="lab" style="margin:0">Dust texture</span><input type="checkbox" id="dust"></label>
     <label class="f"><span class="lab">Darken background</span><input type="range" id="shade" min="0" max="0.8" step="0.05"></label>
   </div>
-  <div class="grp" data-only="announce giveaway system hiring photo lineup"><span class="lab">Photo</span><div class="chips" id="photos"></div><input type="file" id="phFile" accept="image/*"></div>
+  <div class="grp" id="fxG"><span class="lab">Background lab — a photo, GIF or video through an effect</span>
+    <div style="display:flex;gap:6px;flex-wrap:wrap"><button class="btn sm o" id="fxUse">Use the photo below</button><button class="btn sm acc" id="fxUp">Upload image / GIF / video</button><input type="file" id="fxFile" accept="image/*,video/*"></div>
+    <span class="lab sub-l" style="margin-top:12px">Effect</span><div class="seg" id="fxm"></div>
+    <span class="lab sub-l" style="margin-top:12px">Gradient map</span><div class="sws" id="fxg"></div>
+    <label class="f"><span class="lab">Cell size (halftone, dots, dither, ASCII, pixel, lines) <b id="vfxcell"></b></span><input type="range" data-fx="cell" min="3" max="48" step="1"></label>
+    <label class="f"><span class="lab">Contrast <b id="vfxcontrast"></b></span><input type="range" data-fx="contrast" min="0.4" max="2.6" step="0.05"></label>
+    <label class="f"><span class="lab">Brightness <b id="vfxbrightness"></b></span><input type="range" data-fx="brightness" min="-0.5" max="0.5" step="0.02"></label>
+    <label class="f"><span class="lab">Blur <b id="vfxblur"></b></span><input type="range" data-fx="blur" min="0" max="60" step="1"></label>
+    <label class="f"><span class="lab">Grain <b id="vfxgrain"></b></span><input type="range" data-fx="grain" min="0" max="0.5" step="0.01"></label>
+    <label class="f"><span class="lab">Zoom <b id="vfxzoom"></b></span><input type="range" data-fx="zoom" min="1" max="3" step="0.05"></label>
+    <label class="f"><span class="lab">ASCII characters (dark → light)</span><input type="text" id="fxChars" placeholder=" .:-=+*ME#@"></label>
+    <label class="tog"><span class="lab" style="margin:0">Invert</span><input type="checkbox" id="fxInvert"></label>
+    <label class="tog"><span class="lab" style="margin:0">Animate the cells</span><input type="checkbox" id="fxAnim"></label>
+  </div>
+  <div class="grp" data-only="announce giveaway system hiring photo lineup poster slide timetable tour release calendar cover"><span class="lab">Photo</span><div class="chips" id="photos"></div><input type="file" id="phFile" accept="image/*"></div>
 
   <div class="grp"><span class="lab">Words</span>
-    <div data-only="lineup">
+    <div data-only="lineup poster timetable">
       <label class="f"><span class="lab">Presenter</span><input type="text" data-k="presenter"></label>
       <label class="f"><span class="lab">Partner (× co-brand, empty for none)</span><input type="text" data-k="partner"></label>
       <label class="f"><span class="lab">Small line under the presenter</span><input type="text" data-k="presents"></label>
     </div>
-    <div data-only="lineup status system giveaway maze"><label class="f"><span class="lab">Event title (THE MAZE: the words after the date)</span><input type="text" data-k="title"></label></div>
-    <div data-only="lineup announce giveaway status system maze"><label class="f"><span class="lab">Date</span><input type="text" data-k="date"></label></div>
-    <div data-only="lineup announce status system giveaway"><label class="f"><span class="lab">Time</span><input type="text" data-k="time"></label></div>
+    <div data-only="lineup status system giveaway maze poster timetable tour menu release"><label class="f"><span class="lab">Event title (THE MAZE: the words after the date)</span><input type="text" data-k="title"></label></div>
+    <div data-only="lineup announce giveaway status system maze poster timetable"><label class="f"><span class="lab">Date</span><input type="text" data-k="date"></label></div>
+    <div data-only="lineup announce status system giveaway poster"><label class="f"><span class="lab">Time</span><input type="text" data-k="time"></label></div>
     <div data-only="maze"><label class="f"><span class="lab">Subtitle (optional, e.g. ARTS DISTRICT BLOCK PARTY)</span><input type="text" data-k="subtitle"></label></div>
-    <div data-only="lineup announce maze"><label class="f"><span class="lab">Artists — one per line, note after |   e.g.  RY X | [DJ SET]</span><textarea data-k="artists" style="min-height:110px"></textarea></label></div>
+    <div data-only="lineup announce maze poster timetable"><label class="f"><span class="lab">Artists — one per line, note after |   e.g.  RY X | [DJ SET]</span><textarea data-k="artists" style="min-height:110px"></textarea></label></div>
     <div data-only="maze"><label class="f"><span class="lab">Pill</span><input type="text" data-k="pill"></label></div>
-    <div data-only="lineup announce maze giveaway"><label class="f"><span class="lab">Venue — one line each (THE MAZE: first line big)</span><textarea data-k="venue"></textarea></label></div>
+    <div data-only="lineup announce maze giveaway poster timetable"><label class="f"><span class="lab">Venue — one line each (THE MAZE: first line big)</span><textarea data-k="venue"></textarea></label></div>
     <div data-only="maze"><label class="f"><span class="lab">Maze pattern — try another</span><input type="range" id="seed" min="1" max="60" step="1"></label></div>
+    <div data-only="poster"><label class="f"><span class="lab">Tag (e.g. OPENING PARTY)</span><input type="text" data-k="tag"></label><label class="f"><span class="lab">City</span><input type="text" data-k="city"></label><label class="f"><span class="lab">Day (e.g. FRI)</span><input type="text" data-k="dow"></label></div>
+    <div data-only="maze"><label class="f"><span class="lab">Support by (mono line under the names)</span><input type="text" data-k="support"></label><label class="f"><span class="lab">Pill position</span><select data-k="pillPos"><option value="below">Below the names</option><option value="above">Above the names</option></select></label></div>
+    <div data-only="timetable"><label class="f"><span class="lab">Set times — TIME | NAME | STAGE (empty: built from the artists)</span><textarea data-k="slots" style="min-height:120px"></textarea></label></div>
+    <div data-only="tour"><label class="f"><span class="lab">Dates — CITY | VENUE | DATE</span><textarea data-k="dates" style="min-height:120px"></textarea></label><label class="f"><span class="lab">Subtitle</span><input type="text" data-k="subtitle"></label></div>
+    <div data-only="menu"><label class="f"><span class="lab">Menu — PRICE | NAME | NOTE</span><textarea data-k="menu" style="min-height:140px"></textarea></label></div>
+    <div data-only="release"><label class="f"><span class="lab">Number</span><input type="text" data-k="relNo"></label><label class="f"><span class="lab">Kind (PLAYLIST, MIX…)</span><input type="text" data-k="relKind"></label><label class="f"><span class="lab">Small title</span><input type="text" data-k="relTitle"></label></div>
+    <div data-only="slide"><label class="f"><span class="lab">Kicker</span><input type="text" data-k="kicker"></label><label class="f"><span class="lab">Headline (new line = new block)</span><textarea data-k="head"></textarea></label><label class="f"><span class="lab">Body</span><textarea data-k="body" style="min-height:110px"></textarea></label><label class="f"><span class="lab">Quote</span><textarea data-k="quote"></textarea></label><label class="f"><span class="lab">Quote by</span><input type="text" data-k="by"></label><label class="f"><span class="lab">Caption</span><input type="text" data-k="caption"></label><label class="f"><span class="lab">Page (e.g. 02 / 06)</span><input type="text" data-k="page"></label></div>
     <div data-only="status"><label class="f"><span class="lab">Message</span><select data-k="status"><option>SOLD OUT</option><option>PRESALE LIVE</option><option>TICKETS LIVE</option><option>ON SALE NOW</option><option>FINAL RELEASE</option><option>LAST TICKETS</option><option>DOORS OPEN</option></select></label></div>
-    <div data-only="status calendar"><label class="f"><span class="lab">Call to action</span><input type="text" data-k="cta"></label></div>
+    <div data-only="status calendar poster slide tour"><label class="f"><span class="lab">Call to action</span><input type="text" data-k="cta"></label></div>
     <div data-only="giveaway">
       <label class="f"><span class="lab">Prize</span><input type="text" data-k="prize"></label>
       <label class="f"><span class="lab">Steps — one per line (three)</span><textarea data-k="steps"></textarea></label>
@@ -162,21 +196,25 @@
       <label class="f"><span class="lab">Cover word (when no icon)</span><input type="text" data-k="highlight"></label>
       <label class="f"><span class="lab">Icon</span><select data-k="icon" id="iconSel"></select></label>
     </div>
-    <div data-only="cover">
-      <label class="f"><span class="lab">Statement</span><textarea data-k="statement"></textarea></label>
+    <div data-only="cover poster">
+      <label class="f"><span class="lab">Statement (Gallery composition: the small headline)</span><textarea data-k="statement"></textarea></label>
       <label class="f"><span class="lab">Handle</span><input type="text" data-k="handle"></label>
     </div>
     <div data-only="announce giveaway calendar cover status"><label class="f"><span class="lab">Event name (small line)</span><input type="text" data-k="event"></label></div>
     <label class="tog"><span class="lab" style="margin:0">Label blocks behind text</span><input type="checkbox" id="labels"></label>
   </div>
-  <div class="grp"><p class="lab" style="line-height:1.6">PNG exports the still (loops use their first frame). For the moving MP4: <b style="color:var(--ice)">Copy spec</b>, save it as spec.json in the kit and run <span style="color:var(--lime)">npm run render -- spec.json</span>, or paste <b style="color:var(--ice)">Copy agent request</b> into your agent. Uploaded videos: put the file in the kit folder and add <span style="color:var(--lime)">"bgFile": "path"</span> to the spec.</p></div>
+  <div class="grp"><p class="lab" style="line-height:1.6"><b style="color:var(--ice)">Export PNG</b> saves the still (loops use their first frame). <b style="color:var(--ice)">Export MP4</b> records the 10 s loop frame by frame in this browser (Chrome, Edge or Safari 17+), with the moving type, effects and video background, uploads included; it takes a minute or two. For many posts at once: <b style="color:var(--ice)">Copy spec</b>, save it as spec.json in the kit and run <span style="color:var(--lime)">npm run render -- spec.json</span>, or paste <b style="color:var(--ice)">Copy agent request</b> into your agent.</p></div>
 </aside>
 <div id="exportNode"></div>
 <div class="toast" id="toast"></div>
 
 <script src="assets/vendor/html-to-image.js"></script>
 <script type="module">
-  import { render, DEFAULT, TEMPLATES, ROLES, MAZE, BACKGROUNDS, PHOTOS, EVENTS, FORMATS, ICONS, LOGO, LOGO_META, LABEL_COLORS, TEXT_COLORS } from './assets/js/templates.js';
+  import { render, DEFAULT, TEMPLATES, ROLES, MAZE, BACKGROUNDS, PHOTOS, EVENTS, FORMATS, ICONS, LOGO, LOGO_META, LABEL_COLORS, TEXT_COLORS, CW, LABEL_STYLES, FONTS, ANIMS, SHAPES } from './assets/js/templates.js';
+  import { EXT } from './assets/js/compose.js';
+  import { FX_MODES, GRADS, FX_DEFAULT } from './assets/js/fx.js';
+  import { hydrate, fxFrame, seekTo } from './assets/js/hydrate.js';
+  import { Muxer, ArrayBufferTarget } from './assets/vendor/mp4-muxer.mjs';
   const $ = s => document.querySelector(s);
   const clone = o => JSON.parse(JSON.stringify(o));
   let S = clone(DEFAULT);
@@ -185,16 +223,18 @@
 
   const toText = { artists: a => a.map(x => x.note ? `${x.name} | ${x.note}` : x.name).join('\n'), venue: a => a.join('\n'), steps: a => a.join('\n'), log: a => a.join('\n'), rows: a => a.map(r => [r.d, r.w, r.e, r.a, r.v].join(' | ')).join('\n') };
   toText.roles = a => a.join('\n');
-  const fromText = { roles: t => t.split('\n').map(l => l.trim()).filter(Boolean), artists: t => t.split('\n').map(l => l.trim()).filter(Boolean).map(l => { const [name, note] = l.split('|').map(s => s.trim()); return note ? { name: name.toUpperCase(), note } : { name: name.toUpperCase() }; }),
+  toText.slots = a => a.map(r => [r.t, r.n, r.st].join(' | ')).join('\n'); toText.dates = a => a.map(r => [r.c, r.v, r.d].join(' | ')).join('\n'); toText.menu = a => a.map(r => [r.p, r.n, r.k].join(' | ')).join('\n');
+  const rows3 = (t, ks) => t.split('\n').map(l => l.trim()).filter(Boolean).map(l => { const v = l.split('|').map(x => x.trim()); return Object.fromEntries(ks.map((k, i) => [k, v[i] || ''])); });
+  const fromText = { slots: t => rows3(t, ['t', 'n', 'st']), dates: t => rows3(t, ['c', 'v', 'd']), menu: t => rows3(t, ['p', 'n', 'k']), roles: t => t.split('\n').map(l => l.trim()).filter(Boolean), artists: t => t.split('\n').map(l => l.trim()).filter(Boolean).map(l => { const [name, note] = l.split('|').map(s => s.trim()); return note ? { name: name.toUpperCase(), note } : { name: name.toUpperCase() }; }),
     venue: t => t.split('\n').map(l => l.trim()).filter(Boolean), steps: t => t.split('\n').map(l => l.trim()).filter(Boolean).slice(0, 3), log: t => t.split('\n').filter(l => l.trim()),
     rows: t => t.split('\n').map(l => l.trim()).filter(Boolean).map(l => { const [d = '', w = '', e = '', a = '', v = ''] = l.split('|').map(s => s.trim()); return { d, w, e, a, v }; }) };
 
   const seg = (el, items, key, after) => { el.innerHTML = items.map(([v, t]) => `<button type="button" data-v="${v}">${t}</button>`).join(''); el.addEventListener('click', e => { const b = e.target.closest('button'); if (!b || b.disabled) return; S[key] = b.dataset.v; after?.(b.dataset.v); sync(); }); };
   const defLogos = (t, ev) => t === 'maze' ? [] : t === 'announce' ? [{ id: 'me-mark', pos: 'tl' }, ...(ev === 'SECOND WIND' ? [{ id: 'origin-mark' }] : [])] : ['giveaway', 'hiring', 'calendar', 'cover'].includes(t) ? [{ id: 'me-mark' }] : clone(EVENTS[ev]?.logos || [{ id: 'me-mark' }]);
-  seg($('#tpl'), Object.entries(TEMPLATES).filter(([k, v]) => !v.hidden).map(([k, v]) => [k, v.label]), 'template', t => { S.logos = defLogos(t, S.event); if (t === 'hiring') { S.bg = 'limesolid'; if (!S.photo || S.photo.startsWith('lee')) S.photo = 'party-01'; } if (t === 'giveaway' && (S.photo || '').startsWith('lee')) S.photo = 'party-03'; if (t === 'highlight') { S.format = 'story'; S.labels = false; } const L = TEMPLATES[t].layouts; S.layout = L ? Object.keys(L)[0] : S.layout; if (t === 'maze') { S.bg = 'maze'; S.labels = false; S.date = 'OCT 31'; S.title = 'HALLOWEEN NIGHT'; S.venue = ['THE TRAIN STATION', '800 N. Alameda St. Los Angeles, CA']; S.artists = [{ name: 'GUY GERBER' }, { name: 'LEE BURRIDGE' }, { name: 'DEER JADE' }, { name: 'THE BITAR BROTHERS' }]; } else if (S.bg === 'maze') S.bg = 'waves'; if (t === 'hiring') S.bg = 'limesolid'; });
+  seg($('#tpl'), Object.entries(TEMPLATES).filter(([k, v]) => !v.hidden).map(([k, v]) => [k, v.label]), 'template', t => { S.logos = defLogos(t, S.event); if (t === 'hiring') { S.bg = 'limesolid'; if (!S.photo || S.photo.startsWith('lee')) S.photo = 'party-01'; } if (t === 'giveaway' && (S.photo || '').startsWith('lee')) S.photo = 'party-03'; if (t === 'highlight') { S.format = 'story'; S.labels = false; } const L = TEMPLATES[t].layouts; S.layout = L ? Object.keys(L)[0] : S.layout; if (EXT[t]) applyPreset(); if (t === 'maze') { S.bg = 'maze'; S.labels = false; S.date = 'OCT 31'; S.title = 'HALLOWEEN NIGHT'; S.venue = ['THE TRAIN STATION', '800 N. Alameda St. Los Angeles, CA']; S.artists = [{ name: 'GUY GERBER' }, { name: 'LEE BURRIDGE' }, { name: 'DEER JADE' }, { name: 'THE BITAR BROTHERS' }]; } else if (S.bg === 'maze') S.bg = 'waves'; if (t === 'hiring') S.bg = 'limesolid'; });
   seg($('#fmt'), [['feed', 'Feed 4:5'], ['story', 'Story 9:16'], ['square', 'Square 1:1'], ['landscape', 'Landscape 16:9']], 'format');
   const drawLay = () => { const L = TEMPLATES[S.template].layouts; $('#layW').style.display = L ? 'block' : 'none'; if (!L) return; $('#lay').innerHTML = Object.entries(L).map(([v, t]) => `<button type="button" data-v="${v}">${t}</button>`).join(''); };
-  $('#lay').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; S.layout = b.dataset.v; if (S.template === 'hiring') S.bg = { object: 'limesolid', statement: 'photo', roles: 'lilacsolid' }[S.layout]; if (S.template === 'giveaway' && S.layout === 'ticket' && BACKGROUNDS[S.bg]?.photo) S.bg = 'limesolid'; sync(); });
+  $('#lay').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; S.layout = b.dataset.v; if (EXT[S.template]) applyPreset(); if (S.template === 'hiring') S.bg = { object: 'limesolid', statement: 'photo', roles: 'lilacsolid' }[S.layout]; if (S.template === 'giveaway' && S.layout === 'ticket' && BACKGROUNDS[S.bg]?.photo) S.bg = 'limesolid'; sync(); });
   // sizes: one row per text group of the template, minus / plus in steps of 15%
   function drawSizes() {
     const R = ROLES[S.template] || {}; S.size ||= {};
@@ -249,13 +289,47 @@
     const img = new Image(); img.onload = () => { (S.logos ||= []).push({ src: url, aspect: img.naturalWidth / img.naturalHeight, scale: 1, name: f.name }); sync(); toast('Logo added'); }; img.src = url;
   });
 
+  // ---- round 5: the look (colourway, wrapping, type, shapes, animation), the background lab, button / logo switches
+  function applyPreset() {
+    const pre = EXT[S.template]?.preset({ ...S }) || {};
+    for (const k of ['cw', 'ls', 'font']) S[k] = pre[k] || '';
+    S.bg = pre.bg || 'cw'; S.fx = pre.fx ? clone(pre.fx) : null; S.shapes = clone(pre.shapes || []); S.textColor = pre.textColor || '';
+    if (pre.photo) S.photo = pre.photo; if (pre.partner) S.partner = pre.partner; S.fxSrc = undefined;
+  }
+  const cwEl = $('#cwc');
+  cwEl.innerHTML = Object.entries(CW).map(([k, v]) => `<button type="button" title="${v.label}" data-v="${k}" style="background:linear-gradient(135deg,${v.bg} 50%,${v.blk === v.bg ? v.fg : v.blk} 50%)"></button>`).join('');
+  cwEl.addEventListener('click', e => { const b = e.target.closest('button'); if (b) { S.cw = b.dataset.v; if (S.bg !== 'fx' && !BACKGROUNDS[S.bg]?.video && !BACKGROUNDS[S.bg]?.photo) S.bg = 'cw'; sync(); } });
+  seg($('#lsc'), Object.entries(LABEL_STYLES), 'ls');
+  seg($('#ffc'), Object.entries(FONTS), 'font');
+  seg($('#anc'), Object.entries(ANIMS), 'anim');
+  seg($('#wrapc'), [['words', 'One block per word'], ['line', 'One line']], 'wrap');
+  $('#shc').innerHTML = Object.entries(SHAPES).map(([k, t]) => `<button type="button" data-v="${k}">${t}</button>`).join('');
+  $('#shc').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; const v = b.dataset.v; S.shapes = (S.shapes || []).includes(v) ? S.shapes.filter(x => x !== v) : [...(S.shapes || []), v]; sync(); });
+  $('#bShuffle').addEventListener('click', () => { const pick = a => a[Math.floor(Math.random() * a.length)]; S.cw = pick(Object.keys(CW)); S.ls = pick(Object.keys(LABEL_STYLES).filter(k => k !== 'none')); S.shapes = Object.keys(SHAPES).filter(() => Math.random() < .14).slice(0, 3); if (Math.random() < .5) { S.bg = 'fx'; S.fx = { ...FX_DEFAULT, mode: pick(Object.keys(FX_MODES).filter(k => k !== 'none')), grad: pick(Object.keys(GRADS)) }; } else S.bg = pick(['cw', 'cw', ...Object.keys(BACKGROUNDS).filter(k => BACKGROUNDS[k].video)]); S.seed = 1 + Math.floor(Math.random() * 60); sync(); });
+  $('#bPreset').addEventListener('click', () => { applyPreset(); sync(); });
+  $('#ctaOn').addEventListener('change', e => { S.ctaOn = e.target.checked; sync(); });
+  $('#logoOn').addEventListener('change', e => { S.noLogo = !e.target.checked; sync(); });
+  // background lab
+  const fxo = () => (S.fx = { ...FX_DEFAULT, ...(S.fx || {}) });
+  $('#fxm').innerHTML = Object.entries(FX_MODES).map(([k, t]) => `<button type="button" data-v="${k}">${t}</button>`).join('');
+  $('#fxm').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; fxo().mode = b.dataset.v; S.bg = 'fx'; sync(); });
+  $('#fxg').innerHTML = Object.entries(GRADS).map(([k, g]) => `<button type="button" title="${g.label}" data-v="${k}" style="background:linear-gradient(90deg,${g.stops.join(',')})"></button>`).join('');
+  $('#fxg').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; fxo().grad = b.dataset.v; S.bg = 'fx'; sync(); });
+  document.querySelectorAll('input[data-fx]').forEach(r => r.addEventListener('input', () => { fxo()[r.dataset.fx] = +r.value; S.bg = 'fx'; fill(); draw(); save(); }));
+  $('#fxChars').addEventListener('input', e => { fxo().chars = e.target.value; draw(); save(); });
+  $('#fxInvert').addEventListener('change', e => { fxo().invert = e.target.checked; S.bg = 'fx'; sync(); });
+  $('#fxAnim').addEventListener('change', e => { fxo().animate = e.target.checked; sync(); });
+  $('#fxUse').addEventListener('click', () => { fxo(); S.bg = 'fx'; S.fxSrc = undefined; sync(); });
+  $('#fxUp').addEventListener('click', () => $('#fxFile').click());
+  $('#fxFile').addEventListener('change', e => { const f = e.target.files[0]; if (!f) return; uploads.fxSrc = URL.createObjectURL(f) + (f.type.startsWith('video') ? '#video' : f.type === 'image/gif' ? '#gif' : ''); fxo(); S.bg = 'fx'; S.fxSrc = 'upload'; S.fxFile = f.name; sync(); toast(f.type.startsWith('video') || f.type === 'image/gif' ? 'Moving source loaded — it plays through the effect' : 'Image loaded'); });
+
   $('#iconSel').innerHTML = ['none', 'maze-logo', ...Object.keys(ICONS)].map(n => `<option value="${n}">${n === 'none' ? 'No icon (word)' : n === 'maze-logo' ? 'THE MAZE logo' : n}</option>`).join('');
   for (const id of ['labels', 'dust', 'logoLabel']) $('#' + id).addEventListener('change', e => { S[id] = e.target.checked; if (id === 'labels' && S.labels && S.labelColor === 'none') S.labelColor = '#181D20'; sync(); });
   $('#shade').addEventListener('input', e => { S.shade = +e.target.value; draw(); save(); });
   $('#logoSize').addEventListener('input', e => { S.logoSize = +e.target.value; draw(); save(); });
   document.querySelectorAll('[data-k]').forEach(el => el.addEventListener('input', () => { const k = el.dataset.k; S[k] = fromText[k] ? fromText[k](el.value) : el.value; draw(); save(); }));
 
-  const live = () => { const o = { ...S }; if (S.bg === 'custom') { o.bgSrc = uploads.bgSrc; o.bgStill = uploads.bgStill; } if ((S.photo || '').startsWith('upload:')) o.photo = uploads.photo; return o; };
+  const live = () => { const o = { ...S }; if (S.bg === 'custom') { o.bgSrc = uploads.bgSrc; o.bgStill = uploads.bgStill; } if ((S.photo || '').startsWith('upload:')) o.photo = uploads.photo; if (S.fxSrc === 'upload') o.fxSrc = uploads.fxSrc; else delete o.fxSrc; return o; };
   function fill() {
     document.querySelectorAll('[data-k]').forEach(el => { const k = el.dataset.k; if (document.activeElement === el) return; el.value = toText[k] ? toText[k](S[k] || []) : (S[k] ?? ''); });
     $('#margin').value = S.margin ?? 64; $('#spacing').value = S.spacing ?? 1; $('#offsetY').value = S.offsetY ?? 0; $('#seed').value = S.seed ?? 7;
@@ -269,6 +343,13 @@
     if (!allowed.includes(S.format)) S.format = allowed[0];
     document.querySelectorAll('[data-only]').forEach(el => { const on = el.dataset.only.split(' '); el.style.display = on.includes(S.template) || (on.includes('photo') && S.bg === 'photo') ? 'block' : 'none'; });
     press('#lay', S.layout);
+    const X = !!EXT[S.template]; document.querySelectorAll('[data-x5]').forEach(el => el.style.display = X ? '' : 'none');
+    press('#cwc', S.cw || ''); press('#lsc', S.ls || 'block'); press('#ffc', S.font || 'normal'); press('#anc', S.anim || 'none'); press('#wrapc', S.wrap || 'words');
+    document.querySelectorAll('#shc [data-v]').forEach(b => b.setAttribute('aria-pressed', String((S.shapes || []).includes(b.dataset.v))));
+    $('#ctaOn').checked = S.ctaOn !== false; $('#logoOn').checked = !S.noLogo;
+    const F = { ...FX_DEFAULT, ...(S.fx || {}) }; press('#fxm', S.bg === 'fx' ? F.mode : ''); press('#fxg', F.grad);
+    document.querySelectorAll('input[data-fx]').forEach(r => { r.value = F[r.dataset.fx]; const v = $('#vfx' + r.dataset.fx); if (v) v.textContent = (+F[r.dataset.fx]).toFixed(2).replace(/\.00$/, ''); });
+    if (document.activeElement !== $('#fxChars')) $('#fxChars').value = F.chars || ''; $('#fxInvert').checked = !!F.invert; $('#fxAnim').checked = F.animate !== false;
     drawLogos();
   }
   function draw() {
@@ -276,6 +357,7 @@
     const wide = innerWidth > 900, avW = st.clientWidth - (wide ? 464 : 32), avH = wide ? st.clientHeight - 116 : innerHeight * .64;
     const k = Math.max(.1, Math.min(avW / w, avH / h, 1));
     $('#preview').innerHTML = `<div style="width:${w * k}px;height:${h * k}px;overflow:hidden"><div style="transform:scale(${k});transform-origin:0 0;width:${w}px;height:${h}px">${render(live())}</div></div>`;
+    hydrate($('#preview'), { scale: Math.min(1, k * 1.6) });
   }
   const save = () => { try { const o = { ...S, logos: (S.logos || []).filter(l => !l.src) }; history.replaceState(null, '', '#' + btoa(unescape(encodeURIComponent(JSON.stringify(o))))); } catch (e) { } };
   function sync() { fill(); draw(); save(); }
@@ -288,10 +370,73 @@
   $('#bPng').addEventListener('click', async () => {
     const node = $('#exportNode'); node.innerHTML = render(live(), { forExport: true }); const ab = node.firstElementChild;
     await Promise.all([...ab.querySelectorAll('img')].map(i => i.complete ? 0 : new Promise(r => i.onload = i.onerror = r)));
-    await document.fonts.ready;
+    await document.fonts.ready; await hydrate(node, { scale: 1, animate: false });
+    node.getAnimations?.({ subtree: true }).forEach(a => { a.pause(); a.currentTime = 4000; });
     try { const url = await htmlToImage.toPng(ab, { pixelRatio: 1 }); const a = document.createElement('a'); a.href = url; a.download = name() + '.png'; a.click(); toast('PNG exported'); }
     catch (e) { toast('Export failed — use Copy spec + render'); console.error(e); }
     node.innerHTML = '';
+  });
+  // MP4: the artboard is stepped through the 10 s loop (CSS animations, effect canvases and videos all set to the same
+  // time), each frame is drawn with html-to-image and encoded with WebCodecs (H.264), then packed into an MP4.
+  let mp4Busy = false, mp4Stop = false; const toDataURL0 = HTMLCanvasElement.prototype.toDataURL;
+  $('#bMp4').addEventListener('click', async () => {
+    const btn = $('#bMp4');
+    if (mp4Busy) { mp4Stop = true; return; }
+    if (!('VideoEncoder' in window)) return toast('MP4 export needs Chrome, Edge or Safari 17+');
+    const [w, h] = FORMATS[S.format], FPS = 24, SEC = 10, N = FPS * SEC;
+    let cfg = null;
+    for (const codec of ['avc1.640028', 'avc1.4d0028', 'avc1.42002a']) {
+      const c = { codec, width: w, height: h, bitrate: 8e6, framerate: FPS, avc: { format: 'avc' } };
+      if ((await VideoEncoder.isConfigSupported(c).catch(() => ({}))).supported) { cfg = c; break; }
+    }
+    if (!cfg) return toast('This browser cannot encode H.264 — use Copy spec + render');
+    mp4Busy = true; mp4Stop = false; btn.textContent = 'MP4 0% · stop';
+    const node = $('#exportNode');
+    try {
+      node.innerHTML = render(live()); const ab = node.firstElementChild;
+      const vids = [...ab.querySelectorAll('video')]; vids.forEach(v => { v.autoplay = false; v.preload = 'auto'; v.pause(); });
+      await Promise.all([...ab.querySelectorAll('img')].map(i => i.complete ? 0 : new Promise(r => i.onload = i.onerror = r)));
+      await Promise.all(vids.map(v => v.readyState >= 2 ? 0 : new Promise(r => { v.addEventListener('loadeddata', r, { once: true }); v.addEventListener('error', r, { once: true }); setTimeout(r, 8000); })));
+      await document.fonts.ready; await hydrate(node, { scale: 1, animate: false });
+      const anims = node.getAnimations?.({ subtree: true }) || []; anims.forEach(a => a.pause());
+      const fontEmbedCSS = await htmlToImage.getFontEmbedCSS(ab);
+      // each video gets a canvas stand-in, drawn per frame with object-fit: cover (html-to-image would stretch the video)
+      const stands = vids.map(v => {
+        const cs = getComputedStyle(v), c = document.createElement('canvas'); c.width = v.offsetWidth; c.height = v.offsetHeight; c.dataset.jpg = '1';
+        c.style.cssText = `position:absolute;left:${v.offsetLeft}px;top:${v.offsetTop}px;width:${v.offsetWidth}px;height:${v.offsetHeight}px;filter:${cs.filter};opacity:${cs.opacity};mix-blend-mode:${cs.mixBlendMode};transform:${cs.transform};z-index:${cs.zIndex}`;
+        v.after(c); v.remove();   // detached: still seekable and drawable, but html-to-image no longer copies it
+        const [px, py] = cs.objectPosition.split(' ').map(p => parseFloat(p) / 100);
+        return () => { const g = c.getContext('2d'), vw = v.videoWidth, vh = v.videoHeight; if (!vw) return; const k = Math.max(c.width / vw, c.height / vh), dw = vw * k, dh = vh * k; g.drawImage(v, (c.width - dw) * (isNaN(px) ? .5 : px), (c.height - dh) * (isNaN(py) ? .5 : py), dw, dh); };
+      });
+      ab.querySelectorAll('canvas[data-fx]').forEach(c => c.dataset.jpg = '1');   // opaque backgrounds: JPEG is much faster than PNG per frame
+      HTMLCanvasElement.prototype.toDataURL = function (type, q) { return !type && this.dataset?.jpg ? toDataURL0.call(this, 'image/jpeg', .92) : toDataURL0.call(this, type, q); };
+      const muxer = new Muxer({ target: new ArrayBufferTarget(), video: { codec: 'avc', width: w, height: h, frameRate: FPS }, fastStart: 'in-memory' });
+      let fail = null;
+      const enc = new VideoEncoder({ output: (c, m) => muxer.addVideoChunk(c, m), error: e => { fail = e; } });
+      enc.configure(cfg);
+      for (let i = 0; i < N; i++) {
+        if (mp4Stop || fail) break;
+        const t = i / N;
+        anims.forEach(a => { a.currentTime = t * SEC * 1000; });
+        await Promise.all(vids.map(v => seekTo(v, t * SEC))); stands.forEach(d => d());
+        await fxFrame(node, t);
+        const cv = await htmlToImage.toCanvas(ab, { pixelRatio: 1, width: w, height: h, canvasWidth: w, canvasHeight: h, skipAutoScale: true, fontEmbedCSS });
+        const f = new VideoFrame(cv, { timestamp: Math.round(i * 1e6 / FPS), duration: Math.round(1e6 / FPS) });
+        enc.encode(f, { keyFrame: i % (FPS * 2) === 0 }); f.close();
+        while (enc.encodeQueueSize > 3) await new Promise(r => setTimeout(r, 5));
+        btn.textContent = `MP4 ${Math.round((i + 1) / N * 100)}% · stop`;
+      }
+      if (fail) throw fail;
+      if (mp4Stop) { enc.close(); toast('MP4 export stopped'); }
+      else {
+        await enc.flush(); muxer.finalize();
+        const url = URL.createObjectURL(new Blob([muxer.target.buffer], { type: 'video/mp4' }));
+        const a = document.createElement('a'); a.href = url; a.download = name() + '.mp4'; a.click(); setTimeout(() => URL.revokeObjectURL(url), 60000);
+        toast('MP4 exported');
+      }
+    } catch (e) { console.error('mp4', e?.message || e?.type, String(e?.target?.src || '').slice(0, 80)); toast('MP4 export failed — use Copy spec + render'); }
+    HTMLCanvasElement.prototype.toDataURL = toDataURL0;
+    node.innerHTML = ''; mp4Busy = false; btn.textContent = 'Export MP4';
   });
   const spec = () => { const o = { name: name().replace('minimal-effort_', ''), ...S }; o.logos = (S.logos || []).map(l => l.src ? { ...l, src: '(uploaded logo: save it in the kit and put its path here)' } : l); return o; };
   $('#bSpec').addEventListener('click', async () => { await navigator.clipboard.writeText(JSON.stringify(spec(), null, 2)); toast('Spec copied — save as spec.json'); });

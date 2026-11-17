@@ -1,5 +1,11 @@
 // Shader lab on the guidelines page: pick a look, a palette, a format; tweak; export a PNG or record one seamless loop.
-import { mountShader, PALETTES, MODES } from './shaders.js';
+import { mountShader, PALETTES, MODES, MARKS } from './shaders.js';
+const PRESETS = {
+  glass: ['Glass · Midnight', { mode: 'glass', palette: 'brand', mark: 'me' }], chrome: ['Chrome · MAZE', { mode: 'chrome', palette: 'maze', mark: 'maze', scale: .5 }], holo: ['Holo · Ice', { mode: 'holo', palette: 'ice', mark: 'me' }],
+  glitch: ['Glitch · Acid', { mode: 'glitch', palette: 'acid', mark: 'me' }], neon: ['Neon · Violet', { mode: 'neon', palette: 'violet', mark: 'me' }], melt: ['Melt · Lime', { mode: 'melt', palette: 'lime', mark: 'me' }],
+  half: ['Halftone · Mono', { mode: 'halftone', palette: 'mono', mark: 'me', cell: 9 }], echo: ['Echo · Brand', { mode: 'echo', palette: 'brand', mark: 'me' }], ripple: ['Ripple · Lilac', { mode: 'ripple', palette: 'lilac', mark: 'me' }],
+  wave: ['Wave · Ember', { mode: 'wave', palette: 'ember', mark: 'me' }], word: ['Chrome · wordmark', { mode: 'chrome', palette: 'brand', mark: 'wordmark', scale: .9 }], pix: ['Pixel · MNML EFFRT', { mode: 'pixel', palette: 'brand', mark: 'mnml', scale: .9, cell: 8 }],
+};
 
 const root = document.getElementById('lab');
 if (root) {
@@ -7,10 +13,13 @@ if (root) {
   const cv = root.querySelector('canvas'), $ = s => root.querySelector(s);
   const seg = (el, items, key) => { el.innerHTML = Object.entries(items).map(([v, t]) => `<button type="button" class="lab-b" data-v="${v}">${t.label || t}</button>`).join(''); el.addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; set({ [key]: b.dataset.v }); }); };
   let api, fmt = 'feed';
-  const press = () => root.querySelectorAll('[data-k]').forEach(g => g.querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.v === (g.dataset.k === 'format' ? fmt : api?.state[g.dataset.k])))));
+  const press = () => root.querySelectorAll('[data-k]').forEach(g => g.querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.v === (g.dataset.k === 'format' ? fmt : g.dataset.k === 'preset' ? '' : api?.state[g.dataset.k])))));
   function size() { const [w, h] = SIZES[fmt], k = 720 / Math.max(w, h); cv.width = Math.round(w * k); cv.height = Math.round(h * k); cv.style.aspectRatio = `${w} / ${h}`; }
-  function set(o) { if (o.format) { fmt = o.format; size(); delete o.format; } api?.set(o); press(); }
-  seg($('[data-k="mode"]'), MODES, 'mode'); seg($('[data-k="palette"]'), PALETTES, 'palette'); seg($('[data-k="format"]'), { feed: 'Feed', story: 'Story', square: 'Square', landscape: 'Landscape' }, 'format');
+  function set(o) { if (o.format) { fmt = o.format; size(); delete o.format; } api?.set(o); press(); root.querySelectorAll('input[type=range]').forEach(r => { if (api && api.state[r.name] != null) r.value = api.state[r.name]; }); }
+  seg($('[data-k="mode"]'), MODES, 'mode'); seg($('[data-k="mark"]'), Object.fromEntries(Object.entries(MARKS).map(([k, v]) => [k, v[0]])), 'mark');
+  $('[data-k="preset"]').innerHTML = Object.entries(PRESETS).map(([k, [t]]) => `<button type="button" class="lab-b" data-v="${k}">${t}</button>`).join('');
+  $('[data-k="preset"]').addEventListener('click', e => { const b = e.target.closest('button'); if (b) set({ ...PRESETS[b.dataset.v][1] }); });
+  $('.lab-rnd').addEventListener('click', () => { const pick = o => { const k = Object.keys(o); return k[Math.floor(Math.random() * k.length)]; }; set({ mode: pick(MODES), palette: pick(PALETTES), amt: +(0.5 + Math.random() * 1.5).toFixed(2), cell: 6 + Math.floor(Math.random() * 14) }); }); seg($('[data-k="palette"]'), PALETTES, 'palette'); seg($('[data-k="format"]'), { feed: 'Feed', story: 'Story', square: 'Square', landscape: 'Landscape' }, 'format');
   root.querySelectorAll('input[type=range]').forEach(r => r.addEventListener('input', () => set({ [r.name]: +r.value })));
   size();
   const io = new IntersectionObserver(async es => {

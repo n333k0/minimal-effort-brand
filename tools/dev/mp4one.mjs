@@ -1,0 +1,12 @@
+import fs from 'fs'; import { chromium } from 'playwright';
+const ex = JSON.parse(fs.readFileSync('tools/examples/templates.json', 'utf8'));
+const s = { ...ex.find(e => e.name === process.argv[2]) }; s.format = [].concat(s.formats || 'feed')[0]; delete s.formats; delete s.group; delete s.name; Object.assign(s, JSON.parse(process.argv[4] || '{}'));
+const b = await chromium.launch({ channel: 'chrome' }); const p = await b.newPage({ viewport: { width: 1440, height: 900 }, acceptDownloads: true });
+p.on('console', m => console.log('console', m.type(), m.text().slice(0, 200))); p.on('pageerror', e => console.log('pageerror', e.message));
+const hash = Buffer.from(encodeURIComponent(JSON.stringify(s)).replace(/%([0-9A-F]{2})/g, (_, h) => String.fromCharCode(parseInt(h, 16))), 'latin1').toString('base64');
+await p.goto(`http://127.0.0.1:8790/builder.html#${hash}`); await p.waitForTimeout(2500);
+const t0 = Date.now(); const dl = p.waitForEvent('download', { timeout: 900000 });
+await p.click('#bMp4');
+const iv = setInterval(async () => console.log('progress', await p.textContent('#bMp4').catch(() => '?'), ((Date.now() - t0) / 1000).toFixed(0) + 's'), 15000);
+const d = await dl; clearInterval(iv); await d.saveAs(process.argv[3]); console.log('done', ((Date.now() - t0) / 1000).toFixed(1) + 's');
+await b.close();

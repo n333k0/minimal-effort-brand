@@ -9,13 +9,19 @@ export const PALETTES = {
   lilac: { label: 'Lilac field', bg: '#A79BEE', a: '#14141A', b: '#F5F6FC' },
   ice: { label: 'Ice', bg: '#F5F6FC', a: '#14141A', b: '#A79BEE' },
   ember: { label: 'Ember', bg: '#1A0B08', a: '#FF6A2A', b: '#FFD08A' },
+  maze: { label: 'MAZE orange', bg: '#FF4A1A', a: '#B4F152', b: '#9A93E0' },
+  violet: { label: 'MAZE violet', bg: '#1E1550', a: '#B4F152', b: '#9A62E8' },
+  mono: { label: 'Mono', bg: '#0B0B10', a: '#F5F6FC', b: '#8A8C96' },
+  acid: { label: 'Acid', bg: '#0B0B10', a: '#B4F152', b: '#2F4214' },
 };
-export const MODES = { glass: 'Glass', pixel: 'Pixel', grit: 'Grit' };
+// round 5: nine more looks. All periodic in one loop.
+export const MODES = { glass: 'Glass', pixel: 'Pixel', grit: 'Grit', chrome: 'Chrome', holo: 'Holo film', halftone: 'Halftone', ripple: 'Ripple', echo: 'Echo tunnel', neon: 'Neon', wave: 'Flag wave', glitch: 'Glitch', melt: 'Melt' };
+export const MARKS = { me: ['ME', 'assets/logo/me-mark.svg'], wordmark: ['MINIMAL EFFORT', 'assets/logo/wordmark.svg'], mnml: ['MNML EFFRT', 'assets/logo/mnml-effrt.svg'], maze: ['THE MAZE', 'assets/logo/the-maze.svg'] };
 
 const VERT = 'attribute vec2 p; void main(){ gl_Position = vec4(p, 0., 1.); }';
 const FRAG = `precision highp float;
 uniform vec2 uRes; uniform float uPh; uniform sampler2D uMark; uniform vec3 uBg, uA, uB;
-uniform float uScale, uGrain, uMode, uCell;
+uniform float uScale, uGrain, uMode, uCell, uAmt, uAsp;
 #define TAU 6.2831853
 float h21(vec2 p){ p = fract(p * vec2(123.34, 456.21)); p += dot(p, p + 45.32); return fract(p.x * p.y); }
 float vnoise(vec2 p){ vec2 i = floor(p), f = fract(p); f = f * f * (3. - 2. * f);
@@ -24,7 +30,8 @@ float fbm(vec2 p){ float s = 0., a = .5; for (int i = 0; i < 5; i++) { s += a * 
 // loop-safe noise: travel round a circle in noise space once per loop
 vec2 orb(float r){ return vec2(cos(uPh * TAU), sin(uPh * TAU)) * r; }
 // the mark: r = sharp ME, g = blurred (height for the glass)
-vec2 markUV(vec2 fc){ float W = uScale * min(uRes.x, uRes.y * 2.0713); vec2 d = (fc - uRes * .5) / vec2(W, W / 2.0713); return d + .5; }
+vec2 markUV(vec2 fc){ float W = uScale * min(uRes.x, uRes.y * uAsp); vec2 d = (fc - uRes * .5) / vec2(W, W / uAsp); return d + .5; }
+vec3 pal(float t){ return .5 + .5 * cos(TAU * (t + vec3(0., .33, .67))); }
 vec4 mark(vec2 uv){ if (uv.x < 0. || uv.y < 0. || uv.x > 1. || uv.y > 1.) return vec4(0.); return texture2D(uMark, vec2(uv.x, 1. - uv.y)); }
 float bayer(vec2 p){ vec2 q = mod(floor(p), 4.); float x = q.x, y = q.y;
   float b = mod(x, 2.) * 2. + mod(y, 2.) * 3. - 2. * mod(x, 2.) * mod(y, 2.);
@@ -38,13 +45,11 @@ vec3 light(vec2 q){ // moving brand light (the "liquid light" family): a domain-
   return c; }
 void main(){
   vec2 fc = gl_FragCoord.xy, q = fc / uRes.y; vec3 col;
-  vec2 uv = markUV(fc); float px = 1. / (uScale * min(uRes.x, uRes.y * 2.0713));
+  vec2 uv = markUV(fc); float px = 1. / (uScale * min(uRes.x, uRes.y * uAsp));
+  float e = px * 10.; vec2 nrm = vec2(mark(uv + vec2(e, 0)).g - mark(uv - vec2(e, 0)).g, mark(uv + vec2(0, e)).g - mark(uv - vec2(0, e)).g);
   if (uMode < .5) {
     // GLASS
-    float h = mark(uv).g, inside = mark(uv).r;
-    float e = px * 10.;
-    float hx = mark(uv + vec2(e, 0)).g - mark(uv - vec2(e, 0)).g, hy = mark(uv + vec2(0, e)).g - mark(uv - vec2(0, e)).g;
-    vec2 nrm = vec2(hx, hy);
+    float h = mark(uv).g;
     float body = smoothstep(.05, .5, h);
     vec3 base = light(q) * .7;
     vec2 off = nrm * 1.1 + (q - .5) * .12 * body;
@@ -66,6 +71,62 @@ void main(){
     float on = step(d, v), hi = step(d, v - .45);
     col = mix(uBg, uB, on); col = mix(col, uA, hi);
     vec2 g = fract(fc / uCell); col *= .86 + .14 * step(.12, g.x) * step(.12, g.y);
+  } else if (uMode > 2.5 && uMode < 3.5) {
+    // CHROME: liquid metal, a studio of light bands sliding across the letters
+    float h = mark(uv).g, body = smoothstep(.05, .45, h); vec2 n2 = nrm * 3.2 * uAmt;
+    float t = n2.y * 2.4 + n2.x * 1.1 + q.y * 1.4 + .6 * sin(uPh * TAU + q.x * 2.);
+    vec3 metal = mix(vec3(.05), vec3(1.), smoothstep(-.2, .9, sin(t * 6.)));
+    metal = mix(metal, uB, .3 * (.5 + .5 * sin(t * 2. + 1.))); metal += uA * pow(max(0., sin(t * 3. - uPh * TAU)), 24.) * .8;
+    col = mix(uBg + light(q) * .06, metal, body);
+  } else if (uMode > 3.5 && uMode < 4.5) {
+    // HOLO FILM: thin-film rainbow on a glass ME over a pale field
+    float h = mark(uv).g, body = smoothstep(.05, .45, h);
+    vec3 film = pal(h * 1.4 + dot(nrm, vec2(2., 1.2)) * uAmt + uPh + q.y * .3);
+    film = mix(film, vec3(1.), .35); float spec = pow(max(0., dot(normalize(vec3(nrm * 4., 1.)), normalize(vec3(cos(uPh * TAU), sin(uPh * TAU), 1.)))), 40.);
+    col = mix(uBg * .96 + pal(q.x * .3 + uPh) * .04, film + spec, body);
+  } else if (uMode > 4.5 && uMode < 5.5) {
+    // HALFTONE: the ME as a rotated dot screen breathing with the light
+    vec2 r = mat2(.7071, -.7071, .7071, .7071) * fc; vec2 cell = (floor(r / uCell) + .5) * uCell; vec2 back = mat2(.7071, .7071, -.7071, .7071) * cell;
+    float m = mark(markUV(back)).g, l = dot(light(back / uRes.y), vec3(.33));
+    float v = clamp(m * (.85 + .15 * sin(uPh * TAU)) + l * .25 * (1. - m), 0., 1.);
+    float d = length(r - cell) / uCell;
+    col = mix(uBg, mix(uB, uA, step(.5, m)), 1. - smoothstep(v * .62 - .04, v * .62 + .04, d));
+  } else if (uMode > 5.5 && uMode < 6.5) {
+    // RIPPLE: rings travel out from the centre and bend the ME
+    vec2 c = (fc - uRes * .5) / uRes.y; float r = length(c);
+    float w = sin(r * 38. - uPh * TAU * 3.) * .012 * uAmt / (r + .25);
+    vec2 uv2 = markUV(fc + normalize(c + 1e-4) * w * uRes.y);
+    float m = mark(uv2).r; float ring = .5 + .5 * sin(r * 38. - uPh * TAU * 3.);
+    col = mix(uBg, uB, ring * .18 * smoothstep(.9, .1, r)); col = mix(col, uA, m);
+  } else if (uMode > 6.5 && uMode < 7.5) {
+    // ECHO TUNNEL: the ME repeats inward, every copy zooming one step per loop
+    col = uBg;
+    for (int i = 0; i < 9; i++) { float fi = float(i), k = fract((fi + uPh) / 9.); float z = .12 + k * k * 2.6;
+      vec2 u2 = (uv - .5) / z + .5; float m = mark(u2).r * smoothstep(1., .75, k) * smoothstep(.0, .12, k);
+      col = mix(col, mod(fi, 2.) < .5 ? uA : uB, m); }
+  } else if (uMode > 7.5 && uMode < 8.5) {
+    // NEON: a tube along the letters' outline, glowing, with a stutter twice a loop
+    float g = mark(uv).b; float tube = 1. - smoothstep(.06, .2, abs(g - .5));
+    float glow = exp(-abs(g - .5) * 3.5) * .9; float st = step(.06, abs(fract(uPh * 2.) - .3)) * .7 + .3;
+    col = uBg + uA * (tube * 1.2 + glow * .5) * st + uB * glow * .25 * (1. - st);
+  } else if (uMode > 8.5 && uMode < 9.5) {
+    // FLAG WAVE: the ME as cloth, its shadow copy in the second colour
+    vec2 u2 = uv; u2.y += sin(u2.x * TAU * 1.5 + uPh * TAU) * .06 * uAmt; u2.x += sin(u2.y * TAU + uPh * TAU) * .02 * uAmt;
+    float m = mark(u2).r, sh = mark(u2 + vec2(-.02, .04)).r, shade = .85 + .15 * sin(u2.x * TAU * 1.5 + uPh * TAU + 1.2);
+    col = mix(uBg, uB, sh * (1. - m)); col = mix(col, uA * shade, m);
+  } else if (uMode > 9.5 && uMode < 10.5) {
+    // GLITCH: horizontal slices slip and the channels split, a few times a loop
+    float row = floor(fc.y / (uRes.y / 26.)), tk = floor(uPh * 16.); float on = step(.62, h21(vec2(row, tk)));
+    float off = (h21(vec2(row * 1.7, tk + 3.)) - .5) * .22 * on * uAmt;
+    float r = mark(uv + vec2(off + .008 * uAmt, 0)).r, g = mark(uv + vec2(off, 0)).r, b = mark(uv + vec2(off - .008 * uAmt, 0)).r;
+    col = mix(uBg, uA, g); col.r = mix(col.r, uB.r, r * (1. - g)); col.b = mix(col.b, uB.b, b * (1. - g));
+    col += step(.985, h21(vec2(floor(fc.x / 3.), row + tk))) * on * .5;
+  } else if (uMode > 10.5 && uMode < 11.5) {
+    // MELT: the letters drip down and pull back up once a loop
+    float drip = pow(fbm(vec2(uv.x * 7., 3.)), 2.2) * (.5 - .5 * cos(uPh * TAU)) * .7 * uAmt;
+    vec2 u2 = vec2(uv.x, uv.y + drip * smoothstep(.0, 1., 1. - uv.y));
+    float m = 0.; for (int i = 0; i < 6; i++) m = max(m, mark(u2 + vec2(0., float(i) * drip * .08)).r);
+    col = mix(uBg, uA, m); col = mix(col, uB, mark(uv).r * (1. - m) * .5);
   } else {
     // GRIT: toner noise; the ME's edges are eaten and rebuilt
     float m = mark(uv).b;
@@ -88,9 +149,10 @@ const hex = h => { const n = parseInt(h.replace('#', ''), 16); return [(n >> 16 
 // the ME as a texture: red = sharp, green = blurred height
 async function markCanvas(src = 'assets/logo/me-mark.svg') {
   const svg = await fetch(src).then(r => r.text());
+  const vb = (svg.match(/viewBox="([^"]+)"/) || [])[1]?.split(/[\s,]+/).map(Number), asp = vb ? vb[2] / vb[3] : 2.0713;
   const img = new Image(); img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg.replace(/fill="[^"]*"/g, 'fill="#fff"'));
   await img.decode();
-  const W = 1024, H = Math.round(W / 2.0713), pad = 40;
+  const W = 1024, H = Math.round(W / asp), pad = 40;
   const c = document.createElement('canvas'); c.width = W; c.height = H; const x = c.getContext('2d');
   const sharp = document.createElement('canvas'); sharp.width = W; sharp.height = H; const sx = sharp.getContext('2d');
   sx.fillStyle = '#000'; sx.fillRect(0, 0, W, H); sx.drawImage(img, pad, pad * H / W, W - 2 * pad, H - 2 * pad * H / W);
@@ -104,7 +166,7 @@ async function markCanvas(src = 'assets/logo/me-mark.svg') {
   const heavy = document.createElement('canvas'); heavy.width = W; heavy.height = H; const hx = heavy.getContext('2d');
   hx.filter = 'blur(9px)'; hx.drawImage(sharp, 0, 0); const hv = hx.getImageData(0, 0, W, H);
   for (let i = 0; i < a.data.length; i += 4) { o.data[i] = a.data[i]; o.data[i + 1] = Math.min(255, b.data[i] * 1.6); o.data[i + 2] = hv.data[i]; o.data[i + 3] = 255; }
-  x.putImageData(o, 0, 0); return c;
+  x.putImageData(o, 0, 0); c.asp = asp; return c;
 }
 
 export async function mountShader(canvas, opts = {}) {
@@ -115,20 +177,22 @@ export async function mountShader(canvas, opts = {}) {
   const buf = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, buf); gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
   const loc = gl.getAttribLocation(pr, 'p'); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
   const tex = gl.createTexture(); gl.bindTexture(gl.TEXTURE_2D, tex);
-  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, await markCanvas(opts.mark));
+  let asp = 2.0713;
+  const load = async key => { const m = await markCanvas((MARKS[key] || MARKS.me)[1]); asp = m.asp; gl.bindTexture(gl.TEXTURE_2D, tex); gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, m); };
+  await load(opts.mark || 'me');
   for (const [k, v] of [[gl.TEXTURE_MIN_FILTER, gl.LINEAR], [gl.TEXTURE_MAG_FILTER, gl.LINEAR], [gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE], [gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE]]) gl.texParameteri(gl.TEXTURE_2D, k, v);
   const U = n => gl.getUniformLocation(pr, n);
-  const state = { mode: 'glass', palette: 'brand', scale: .62, grain: .06, cell: 12, loop: 10, speed: 1, ...opts };
+  const state = { mode: 'glass', palette: 'brand', scale: .62, grain: .06, cell: 12, loop: 10, speed: 1, amt: 1, mark: 'me', ...opts };
   const api = {
     state,
-    set(o) { Object.assign(state, o); },
+    set(o) { const m = o.mark && o.mark !== state.mark; Object.assign(state, o); if (m) return load(state.mark); },
     draw(phase) {
       const P = PALETTES[state.palette] || PALETTES.brand;
       gl.viewport(0, 0, canvas.width, canvas.height);
       gl.uniform2f(U('uRes'), canvas.width, canvas.height); gl.uniform1f(U('uPh'), phase % 1);
       gl.uniform3fv(U('uBg'), hex(P.bg)); gl.uniform3fv(U('uA'), hex(P.a)); gl.uniform3fv(U('uB'), hex(P.b));
       gl.uniform1f(U('uScale'), state.scale); gl.uniform1f(U('uGrain'), state.grain); gl.uniform1f(U('uMode'), Object.keys(MODES).indexOf(state.mode));
-      gl.uniform1f(U('uCell'), state.cell * canvas.width / 1080); gl.uniform1i(U('uMark'), 0);
+      gl.uniform1f(U('uCell'), state.cell * canvas.width / 1080); gl.uniform1i(U('uMark'), 0); gl.uniform1f(U('uAmt'), state.amt ?? 1); gl.uniform1f(U('uAsp'), asp);
       gl.drawArrays(gl.TRIANGLES, 0, 3);
     },
     play() { let t0 = performance.now(), raf; const f = now => { api.draw(((now - t0) / 1000 * state.speed / state.loop) % 1); raf = requestAnimationFrame(f); }; raf = requestAnimationFrame(f); api.stop = () => cancelAnimationFrame(raf); return api; },

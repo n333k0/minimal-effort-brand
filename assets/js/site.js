@@ -2,6 +2,7 @@
 // while scrolling fast, a lime smoke trail over the hero, a pill header. Template previews are drawn live by templates.js.
 // Without JS the page is the plain layout in site.css (template previews then fall back to their PNG <noscript> images).
 import { preview } from './templates.js';
+import { hydrate } from './hydrate.js';
 import './sections.js';
 
 const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -12,13 +13,19 @@ const o3 = t => 1 - (1 - t) ** 3;
 const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => [...r.querySelectorAll(s)];
 
 /* ------------------------------------------------ template previews (data-tpl='{"template":...}') */
+// drawn lazily: only previews near the viewport, and their videos pause when they leave it (the page has ~250 previews)
+const near = el => { const r = el.getBoundingClientRect(); return printing || (r.bottom > -900 && r.top < innerHeight + 900); };
 function drawPreviews() {
   $$('[data-tpl]').forEach(el => {
-    const w = Math.round(el.clientWidth); if (!w || el._w === w) return; el._w = w;
+    const w = Math.round(el.clientWidth); if (!w || el._w === w || !near(el)) return; el._w = w;
     let spec = {}; try { spec = JSON.parse(el.dataset.tpl); } catch (e) { }
     el.innerHTML = preview(spec, w, { forExport: printing || el.hasAttribute('data-still') });
+    hydrate(el, { scale: Math.min(1, w / 540), animate: !printing });
+    el.querySelectorAll('video').forEach(v => vio.observe(v));
   });
 }
+const vio = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) e.target.play?.().catch(() => { }); else e.target.pause?.(); }), { rootMargin: '200px' });
+let dq = 0; addEventListener('scroll', () => { if (!dq) { dq = 1; requestAnimationFrame(() => { dq = 0; drawPreviews(); }); } }, { passive: true });
 drawPreviews();
 let rT; addEventListener('resize', () => { clearTimeout(rT); rT = setTimeout(() => { $$('[data-tpl]').forEach(e => e._w = 0); drawPreviews(); }, 120); });
 document.fonts?.ready.then(() => { $$('[data-tpl]').forEach(e => e._w = 0); drawPreviews(); });
