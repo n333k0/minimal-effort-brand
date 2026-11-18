@@ -6,11 +6,29 @@
 <title>Minimal Effort — Flyer Builder</title>
 <link rel="icon" href="assets/logo/favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="assets/fonts/fonts.css">
-<link rel="stylesheet" href="assets/css/templates.css?v=20261117f">
+<link rel="stylesheet" href="assets/css/templates.css?v=20261118a">
 <style>
   :root { --mid: #14141A; --ice: #F5F6FC; --lime: #B4F152; --lilac: #A79BEE; --mute: rgba(245,246,252,.55); --line: rgba(245,246,252,.14);
     --sans: 'Manrope', 'Helvetica Neue', Arial, sans-serif; --mono: 'IBM Plex Mono', ui-monospace, Menlo, monospace; color-scheme: dark; }
   * { box-sizing: border-box; }
+  /* click-to-edit inspector */
+  #insp { position: fixed; z-index: 30; width: 236px; padding: 12px 12px 10px; border-radius: 12px; display: grid; gap: 8px; }
+  #insp[hidden], #selb[hidden] { display: none; }
+  #insp .ih { margin: 0 22px 2px 0; font: 600 11px/1.3 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--lime); }
+  #insp .ix { position: absolute; top: 8px; right: 8px; }
+  #insp .irow { display: grid; grid-template-columns: 1fr 28px 52px 28px; align-items: center; gap: 4px; }
+  #insp .irow b { text-align: center; font: 500 12px var(--mono); }
+  #insp .irow button { height: 28px; border-radius: 8px; border: 0; background: rgba(245,246,252,.1); color: var(--ice); font-size: 15px; cursor: pointer; }
+  #insp .irow button:hover { background: rgba(245,246,252,.2); }
+  #insp .irow2 { display: flex; flex-wrap: wrap; gap: 6px; }
+  #insp select { width: 100%; }
+  #selb { position: fixed; z-index: 29; pointer-events: none; border: 1.5px solid var(--lime); border-radius: 3px; box-shadow: 0 0 0 9999px rgba(10,10,14,.0); }
+  #preview .ab { cursor: pointer; }
+  .grp.flash, #lglist.flash, #bgs.flash, #photos.flash { animation: grpFlash 1.4s ease; }
+  @keyframes grpFlash { 0%, 40% { box-shadow: 0 0 0 2px var(--lime); border-radius: 10px; } 100% { box-shadow: 0 0 0 2px transparent; } }
+  .szrow.sz2 { grid-template-columns: minmax(0,1fr) 24px 34px 24px auto 24px 34px 24px; gap: 4px; }
+  .szrow .pdl { margin: 0 0 0 6px !important; }
+
   html, body { margin: 0; height: 100%; background: var(--mid); color: var(--ice); font: 500 13px/1.4 var(--sans); -webkit-font-smoothing: antialiased; }
   .canvas { position: fixed; inset: 0; background-image: linear-gradient(rgba(245,246,252,.035) 1px, transparent 1px), linear-gradient(90deg, rgba(245,246,252,.035) 1px, transparent 1px); background-size: 32px 32px; }
   .stage { position: fixed; inset: 0; display: grid; place-items: center; padding: 84px 32px 32px 432px; }
@@ -153,7 +171,7 @@
     <label class="f"><span class="lab">Logo size (all, optically matched)</span><input type="range" id="logoSize" min="30" max="120" step="1"></label>
     <label class="tog"><span class="lab" style="margin:0">Our marks on a black box (off: they take the colour that reads)</span><input type="checkbox" id="logoLabel"></label>
   </div>
-  <div class="grp"><span class="lab">Background</span><div id="bgs"></div><input type="file" id="bgFile" accept="image/*,video/*">
+  <div class="grp"><span class="lab">Background</span><div id="bgs"></div><div id="mzpW" hidden><span class="lab sub-l">Maze colours</span><div class="seg" id="mzp"></div></div><input type="file" id="bgFile" accept="image/*,video/*">
     <span class="lab sub-l" style="margin-top:12px">Texture (over the background, under the type)</span><div class="seg" id="texc"></div>
     <label class="f"><span class="lab">Darken background</span><input type="range" id="shade" min="0" max="0.8" step="0.05"></label>
   </div>
@@ -237,21 +255,38 @@
 
 <script src="assets/vendor/html-to-image.js"></script>
 <script type="module">
-  import { render, DEFAULT, TEMPLATES, ROLES, MAZE, BACKGROUNDS, PHOTOS, EVENTS, FORMATS, ICONS, LOGO, LOGO_META, LABEL_COLORS, TEXT_COLORS, CW, LABEL_STYLES, FONTS, ANIMS, SHAPES, TEXTURES } from './assets/js/templates.js?v=20261117f';
-  import { EXT } from './assets/js/compose.js?v=20261117f';
-  import { FX_MODES, GRADS, FX_DEFAULT } from './assets/js/fx.js?v=20261117f';
-  import { hydrate, fxFrame, seekTo, xlBlocks, xlMain, XL_SIZE } from './assets/js/hydrate.js?v=20261117f';
+  import { render, resolve, DEFAULT, TEMPLATES, ROLES, MAZE, BACKGROUNDS, PHOTOS, EVENTS, FORMATS, ICONS, LOGO, LOGO_META, LABEL_COLORS, TEXT_COLORS, CW, LABEL_STYLES, FONTS, ANIMS, SHAPES, TEXTURES } from './assets/js/templates.js?v=20261118a';
+  import { EXT } from './assets/js/compose.js?v=20261118a';
+  import { FX_MODES, GRADS, FX_DEFAULT } from './assets/js/fx.js?v=20261118a';
+  import { hydrate, fxFrame, seekTo, xlBlocks, xlMain, XL_SIZE } from './assets/js/hydrate.js?v=20261118a';
   import { Muxer, ArrayBufferTarget } from './assets/vendor/mp4-muxer.mjs';
   const $ = s => document.querySelector(s);
   const clone = o => JSON.parse(JSON.stringify(o));
+  const escA = v => String(v ?? '').replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
   let S = clone(DEFAULT);
-  try { const h = location.hash.slice(1); if (h) S = { ...S, ...JSON.parse(decodeURIComponent(escape(atob(h)))) }; } catch (e) { }
+  try { const h = location.hash.slice(1); if (h) S = clone(resolve(JSON.parse(decodeURIComponent(escape(atob(h)))))); /* same defaults as the guidelines render */ } catch (e) { }
   // the single "Extra label" field became free, draggable labels: carry an old link's label over
   if (String(S.extra || '').trim() && !(S.extras || []).length) S.extras = String(S.extra).split('\n').map(t => t.trim()).filter(Boolean).map(t => ({ t, size: 'm', at: 'main', side: 'before' }));
   S.extra = ''; S.extraPos = 'top'; S.extras ||= [];
   // labels made by the first version of + Add label (free, never dragged: no x) join the text above the headliner
   for (const e of S.extras) if (e && !Number.isInteger(e.at) && e.at !== 'main' && (e.x === null || e.x === undefined)) { e.at = 'main'; e.side = 'before'; delete e.x; delete e.y; }
   const uploads = {};          // big data URLs stay out of the URL hash
+
+  // ---- your uploads: kept in this browser (IndexedDB), so they survive a reload and can be picked again later
+  const DB = (() => { let p; return () => p ||= new Promise((ok, no) => { const r = indexedDB.open('me-builder', 1); r.onupgradeneeded = () => r.result.createObjectStore('files', { keyPath: 'id' }); r.onsuccess = () => ok(r.result); r.onerror = () => no(r.error); }); })();
+  const lib = new Map();
+  const libUrl = id => lib.get(id)?.url;
+  async function libPut(f, kind) {
+    const id = kind + '-' + Date.now().toString(36) + Math.random().toString(36).slice(2, 5), rec = { id, name: f.name, type: f.type, kind, blob: f, t: Date.now() };
+    lib.set(id, { ...rec, url: URL.createObjectURL(f) });
+    try { const db = await DB(); await new Promise((ok, no) => { const tx = db.transaction('files', 'readwrite'); tx.objectStore('files').put(rec); tx.oncomplete = ok; tx.onerror = () => no(tx.error); }); } catch (e) { }
+    return id;
+  }
+  async function libDel(id) { lib.delete(id); try { const db = await DB(); db.transaction('files', 'readwrite').objectStore('files').delete(id); } catch (e) { } }
+  async function libLoad() {
+    try { const db = await DB(); const all = await new Promise((ok, no) => { const r = db.transaction('files').objectStore('files').getAll(); r.onsuccess = () => ok(r.result); r.onerror = () => no(r.error); });
+      for (const r of all.sort((a, b) => a.t - b.t)) lib.set(r.id, { ...r, url: URL.createObjectURL(r.blob) }); } catch (e) { }
+  }
 
   const toText = { artists: a => a.map(x => x.note ? `${x.name} | ${x.note}` : x.name).join('\n'), venue: a => a.join('\n'), steps: a => a.join('\n'), log: a => a.join('\n'), rows: a => a.map(r => [r.d, r.w, r.e, r.a, r.v].join(' | ')).join('\n') };
   toText.roles = a => a.join('\n');
@@ -263,18 +298,18 @@
 
   const seg = (el, items, key, after) => { el.innerHTML = items.map(([v, t]) => `<button type="button" data-v="${v}">${t}</button>`).join(''); el.addEventListener('click', e => { const b = e.target.closest('button'); if (!b || b.disabled) return; S[key] = b.dataset.v; after?.(b.dataset.v); sync(); }); };
   const defLogos = (t, ev) => t === 'maze' ? [] : t === 'announce' ? [{ id: 'me-mark', pos: 'tl' }, ...(ev === 'SECOND WIND' ? [{ id: 'origin-mark' }] : [])] : ['giveaway', 'hiring', 'calendar', 'cover'].includes(t) ? [{ id: 'me-mark' }] : clone(EVENTS[ev]?.logos || [{ id: 'me-mark' }]);
-  seg($('#tpl'), Object.entries(TEMPLATES).filter(([k, v]) => !v.hidden).map(([k, v]) => [k, v.label]), 'template', t => { S.logos = defLogos(t, S.event); if (t === 'hiring') { S.bg = 'limesolid'; if (!S.photo || S.photo.startsWith('lee')) S.photo = 'party-01'; } if (t === 'giveaway' && (S.photo || '').startsWith('lee')) S.photo = 'party-03'; if (t === 'highlight') { S.format = 'story'; S.labels = false; } const L = TEMPLATES[t].layouts; S.layout = L ? Object.keys(L)[0] : S.layout; if (EXT[t]) applyPreset(); if (t === 'maze') { S.bg = 'maze'; S.labels = false; S.date = 'OCT 31'; S.title = 'HALLOWEEN NIGHT'; S.venue = ['THE TRAIN STATION', '800 N. Alameda St. Los Angeles, CA']; S.artists = [{ name: 'GUY GERBER' }, { name: 'LEE BURRIDGE' }, { name: 'DEER JADE' }, { name: 'THE BITAR BROTHERS' }]; } else if (S.bg === 'maze') S.bg = 'waves'; if (t === 'hiring') S.bg = 'limesolid'; });
+  seg($('#tpl'), Object.entries(TEMPLATES).filter(([k, v]) => !v.hidden).map(([k, v]) => [k, v.label]), 'template', t => { S.logos = defLogos(t, S.event); if (t === 'announce' && !['photo', 'fx'].includes(S.bg)) S.bg = 'photo'; if (t === 'hiring') { S.bg = 'limesolid'; if (!S.photo || S.photo.startsWith('lee')) S.photo = 'party-01'; } if (t === 'giveaway' && (S.photo || '').startsWith('lee')) S.photo = 'party-03'; if (t === 'highlight') { S.format = 'story'; S.labels = false; } const L = TEMPLATES[t].layouts; S.layout = L ? Object.keys(L)[0] : S.layout; if (EXT[t]) applyPreset(); if (t === 'maze') { S.bg = 'maze'; S.labels = false; S.date = 'OCT 31'; S.title = 'HALLOWEEN NIGHT'; S.venue = ['THE TRAIN STATION', '800 N. Alameda St. Los Angeles, CA']; S.artists = [{ name: 'GUY GERBER' }, { name: 'LEE BURRIDGE' }, { name: 'DEER JADE' }, { name: 'THE BITAR BROTHERS' }]; } else if (S.bg === 'maze') S.bg = 'waves'; if (t === 'hiring') S.bg = 'limesolid'; });
   seg($('#fmt'), [['feed', 'Feed 4:5'], ['story', 'Story 9:16'], ['square', 'Square 1:1'], ['landscape', 'Landscape 16:9']], 'format');
   const drawLay = () => { const L = TEMPLATES[S.template].layouts; $('#layW').style.display = L ? 'block' : 'none'; if (!L) return; $('#lay').innerHTML = Object.entries(L).map(([v, t]) => `<button type="button" data-v="${v}">${t}</button>`).join(''); };
   $('#lay').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; S.layout = b.dataset.v; if (EXT[S.template]) applyPreset(); if (S.template === 'hiring') S.bg = { object: 'limesolid', statement: 'photo', roles: 'lilacsolid' }[S.layout]; if (S.template === 'giveaway' && S.layout === 'ticket' && BACKGROUNDS[S.bg]?.photo) S.bg = 'limesolid'; sync(); });
   // sizes: one row per text group of the template, minus / plus in steps of 15%
   function drawSizes() {
     const R = ROLES[S.template] || {}; S.size ||= {};
-    $('#sizes').innerHTML = Object.entries(R).map(([k, n]) => { const v = S.size[k] || 0; return `<div class="szrow"><span class="lab" style="margin:0">${n}</span><button type="button" data-sz="${k}" data-d="-1">−</button><b>${v > 0 ? '+' + v : v}</b><button type="button" data-sz="${k}" data-d="1">+</button></div>`; }).join('') + `<div class="szrow"><span class="lab" style="margin:0">Logos</span><button type="button" data-lg="-6">−</button><b>${S.logoSize || 62}</b><button type="button" data-lg="6">+</button></div>`;
+    $('#sizes').innerHTML = Object.entries(R).map(([k, n]) => { const v = S.size[k] || 0; return `<div class="szrow${k === 'mazelogo' ? '' : ' sz2'}"><span class="lab" style="margin:0">${n}</span><button type="button" data-sz="${k}" data-d="-1">−</button><b>${v > 0 ? '+' + v : v}</b><button type="button" data-sz="${k}" data-d="1">+</button>${k === 'mazelogo' ? '' : `<span class="lab pdl">Pad</span><button type="button" data-pd="${k}" data-d="-1" title="Less padding round these blocks">−</button><b>${(S.pad?.[k] || 0) > 0 ? '+' + S.pad[k] : (S.pad?.[k] || 0)}</b><button type="button" data-pd="${k}" data-d="1" title="More padding round these blocks">+</button>`}</div>`; }).join('') + `<div class="szrow"><span class="lab" style="margin:0">Logos</span><button type="button" data-lg="-6">−</button><b>${S.logoSize || 62}</b><button type="button" data-lg="6">+</button></div>`;
   }
-  $('#sizes').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; if (b.dataset.lg) S.logoSize = Math.max(24, Math.min(160, (S.logoSize || 62) + +b.dataset.lg)); else { S.size ||= {}; S.size[b.dataset.sz] = Math.max(-5, Math.min(6, (S.size[b.dataset.sz] || 0) + +b.dataset.d)); } sync(); });
+  $('#sizes').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; if (b.dataset.lg) S.logoSize = Math.max(24, Math.min(160, (S.logoSize || 62) + +b.dataset.lg)); else if (b.dataset.pd) { const r = b.dataset.pd; S.pad ||= {}; S.pad[r] = Math.max(-3, Math.min(6, (S.pad[r] || 0) + +b.dataset.d)); if (!S.pad[r]) delete S.pad[r]; } else { S.size ||= {}; S.size[b.dataset.sz] = Math.max(-5, Math.min(6, (S.size[b.dataset.sz] || 0) + +b.dataset.d)); } sync(); });
   for (const id of ['margin', 'spacing', 'offsetY', 'seed']) $('#' + id).addEventListener('input', e => { S[id] = +e.target.value; fill(); draw(); save(); });
-  $('#szReset').addEventListener('click', () => { S.size = {}; S.margin = 64; S.spacing = 1; S.offsetY = 0; S.logoSize = 62; sync(); });
+  $('#szReset').addEventListener('click', () => { S.size = {}; S.pad = {}; S.margin = 64; S.spacing = 1; S.offsetY = 0; S.logoSize = 62; sync(); });
   seg($('#evt'), [...Object.keys(EVENTS).map(e => [e, e]), ['OTHER', 'Other']], 'event', ev => { const E = EVENTS[ev]; if (E) { for (const k of ['accent', 'presenter', 'partner', 'presents', 'textColor', 'logoColor']) S[k] = E[k]; S.logos = defLogos(S.template, ev); } else { S.textColor = ''; S.logoColor = ''; } });
   const sws = (el, map, key, extra = {}) => { el.innerHTML = Object.entries(map).map(([n, c]) => `<button type="button" title="${n}" data-v="${c}" class="${c === 'none' ? 'none' : ''}" style="${c === 'none' ? '' : 'background:' + c}"></button>`).join(''); el.addEventListener('click', e => { const b = e.target.closest('button'); if (b) { S[key] = b.dataset.v; extra.after?.(); sync(); } }); };
   sws($('#lblc'), LABEL_COLORS, 'labelColor', { after: () => { S.labels = S.labelColor !== 'none'; S.textColor = ''; } });
@@ -287,22 +322,27 @@
   $('#bgs').innerHTML = Object.entries(fams).map(([f, list]) => `<div class="fam">${f}</div><div class="chips">${list.map(([k, b]) => k === 'custom'
       ? `<button type="button" class="chip up" data-v="custom" title="Upload an image or a video">+<span>Upload</span></button>`
       : `<button type="button" class="chip" data-v="${k}" style="${b.still ? `background-image:url(${b.still})` : b.photo ? `background-image:url(${PHOTOS['party-02']})` : `background:${b.color}`}"><span>${b.label}</span></button>`).join('')}</div>`).join('');
+  seg($('#mzp'), Object.entries(MAZE).map(([k, v]) => [k, v.label]), 'mazePal');
   $('#bgs').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; if (b.dataset.v === 'custom') return $('#bgFile').click(); S.bg = b.dataset.v; sync(); });
   $('#bgFile').addEventListener('change', async e => {
-    const f = e.target.files[0]; if (!f) return; const url = URL.createObjectURL(f);
-    S.bg = 'custom'; S.bgType = f.type.startsWith('video') ? 'video' : 'image'; S.bgFile = f.name;
+    const f = e.target.files[0]; if (!f) return; const id = await libPut(f, 'bg'), url = libUrl(id);
+    S.bg = 'custom'; S.bgType = f.type.startsWith('video') ? 'video' : 'image'; S.bgFile = f.name; S.bgId = id; drawPhotos();
     uploads.bgSrc = url; uploads.bgStill = S.bgType === 'video' ? await firstFrame(url) : await toDataURL(f);
     sync(); toast('Background loaded');
   });
   const firstFrame = url => new Promise(r => { const v = document.createElement('video'); v.muted = true; v.src = url; v.addEventListener('loadeddata', () => { v.currentTime = 0.05; }); v.addEventListener('seeked', () => { const c = document.createElement('canvas'); c.width = v.videoWidth; c.height = v.videoHeight; c.getContext('2d').drawImage(v, 0, 0); r(c.toDataURL('image/jpeg', .9)); }, { once: true }); });
   const toDataURL = f => new Promise(r => { const fr = new FileReader(); fr.onload = () => r(fr.result); fr.readAsDataURL(f); });
 
-  $('#photos').innerHTML = Object.entries(PHOTOS).map(([k, src]) => `<button type="button" class="chip" data-v="${k}" style="background-image:url(${src})"><span>${k}</span></button>`).join('') + `<button type="button" class="chip up" data-v="upload">+<span>Upload</span></button>`;
+  const drawPhotos = () => { $('#photos').innerHTML = Object.entries(PHOTOS).map(([k, src]) => `<button type="button" class="chip" data-v="${k}" style="background-image:url(${src})"><span>${k}</span></button>`).join('')
+    + [...lib.values()].filter(r => r.kind === 'photo' || (r.kind === 'bg' && r.type.startsWith('image'))).map(r => `<button type="button" class="chip mine" data-v="upload:${r.id}" title="${escA(r.name)} — your upload" style="background-image:url(${r.url})"><span>${escA(r.name)}</span><i data-libdel="${r.id}" title="Remove this upload">×</i></button>`).join('')
+    + `<button type="button" class="chip up" data-v="upload">+<span>Upload</span></button>`; };
+  drawPhotos();
   // picking a photo should always show it: if the flyer doesn't use the photo yet (a loop or colour background), the
   // background switches to the photo. Templates that already place the photo (announce, window…) keep their background.
   const showPhoto = () => { const src = (S.photo || '').startsWith('upload:') ? uploads.photo : PHOTOS[S.photo]; if (src && !render(live()).includes(src)) { S.bg = 'photo'; toast('Background switched to the photo'); } };
-  $('#photos').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; if (b.dataset.v === 'upload') return $('#phFile').click(); S.photo = b.dataset.v; showPhoto(); sync(); });
-  $('#phFile').addEventListener('change', async e => { const f = e.target.files[0]; if (!f) return; uploads.photo = await toDataURL(f); S.photo = 'upload:' + f.name; showPhoto(); sync(); toast('Photo loaded'); });
+  $('#photos').addEventListener('click', e => { const d = e.target.closest('[data-libdel]'); if (d) { e.stopPropagation(); libDel(d.dataset.libdel); if (S.photo === 'upload:' + d.dataset.libdel) S.photo = 'party-01'; drawPhotos(); sync(); return; }
+    const b = e.target.closest('button'); if (!b) return; if (b.dataset.v === 'upload') return $('#phFile').click(); S.photo = b.dataset.v; if (S.photo.startsWith('upload:')) uploads.photo = libUrl(S.photo.slice(7)); showPhoto(); sync(); });
+  $('#phFile').addEventListener('change', async e => { const f = e.target.files[0]; if (!f) return; const id = await libPut(f, 'photo'); uploads.photo = libUrl(id); S.photo = 'upload:' + id; drawPhotos(); showPhoto(); sync(); toast('Photo loaded — it stays in Your uploads'); });
 
   // logos
   const POS = [['', 'Row'], ['tl', 'Top left'], ['tc', 'Top centre'], ['tr', 'Top right'], ['bl', 'Bottom left'], ['bc', 'Bottom centre'], ['br', 'Bottom right']].map(([v, t]) => `<option value="${v}">${t}</option>`).join('');
@@ -320,8 +360,8 @@
   $('#lgAdd').addEventListener('click', () => { (S.logos ||= []).push({ id: 'me-mark', scale: 1 }); sync(); });
   $('#lgUp').addEventListener('click', () => $('#lgFile').click());
   $('#lgFile').addEventListener('change', async e => {
-    const f = e.target.files[0]; if (!f) return; const url = await toDataURL(f);
-    const img = new Image(); img.onload = () => { (S.logos ||= []).push({ src: url, aspect: img.naturalWidth / img.naturalHeight, scale: 1, name: f.name }); sync(); toast('Logo added'); }; img.src = url;
+    const f = e.target.files[0]; if (!f) return; const url = await toDataURL(f), lid = await libPut(f, 'logo');
+    const img = new Image(); img.onload = () => { (S.logos ||= []).push({ src: url, lib: lid, aspect: img.naturalWidth / img.naturalHeight, scale: 1, name: f.name }); sync(); toast('Logo added — it stays in this browser'); }; img.src = url;
   });
 
   // ---- template album: every example from the guidelines page (tools/examples), grouped like the page; pick = start from it
@@ -346,14 +386,13 @@
     const b = e.target.closest('[data-n]'); if (!b || !albumData) return;
     const ex = albumData[0].find(x => x.name === b.dataset.n); if (!ex) return;
     const { name, formats, group, ...spec } = ex;
-    S = { ...clone(DEFAULT), ...clone(spec), format: [].concat(formats || 'feed')[0], extras: [] };
+    S = clone(resolve({ ...clone(spec), format: [].concat(formats || 'feed')[0], extras: [] }));
     closeAlbum(); sync(); toast('Loaded: ' + name.replace(/_/g, ' · '));
   });
 
   // ---- extra labels: a list (text, where, size, remove). A label sits IN the text, before or after one of the post's blocks,
   //      so it takes that stack's alignment and padding. Drag it up / down on the flyer and it slots in where the lime line
   //      shows; hold Alt while dragging to place it freely (it then snaps to the margins, the centre and the other blocks).
-  const escA = v => String(v ?? '').replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
   function drawXL() {
     const st = (i, k, label, v, unit) => `<div class="szrow"><span class="lab" style="margin:0">${label}</span><button type="button" data-xs="${i}" data-xk="${k}" data-d="-1" title="Less">−</button><b>${v}${unit}</b><button type="button" data-xs="${i}" data-xk="${k}" data-d="1" title="More">+</button></div>`;
     $('#xlList').innerHTML = (S.extras || []).map((e, i) => `<div class="xlrow"><input type="text" data-xlt="${i}" value="${escA(e.t)}" placeholder="A TO Z" aria-label="Label ${i + 1} text"><button type="button" class="x-btn" data-xldel="${i}" title="Remove">×</button>
@@ -442,6 +481,100 @@
     el.addEventListener('pointermove', move); el.addEventListener('pointerup', up); el.addEventListener('pointercancel', up);
   });
 
+  // ---- click any part of the flyer: a small inspector beside it (edit the words, size, padding; logos: change, add,
+  // upload, remove; background: change) and the matching control in the panel scrolls into view
+  const ins = document.createElement('div'); ins.id = 'insp'; ins.className = 'glass'; ins.hidden = true; document.body.append(ins);
+  const selb = document.createElement('div'); selb.id = 'selb'; selb.hidden = true; document.body.append(selb);
+  let SEL = null;
+  const roleOf = el => getComputedStyle(el).getPropertyValue('--r').trim() || el.closest('[data-role]')?.dataset.role || '';
+  const visible = f => f && !f.closest('.dead') && ![...document.querySelectorAll('[data-only]')].some(g => g.contains(f) && g.style.display === 'none') && f.closest('.grp')?.style.display !== 'none';
+  // the text field holding the clicked words (the group's own field first)
+  function fieldFor(txt, role) {
+    const t = txt.toLowerCase().replace(/\s+/g, ' ').trim().slice(0, 28); if (!t) return null;
+    const fs = [...document.querySelectorAll('[data-k]')].filter(f => (f.tagName === 'TEXTAREA' || f.tagName === 'INPUT') && visible(f));
+    const has = f => String(f.value || '').toLowerCase().replace(/\s+/g, ' ').includes(t);
+    return fs.find(f => f.dataset.k === role && has(f)) || fs.find(has) || fs.find(f => f.dataset.k === role) || null;
+  }
+  const flash = el => { if (!el) return; const g = el.closest('.grp') || el; g.scrollIntoView({ behavior: 'smooth', block: 'center' }); g.classList.remove('flash'); void g.offsetWidth; g.classList.add('flash'); };
+  const editField = (f, txt) => {
+    flash(f); setTimeout(() => { f.focus({ preventScroll: true }); const v = f.value.toLowerCase(), i = v.indexOf(txt.toLowerCase().trim().split('\n')[0]);
+      if (i >= 0 && f.setSelectionRange) { const e = v.indexOf('\n', i); f.setSelectionRange(i, e < 0 ? v.length : e); } }, 350);
+  };
+  const step = (label, key, v, d = '') => `<div class="irow"><span>${label}</span><button type="button" data-ik="${key}" data-d="-1">−</button><b>${v}</b><button type="button" data-ik="${key}" data-d="1">+</button>${d}</div>`;
+  function locate() {
+    // find the selected part again after a redraw
+    const ab = $('#preview .ab'); if (!SEL || !ab) return null;
+    if (SEL.kind === 'logo') return ab.querySelector(`[data-lgi="${SEL.i}"]`);
+    if (SEL.kind === 'xl') return ab.querySelector(`[data-xli="${SEL.i}"]`);
+    if (SEL.kind === 'bg') return ab;
+    const c = [...ab.querySelectorAll('.lbx, .pb, .mz-n, .mz-mono, .mz-pill, .mz-logo, [data-role], .mn, .nb, .cta, .cta2')].filter(e => roleOf(e) === SEL.role || e.classList.contains('mz-logo') && SEL.role === 'mazelogo');
+    return c.find(e => e.textContent.trim() === SEL.txt) || c[0] || null;
+  }
+  function placeSel() {
+    const el = locate(); if (!el) { selb.hidden = true; return; }
+    const r = el.getBoundingClientRect(); selb.hidden = SEL.kind === 'bg';
+    Object.assign(selb.style, { left: r.left - 3 + 'px', top: r.top - 3 + 'px', width: r.width + 6 + 'px', height: r.height + 6 + 'px' });
+    const iw = ins.offsetWidth || 240, ih = ins.offsetHeight || 120, P = $('#preview').getBoundingClientRect();
+    let x = SEL.kind === 'bg' ? P.right + 14 : r.right + 14, y = SEL.kind === 'bg' ? P.top + 20 : r.top;
+    if (x + iw > innerWidth - 10) x = Math.max(10, (SEL.kind === 'bg' ? P.left : r.left) - iw - 14);
+    y = Math.max(70, Math.min(innerHeight - ih - 10, y)); Object.assign(ins.style, { left: x + 'px', top: y + 'px' });
+  }
+  function drawIns() {
+    if (!SEL) { ins.hidden = selb.hidden = true; return; }
+    const R = ROLES[S.template] || {}, sz = k => { const v = S.size?.[k] || 0; return v > 0 ? '+' + v : String(v); }, pd = k => { const v = S.pad?.[k] || 0; return v > 0 ? '+' + v : String(v); };
+    let h = '';
+    if (SEL.kind === 'text') {
+      const f = fieldFor(SEL.txt, SEL.role);
+      h = `<p class="ih">${R[SEL.role] || SEL.role || 'Text'}</p>${f ? `<button type="button" class="btn sm acc" data-ia="edit">Edit the words</button>` : ''}
+        ${R[SEL.role] ? step('Size', 'size', sz(SEL.role)) : ''}${SEL.block ? step('Padding', 'pad', pd(SEL.role)) : ''}`;
+    } else if (SEL.kind === 'logo') {
+      const l = S.logos?.[SEL.i] || {};
+      h = `<p class="ih">Logo</p>${l.src ? '' : `<select data-ia="swap">${Object.entries(LOGO_META).map(([k, m]) => `<option value="${k}"${k === l.id ? ' selected' : ''}>${m.label || k}</option>`).join('')}</select>`}
+        ${step('Size', 'lsize', Math.round((l.scale ?? 1) * 100) + '%')}${S.logoLabel ? step('Padding', 'pad', pd('logo')) : ''}
+        <div class="irow2"><button type="button" class="btn sm" data-ia="ladd">+ Add a logo</button><button type="button" class="btn sm" data-ia="lup">Upload</button><button type="button" class="btn sm" data-ia="ldel">Remove</button></div>`;
+    } else if (SEL.kind === 'mazelogo') {
+      h = `<p class="ih">THE MAZE logo</p>${step('Size', 'size', sz('mazelogo'))}`;
+    } else if (SEL.kind === 'xl') {
+      h = `<p class="ih">Extra label</p><button type="button" class="btn sm acc" data-ia="xl">Edit this label</button>`;
+    } else {
+      h = `<p class="ih">Background</p><button type="button" class="btn sm acc" data-ia="bg">Change the background</button>${['photo', 'fx'].includes(S.bg) || BACKGROUNDS[S.bg]?.photo ? `<button type="button" class="btn sm" data-ia="photo">Change the photo</button>` : ''}`;
+    }
+    ins.innerHTML = `<button type="button" class="x-btn ix" data-ia="close" title="Close">×</button>${h}`; ins.hidden = false; placeSel();
+  }
+  $('#preview').addEventListener('click', e => {
+    const ab = e.target.closest('.ab'); if (!ab) return;
+    const xl = e.target.closest('[data-xli]'), lg = e.target.closest('[data-lgi]'), ml = e.target.closest('.mz-logo');
+    if (xl) SEL = { kind: 'xl', i: +xl.dataset.xli };
+    else if (lg && +lg.dataset.lgi >= 0) { SEL = { kind: 'logo', i: +lg.dataset.lgi }; flash($('#lglist')); }
+    else if (ml) SEL = { kind: 'mazelogo', role: 'mazelogo' };
+    else {
+      const t = e.target.closest('.lbx, .pb, .mz-n, .mz-mono, .mz-pill, .mn, .nb, .cta, .cta2, .zr, [style*="--r"]');
+      const role = t ? roleOf(t) : '';
+      if (t && (role || t.textContent.trim())) { const blk = t.closest('.lbx, .pb'); SEL = { kind: 'text', role, txt: (blk || t).textContent.trim(), block: !!blk || /lbx|pb/.test(t.className) }; const f = fieldFor(SEL.txt, role); if (f) flash(f); }
+      else { SEL = { kind: 'bg' }; flash($('#bgs')); }
+    }
+    drawIns();
+  });
+  ins.addEventListener('click', e => {
+    const b = e.target.closest('button'); if (!b) return;
+    const a = b.dataset.ia, k = b.dataset.ik, d = +b.dataset.d;
+    if (a === 'close') { SEL = null; return drawIns(); }
+    if (a === 'edit') { const f = fieldFor(SEL.txt, SEL.role); if (f) editField(f, SEL.txt); return; }
+    if (a === 'bg') return flash($('#bgs'));
+    if (a === 'photo') return flash($('#photos'));
+    if (a === 'xl') { const r = $('#xlList').querySelector(`[data-xlt="${SEL.i}"]`); flash(r); setTimeout(() => r?.select(), 350); return; }
+    if (a === 'ladd') { (S.logos ||= []).push({ id: 'me-mark', scale: 1 }); SEL = { kind: 'logo', i: S.logos.length - 1 }; sync(); return; }
+    if (a === 'lup') return $('#lgFile').click();
+    if (a === 'ldel') { S.logos.splice(SEL.i, 1); SEL = null; sync(); return; }
+    if (k === 'size') { S.size ||= {}; S.size[SEL.role] = Math.max(-5, Math.min(6, (S.size[SEL.role] || 0) + d)); }
+    else if (k === 'pad') { const r = SEL.kind === 'logo' ? 'logo' : SEL.role; S.pad ||= {}; S.pad[r] = Math.max(-3, Math.min(6, (S.pad[r] || 0) + d)); if (!S.pad[r]) delete S.pad[r]; }
+    else if (k === 'lsize') { const l = S.logos[SEL.i]; l.scale = Math.max(.4, Math.min(2, +((l.scale ?? 1) + d * .1).toFixed(2))); }
+    sync();
+  });
+  ins.addEventListener('change', e => { if (e.target.dataset.ia === 'swap') { S.logos[SEL.i].id = e.target.value; delete S.logos[SEL.i].src; sync(); } });
+  addEventListener('keydown', e => { if (e.key === 'Escape' && SEL) { SEL = null; drawIns(); } });
+  addEventListener('resize', () => SEL && placeSel());
+
   // ---- round 5: the look (colourway, wrapping, type, shapes, animation), the background lab, button / logo switches
   function applyPreset() {
     const pre = EXT[S.template]?.preset({ ...S }) || {};
@@ -479,7 +612,7 @@
   $('#fxAnim').addEventListener('change', e => { fxo().animate = e.target.checked; sync(); });
   $('#fxUse').addEventListener('click', () => { fxo(); S.bg = 'fx'; S.fxSrc = undefined; sync(); });
   $('#fxUp').addEventListener('click', () => $('#fxFile').click());
-  $('#fxFile').addEventListener('change', e => { const f = e.target.files[0]; if (!f) return; uploads.fxSrc = URL.createObjectURL(f) + (f.type.startsWith('video') ? '#video' : f.type === 'image/gif' ? '#gif' : ''); fxo(); S.bg = 'fx'; S.fxSrc = 'upload'; S.fxFile = f.name; sync(); toast(f.type.startsWith('video') || f.type === 'image/gif' ? 'Moving source loaded — it plays through the effect' : 'Image loaded'); });
+  $('#fxFile').addEventListener('change', async e => { const f = e.target.files[0]; if (!f) return; S.fxId = await libPut(f, 'fx'); uploads.fxSrc = libUrl(S.fxId) + (f.type.startsWith('video') ? '#video' : f.type === 'image/gif' ? '#gif' : ''); fxo(); S.bg = 'fx'; S.fxSrc = 'upload'; S.fxFile = f.name; sync(); toast(f.type.startsWith('video') || f.type === 'image/gif' ? 'Moving source loaded — it plays through the effect' : 'Image loaded'); });
 
   $('#iconSel').innerHTML = ['none', 'maze-logo', ...Object.keys(ICONS)].map(n => `<option value="${n}">${n === 'none' ? 'No icon (word)' : n === 'maze-logo' ? 'THE MAZE logo' : n}</option>`).join('');
   for (const id of ['labels', 'logoLabel']) $('#' + id).addEventListener('change', e => { S[id] = e.target.checked; if (id === 'labels' && S.labels && S.labelColor === 'none') S.labelColor = '#181D20'; sync(); });
@@ -508,6 +641,7 @@
     const F = { ...FX_DEFAULT, ...(S.fx || {}) }; press('#fxm', S.bg === 'fx' ? F.mode : ''); press('#fxg', F.grad);
     document.querySelectorAll('input[data-fx]').forEach(r => { r.value = F[r.dataset.fx]; const v = $('#vfx' + r.dataset.fx); if (v) v.textContent = (+F[r.dataset.fx]).toFixed(2).replace(/\.00$/, ''); });
     if (document.activeElement !== $('#fxChars')) $('#fxChars').value = F.chars || ''; $('#fxInvert').checked = !!F.invert; $('#fxAnim').checked = F.animate !== false;
+    $('#mzpW').hidden = !(S.bg === 'maze' && S.template !== 'maze'); press('#mzp', S.mazePal || 'violet');
     drawLogos(); drawXL(); prune();
   }
   // Hide every control that would not change this flyer (e.g. "Show the button" on a template without a button, logo
@@ -551,10 +685,18 @@
     const wide = innerWidth > 900, avW = st.clientWidth - (wide ? 464 : 32), avH = wide ? st.clientHeight - 116 : innerHeight * .64;
     const k = Math.max(.1, Math.min(avW / w, avH / h, 1));
     $('#preview').innerHTML = `<div style="width:${w * k}px;height:${h * k}px;overflow:hidden"><div style="transform:scale(${k});transform-origin:0 0;width:${w}px;height:${h}px">${render(live())}</div></div>`;
-    hydrate($('#preview'), { scale: Math.min(1, k * 1.6) }).then(drawWhere);
+    hydrate($('#preview'), { scale: Math.min(1, k * 1.6) }).then(() => { drawWhere(); if (typeof SEL !== 'undefined' && SEL) drawIns(); });
   }
-  const save = () => { try { const o = { ...S, logos: (S.logos || []).filter(l => !l.src) }; history.replaceState(null, '', '#' + btoa(unescape(encodeURIComponent(JSON.stringify(o))))); } catch (e) { } };
+  const save = () => { try { const o = { ...S, logos: (S.logos || []).filter(l => !l.src || l.lib).map(l => l.lib ? { ...l, src: undefined } : l) }; history.replaceState(null, '', '#' + btoa(unescape(encodeURIComponent(JSON.stringify(o))))); } catch (e) { } };
   function sync() { fill(); draw(); save(); }
+  // bring back this browser's uploads that the flyer uses (photo, background, effect source, logos)
+  libLoad().then(() => {
+    if ((S.photo || '').startsWith('upload:')) uploads.photo = libUrl(S.photo.slice(7)) || uploads.photo;
+    if (S.bg === 'custom' && S.bgId && lib.has(S.bgId)) { const u = libUrl(S.bgId); uploads.bgSrc = u; if (S.bgType === 'video') firstFrame(u).then(st => { uploads.bgStill = st; draw(); }); else uploads.bgStill = u; }
+    if (S.fxSrc === 'upload' && S.fxId && lib.has(S.fxId)) { const r = lib.get(S.fxId); uploads.fxSrc = r.url + (r.type.startsWith('video') ? '#video' : r.type === 'image/gif' ? '#gif' : ''); }
+    for (const l of S.logos || []) if (l.lib && !l.src && lib.has(l.lib)) l.src = libUrl(l.lib);
+    drawPhotos(); if (lib.size) sync();
+  });
   addEventListener('resize', draw);
   document.fonts.ready.then(draw);
   sync();

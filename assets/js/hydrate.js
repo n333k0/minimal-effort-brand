@@ -2,7 +2,7 @@
 // and keep animated effects moving. Used by the builder, the guidelines page and the renderers.
 //   await hydrate(root, { scale })   scale < 1 draws the effects at preview resolution (cheaper)
 //   window.__fxTime(t)               draws every live effect at loop time t (0..1) — the frame renderer calls it
-import { drawFx, loadSource } from './fx.js?v=20261117f';
+import { drawFx, loadSource } from './fx.js?v=20261118a';
 
 const live = new Set();
 let raf = 0, frozen = false, last = 0;
@@ -195,7 +195,7 @@ export function labelBoxes(root) {
     const side = (L, R) => { el.style.paddingLeft = Math.max(0, L).toFixed(2) + 'px'; el.style.paddingRight = Math.max(0, R).toFixed(2) + 'px'; el.style.textIndent = L < 0 ? L.toFixed(2) + 'px' : ''; };
     // words on a band: the band is the box; only centre the letters (equal space both sides), keep the band's height
     if (el.closest('.band')) { const B = .17 * fs; side(B - lsb, B - rsb); return; }
-    const P = LPAD * Math.min(ab.offsetWidth, ab.offsetHeight) / 1080 / z; // in the block's own (zoomed) px
+    const P = LPAD * (parseFloat(c.getPropertyValue('--padk')) || (c.getPropertyValue('--padk').trim() === '0' ? 0 : 1)) * Math.min(ab.offsetWidth, ab.offsetHeight) / 1080 / z; // in the block's own (zoomed) px; --padk = the group's own padding
     const py = Math.min(.2 * fs, 1.3 * P);
     el.style.paddingTop = py.toFixed(2) + 'px'; el.style.paddingBottom = (py + descent(el, c)).toFixed(2) + 'px';
     side(P - lsb, P - rsb); // a huge first letter has more side space than the padding: text-indent takes the rest

@@ -2,7 +2,7 @@
  {
   "id": "second-wind",
   "title": "The Second Wind flyer · every size",
-  "note": "The flyer we made, adapted to feed 4:5, story 9:16, square 1:1 and landscape 16:9 — and on three of the new shader loops."
+  "note": "The flyer we made, adapted to feed 4:5, story 9:16, square 1:1 and landscape 16:9 — and on three of the new light fields."
  },
  {
   "id": "lineup",
@@ -118,5 +118,30 @@
   "id": "shape-loops",
   "title": "Shader loops · shapes",
   "note": "The WebGL loops now light simple shapes (ring, pill, rings, blob) instead of a big logo, so the flyer's own logo stays the only one."
+ },
+ {
+  "id": "light-fields",
+  "title": "Light fields · from the references",
+  "note": "New WebGL loops drawn from the ME reference posters, light and texture only: anamorphic prism streaks (FUSE), a zoom-blur vortex (Four Tet), colour fog (Rüfüs), pixel-sorted glitch and film grain. Every one loops seamlessly."
+ },
+ {
+  "id": "prism-blue",
+  "title": "Prism blues",
+  "note": "A family of deep blues: light through a prism with spectral edges, a blue streak, vortex, fog, glitch and grain. Lime and ice type sit on all of them."
+ },
+ {
+  "id": "textures-more",
+  "title": "Textures · ten more",
+  "note": "Photocopy, riso grain, line screen, CRT, VHS, grid, paper folds, scratches, stipple and canvas. On a dark post the darkening ones turn to light specks so they still show."
+ },
+ {
+  "id": "maze-anywhere",
+  "title": "THE MAZE field · on any flyer",
+  "note": "The MAZE blocks and blurred colour field as a background for every template, in the five MAZE palettes."
+ },
+ {
+  "id": "announce-bg",
+  "title": "Just announced · on any background",
+  "note": "The artist photo full bleed, through an effect, or framed over a loop, a colour or the MAZE field."
  }
 ]

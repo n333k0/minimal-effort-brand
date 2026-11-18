@@ -22,6 +22,21 @@
 .ab .tex-toner { background: url(../tex/toner.jpg) center / cover; mix-blend-mode: overlay; opacity: .5; }
 .ab .tex-burn { background: url(../tex/film-burn.jpg) center / cover; mix-blend-mode: screen; opacity: .6; }
 .ab .tex-paper { background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .5 0 0 0 0 .48 0 0 0 0 .44 0 0 0 .55 0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E"); mix-blend-mode: multiply; opacity: .55; }
+/* textures that darken (multiply) vanish on a dark post: there they flip to light specks and lighten instead */
+.ab.t-dark .tex-xerox, .ab.t-dark .tex-lines, .ab.t-dark .tex-stipple, .ab.t-dark .tex-dots, .ab.t-dark .tex-scan { filter: invert(1); mix-blend-mode: screen; opacity: .32; }
+.ab.t-dark .tex-vhs, .ab.t-dark .tex-fold, .ab.t-dark .tex-canvas, .ab.t-dark .tex-crt { mix-blend-mode: screen; opacity: .22; }
+.ab.t-dark .tex-fold { opacity: .5; }
+/* round 7: ten more textures (CSS / SVG, nothing to download) */
+.ab .tex-xerox { background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='600'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.65' numOctaves='2'  stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 14 0 0 0 -8.6'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); mix-blend-mode: multiply; opacity: .6; }
+.ab .tex-riso { background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.1' numOctaves='2'  stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.71 0 0 0 0 0.95 0 0 0 0 0.32 11 0 0 0 -6.9'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); mix-blend-mode: screen; opacity: .5; }
+.ab .tex-lines { background: repeating-linear-gradient(-45deg, rgba(0, 0, 0, .28) 0 1.5px, transparent 1.5px 7px); mix-blend-mode: multiply; }
+.ab .tex-crt { background: repeating-linear-gradient(90deg, rgba(255, 40, 60, .16) 0 1px, rgba(60, 255, 120, .14) 1px 2px, rgba(60, 120, 255, .16) 2px 3px), repeating-linear-gradient(0deg, rgba(0, 0, 0, .25) 0 1px, transparent 1px 3px); mix-blend-mode: overlay; }
+.ab .tex-vhs { background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='600'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.002 .9' numOctaves='2' seed='4'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E") center / 100% 100%; mix-blend-mode: overlay; opacity: .7; }
+.ab .tex-grid { background: linear-gradient(rgba(245, 246, 252, .1) 1px, transparent 1px) 0 0 / 36px 36px, linear-gradient(90deg, rgba(245, 246, 252, .1) 1px, transparent 1px) 0 0 / 36px 36px; mix-blend-mode: screen; }
+.ab .tex-fold { background: linear-gradient(90deg, transparent calc(33.3% - 14px), rgba(255, 255, 255, .16) calc(33.3% - 1px), rgba(0, 0, 0, .28) 33.3%, transparent calc(33.3% + 22px)), linear-gradient(90deg, transparent calc(66.6% - 14px), rgba(255, 255, 255, .14) calc(66.6% - 1px), rgba(0, 0, 0, .26) 66.6%, transparent calc(66.6% + 22px)), linear-gradient(0deg, transparent calc(50% - 14px), rgba(255, 255, 255, .14) calc(50% - 1px), rgba(0, 0, 0, .24) 50%, transparent calc(50% + 22px)); mix-blend-mode: overlay; }
+.ab .tex-scratch { opacity: .7 !important; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='800'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='turbulence' baseFrequency='.9 .004' numOctaves='2' seed='9' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 18 0 0 0 -12.6'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E") center / 100% 100%; mix-blend-mode: screen; }
+.ab .tex-stipple { background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='2.2' numOctaves='1'  stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 16 0 0 0 -10.6'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); mix-blend-mode: multiply; opacity: .55; }
+.ab .tex-canvas { background: repeating-linear-gradient(0deg, rgba(255, 255, 255, .07) 0 1px, rgba(0, 0, 0, .07) 1px 3px), repeating-linear-gradient(90deg, rgba(255, 255, 255, .06) 0 1px, rgba(0, 0, 0, .08) 1px 3px); mix-blend-mode: overlay; }
 .ab .tex-scan { background: repeating-linear-gradient(0deg, rgba(0, 0, 0, .22) 0 2px, transparent 2px 6px); mix-blend-mode: multiply; }
 .ab .tex-dots { background: radial-gradient(circle, rgba(0, 0, 0, .3) 1.6px, transparent 2.1px) 0 0 / 10px 10px; mix-blend-mode: multiply; }
 .ab .tex-noise { background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='turbulence' baseFrequency='.75' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23n)'/%3E%3C/svg%3E"); mix-blend-mode: overlay; opacity: .35; }
@@ -167,7 +182,7 @@
 .ab.x5 .flow { display: flex; flex-wrap: wrap; gap: .08em .1em; align-items: flex-start; }
 .ab.x5 .flow.c { justify-content: center; } .ab.x5 .flow.r { justify-content: flex-end; }
 /* the label block, five ways */
-.ab.x5 .pb { display: block; width: fit-content; max-width: none; white-space: nowrap; padding: var(--py) var(--px); text-box: trim-both cap alphabetic; background: var(--blk); color: var(--btx); font-weight: 800; line-height: 1.05; letter-spacing: -.035em; }
+.ab.x5 .pb { display: block; width: fit-content; max-width: none; white-space: nowrap; padding: calc(var(--py) * var(--padk, 1)) calc(var(--px) * var(--padk, 1)); text-box: trim-both cap alphabetic; background: var(--blk); color: var(--btx); font-weight: 800; line-height: 1.05; letter-spacing: -.035em; }
 .ab.x5 .pb.i { display: inline-block; }
 .ab.x5 .pb sup { font-size: var(--nts, .32em); vertical-align: top; margin-left: .15em; letter-spacing: 0; }
 .ab.x5 .nb { color: var(--fg); font-weight: 800; line-height: .9; white-space: nowrap; }
@@ -204,7 +219,7 @@
 .ab.x5 .mn.c { text-align: center; } .ab.x5 .mn.s { font-size: 14px; }
 .ab.x5 .xpill, .ab.x5 .xpill2 { display: inline-block; border-radius: 999px; padding: .35em .8em; background: var(--blk); color: var(--btx); font: 600 17px/1 var(--mono); }
 .ab.x5 .pills { position: absolute; display: flex; gap: 8px; }
-.ab.x5 .xpill2 { background: transparent; color: var(--fg); box-shadow: inset 0 0 0 2px currentColor; font-style: italic; font-family: Georgia, serif; font-weight: 400; font-size: .7em; padding: .2em .7em; }
+.ab.x5 .xpill2 { background: transparent; color: var(--fg); box-shadow: inset 0 0 0 2px currentColor; font-family: var(--mono); font-weight: 500; text-transform: uppercase; letter-spacing: .1em; font-size: .5em; padding: .35em .9em; }
 .ab.x5 .cta2 { display: inline-flex; align-items: center; height: 76px; padding: 0 38px; border-radius: 999px; background: var(--acc); color: #14141A; font: 800 30px/1 var(--disp); letter-spacing: -.02em; }
 /* shapes */
 .ab.x5 svg.shp, .ab svg.shp { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
@@ -252,7 +267,7 @@
 .ab.x5 .tt .r { display: grid; grid-template-columns: auto 1fr auto; gap: .8em; align-items: center; padding: .38em 0; border-bottom: 2px solid color-mix(in srgb, var(--fg) 70%, transparent); color: var(--fg); font-weight: 800; letter-spacing: -.02em; white-space: nowrap; }
 .ab.x5 .tt .r small { font: 600 .5em/1 var(--mono); opacity: .75; }
 .ab.x5 .tt .r .mn2 { font-family: var(--mono); font-weight: 600; }
-.ab.x5 .it { font: italic 400 .22em/1 Georgia, serif; vertical-align: top; margin-left: .3em; letter-spacing: 0; }
+.ab.x5 .it { font: 500 .16em/1 var(--mono); text-transform: uppercase; letter-spacing: .1em; vertical-align: top; margin-left: .3em; letter-spacing: 0; }
 .ab.x5 .faces { display: flex; flex-direction: column; gap: .12em; align-items: flex-start; }
 .ab.x5 .faces .f { display: flex; align-items: center; gap: .1em; }
 .ab.x5 .faces img { width: .9em; height: .9em; object-fit: cover; filter: grayscale(.2) contrast(1.1); }
@@ -260,7 +275,8 @@
 .ab.x5 .faces .pb.s { font-family: var(--mono); font-weight: 600; letter-spacing: 0; line-height: 1.15; white-space: nowrap; }
 .ab.x5 .dlist { display: grid; grid-template-columns: 1fr 1fr; gap: .25em 1.2em; width: 100%; }
 .ab.x5 .dr { display: flex; align-items: flex-start; justify-content: space-between; gap: .1em; }
-.ab.x5 .hand { font-family: Georgia, serif; font-style: italic; font-weight: 400; }
+/* the small line under a title (was a serif italic, off-brand): mono capitals in the accent */
+.ab.x5 .hand { font-family: var(--mono); font-style: normal; font-weight: 600; text-transform: uppercase; letter-spacing: .12em; color: #14141A; background: var(--acc); padding: .28em .5em .22em; line-height: 1; }
 .ab.x5 .g2 { display: grid; grid-template-columns: 1fr 1fr; gap: .2em 1em; width: 100%; }
 .ab.x5 .menu { display: flex; flex-direction: column; }
 .ab.x5 .mr { display: flex; gap: .3em; } .ab.x5 .mr .pb:first-child { min-width: 2.6em; text-align: right; }
@@ -273,13 +289,15 @@
 .ab.x5 .st { display: flex; flex-direction: column; gap: .12em; }
 .ab.x5 .cap3 { position: absolute; display: flex; justify-content: space-between; align-items: flex-end; }
 
-/* animations: every block gets --i (hydrate.js); one 10 s loop that builds, holds and clears, so loops are seamless */
+/* animations: every block gets --i (hydrate.js); one 10 s loop that builds, holds and clears, so loops are seamless.
+   Rise fades (a clip that moves with the block left slivers of its colour behind); wipes keep a wide margin so letters
+   that hang outside their block are never cut. */
 .ab[data-anim] .pb, .ab[data-anim] .lbx, .ab[data-anim] .an, .ab[data-anim] .nb { animation: var(--an) 10s cubic-bezier(.16, 1, .3, 1) infinite both; animation-delay: calc(var(--i, 0) * 90ms); }
 .ab.an-blur { --an: anBlur; } .ab.an-rise { --an: anRise; } .ab.an-wipe { --an: anWipe; } .ab.an-type { --an: anType; } .ab.an-flicker { --an: anFlick; } .ab.an-drift { --an: anDrift; }
 @keyframes anBlur { 0% { filter: blur(26px); opacity: 0; } 12% { filter: blur(0); opacity: 1; } 90% { filter: blur(0); opacity: 1; } 100% { filter: blur(26px); opacity: 0; } }
-@keyframes anRise { 0% { transform: translateY(110%); clip-path: inset(0 0 100% 0); } 9% { transform: none; clip-path: inset(0 0 0 0); } 92% { transform: none; clip-path: inset(0 0 0 0); } 100% { transform: translateY(-40%); clip-path: inset(100% 0 0 0); } }
-@keyframes anWipe { 0% { clip-path: inset(0 100% 0 0); } 8% { clip-path: inset(0 0 0 0); } 92% { clip-path: inset(0 0 0 0); } 100% { clip-path: inset(0 0 0 100%); } }
-@keyframes anType { 0% { clip-path: inset(0 100% 0 0); } 14% { clip-path: inset(0 0 0 0); } 93% { clip-path: inset(0 0 0 0); } 100% { clip-path: inset(0 100% 0 0); } }
+@keyframes anRise { 0% { transform: translateY(70%); opacity: 0; } 9% { transform: none; opacity: 1; } 92% { transform: none; opacity: 1; } 100% { transform: translateY(-45%); opacity: 0; } }
+@keyframes anWipe { 0% { clip-path: inset(-40% 100% -40% -40%); } 8% { clip-path: inset(-40% -40% -40% -40%); } 92% { clip-path: inset(-40% -40% -40% -40%); } 100% { clip-path: inset(-40% -40% -40% 100%); } }
+@keyframes anType { 0% { clip-path: inset(-40% 100% -40% -40%); } 14% { clip-path: inset(-40% -40% -40% -40%); } 93% { clip-path: inset(-40% -40% -40% -40%); } 100% { clip-path: inset(-40% 100% -40% -40%); } }
 @keyframes anFlick { 0%, 2%, 4% { opacity: 0; } 1%, 3%, 5%, 95% { opacity: 1; } 96%, 98% { opacity: 0; } 97% { opacity: 1; } 100% { opacity: 0; } }
 @keyframes anDrift { 0% { transform: translateX(-4%); opacity: 0; } 10% { opacity: 1; } 50% { transform: translateX(2%); } 90% { opacity: 1; } 100% { transform: translateX(-4%); opacity: 0; } }
 .ab.an-type .pb, .ab.an-type .lbx { animation-timing-function: steps(14, end); }
@@ -330,3 +348,6 @@
 .ab .stack.r > .lbx, .ab .stack.r .zr > .lbx { position: relative; left: .17em; }
 
 .ab[data-fitting] *, .ab[data-fitting] *::after { animation: none !important; transition: none !important; }
+/* Just announced on a loop / colour / MAZE field: the photo in a frame above the text */
+.ab .photo.an-win { box-shadow: 0 0 0 1px rgba(245, 246, 252, .14); }
+.ab .photo.an-win img { object-position: 50% 22%; }

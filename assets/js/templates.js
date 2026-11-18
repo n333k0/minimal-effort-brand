@@ -4,7 +4,7 @@
 // vertical nudge for the main text (spec.offsetY). Our marks are never boxed by default: they take the colour that reads on the
 // background. Templates can have several compositions (TEMPLATES[t].layouts, picked with spec.layout).
 import { LOGO, LOGO_META, ICON_RECTS } from './logos.js';
-import { EXT, EXT_ROLES, EXT_DEFAULT, CW, compose, shapes as drawShapes, POSTER, LABEL_STYLES, FONTS, ANIMS, SHAPES } from './compose.js?v=20261117f';
+import { EXT, EXT_ROLES, EXT_DEFAULT, CW, compose, shapes as drawShapes, POSTER, LABEL_STYLES, FONTS, ANIMS, SHAPES } from './compose.js?v=20261118a';
 export { CW, POSTER, LABEL_STYLES, FONTS, ANIMS, SHAPES };
 
 export const FORMATS = { feed: [1080, 1350], story: [1080, 1920], square: [1080, 1080], landscape: [1920, 1080] };
@@ -19,6 +19,14 @@ export const BACKGROUNDS = {
   rainbow: V('bg02-rainbow', 'Rainbow', 'Prism'), spectrum: V('bg04-spectrum', 'Spectrum', 'Prism'), bloom: V('bg10-prism-bloom', 'Bloom', 'Prism'),
   holo: V('bg11-holo-film', 'Holo film', 'Film'), leak: V('bg12-film-leak', 'Film leak', 'Film'), ember: V('bg13-film-ember', 'Ember', 'Film'),
   lilac: V('bg05-lilac', 'Lilac beam', 'Brand light'), lime: V('bg06-lime', 'Lime field', 'Brand light', 'light'), glow: V('bg14-brand-glow', 'Lilac × Lime glow', 'Brand light', 'light'),
+  // round 7: light fields from the references (assets/js/fields.js) — light and texture, no shapes
+  pstreak: V('bg28-field-prism-streak', 'Prism streak', 'Light streaks'), lstreak: V('bg30-field-lilac-streak', 'Lilac streak', 'Light streaks'),
+  estreak: V('bg31-field-ember-streak', 'Ember streak', 'Light streaks'), istreak: V('bg32-field-ice-streak', 'Ice streak', 'Light streaks', 'light'),
+  pblue: V('bg33-field-prism-blue', 'Prism blue', 'Prism blue'), bstreak: V('bg29-field-blue-streak', 'Blue streak', 'Prism blue'), pdeep: V('bg34-field-prism-deep', 'Deep prism', 'Prism blue'), plime: V('bg35-field-prism-lime', 'Prism blue × lime', 'Prism blue'),
+  bvortex: V('bg37-field-blue-vortex', 'Blue vortex', 'Prism blue'), bfog: V('bg40-field-blue-fog', 'Blue fog', 'Prism blue'), bglitch: V('bg43-field-blue-glitch', 'Blue glitch', 'Prism blue'), bgrain: V('bg45-field-blue-grain', 'Blue grain', 'Prism blue'),
+  lvortex: V('bg36-field-lime-vortex', 'Lime vortex', 'Fog + vortex', 'light'), pfog: V('bg38-field-peach-fog', 'Peach fog', 'Fog + vortex', 'light'), lfog: V('bg39-field-lilac-fog', 'Lilac fog', 'Fog + vortex'),
+  ifog: V('bg41-field-ice-fog', 'Ice fog', 'Fog + vortex', 'light'),
+  dglitch: V('bg42-field-data-glitch', 'Data glitch', 'Glitch + grain'), mglitch: V('bg46-field-mono-glitch', 'Mono glitch', 'Glitch + grain'), lgrain: V('bg44-field-lilac-grain', 'Lilac grain', 'Glitch + grain'), egrain: V('bg47-field-ember-grain', 'Ember grain', 'Glitch + grain'),
   glass: V('bg15-shader-glass', 'Glass orb', 'Shader'), pixel: V('bg16-shader-pixel', 'Pixel bars', 'Shader'), grit: V('bg17-shader-grit', 'Grit arch', 'Shader'),
   chrome: V('bg18-shader-chrome', 'Chrome ring', 'Shader'), holome: V('bg19-shader-holo', 'Holo pill', 'Shader', 'light'), glitch: V('bg20-shader-glitch', 'Glitch bars', 'Shader'), melt: V('bg21-shader-melt', 'Melt blob', 'Shader', 'light'),
   echo: V('bg22-shader-echo', 'Echo square', 'Shader'), neon: V('bg23-shader-neon', 'Neon rings', 'Shader'), wave: V('bg24-shader-wave', 'Wave bars', 'Shader', 'light'), ripple: V('bg25-shader-ripple', 'Ripple orb', 'Shader'),
@@ -133,7 +141,11 @@ let CUR = DEFAULT, SP = 1, M = 64;
 // base scale per group (round 4: on the event flyer the presenter line and the title sit about 40% smaller than the names)
 const BASE = { lineup: { presenter: .6, title: .6 } };
 const zk = role => (BASE[CUR.template]?.[role] ?? 1) * Math.pow(1.15, +(CUR.size?.[role] || 0));
-const zs = role => `zoom:${zk(role).toFixed(4)}`;
+// per-group block padding (spec.pad[role] steps, 0 = the system's padding; each step ±35 %, down to no padding)
+export const padK = (spec, role) => { const v = +(spec?.pad?.[role] || 0); return v ? Math.max(0, 1 + v * .35) : 1; };
+const pk = role => { const k = padK(CUR, role); return k !== 1 ? `;--padk:${k.toFixed(2)}` : ''; };
+// every sized group carries its role (--r) so the builder knows what was clicked
+const zs = role => `zoom:${zk(role).toFixed(4)};--r:${role}${pk(role)}`;
 // a sized group inside a stack (keeps the stack's alignment)
 const Z = (role, html) => html ? `<div class="zr" data-role="${role}" style="${zs(role)}">${html}</div>` : '';
 const gap = h => `<div style="height:${(h * SP).toFixed(1)}px;flex:none"></div>`;
@@ -154,8 +166,8 @@ function logoItems(s, list, size) {
     const [w, h] = logoBox(l, size);
     const inner = l.src ? `<img src="${l.src}" alt="">` : (LOGO[l.id] || '');
     const boxed = s.logoLabel === true && (l.box ?? OURS.has(l.id));
-    const pad = boxed ? `padding:${Math.round(h * .24)}px ${Math.round(h * .26)}px` : '';
-    return `<span class="lg-w${boxed ? ' boxed' : ''}" style="${pad}"><span class="lg-i" style="width:${w.toFixed(1)}px;height:${h.toFixed(1)}px">${inner}</span></span>`;
+    const k = padK(s, 'logo'), pad = boxed ? `padding:${Math.round(h * .24 * k)}px ${Math.round(h * .26 * k)}px` : '';
+    return `<span class="lg-w${boxed ? ' boxed' : ''}" data-lgi="${(s.logos || []).indexOf(l)}" style="${pad}"><span class="lg-i" style="width:${w.toFixed(1)}px;height:${h.toFixed(1)}px">${inner}</span></span>`;
   }).join('');
 }
 const edges = f => ({ top: f === 'story' ? 250 : f === 'landscape' ? 56 : M, bottom: f === 'story' ? 330 : (f === 'square' || f === 'landscape') ? 56 : M });
@@ -170,7 +182,18 @@ function placedLogos(s) {
   return Object.entries(groups).map(([p, list]) => `<div class="logos ${p[1] === 'l' ? 'l' : p[1] === 'r' ? 'r' : ''}" style="${p[0] === 't' ? 'top:' + e.top : 'bottom:' + e.bottom}px">${logoItems(s, list, s.logoSize || 62)}</div>`).join('');
 }
 
+// THE MAZE field behind any other template (bg: 'maze'): maze blocks over a blurred, gradient-mapped photo with grain,
+// in one of the MAZE palettes (spec.mazePal, violet by default). The MAZE template draws its own.
+function mazeBg(s) {
+  const W = fw(s), H = fh(s), P = MAZE[s.mazePal] || MAZE.violet, c = 140, ox = ((W / 2 - c / 2) % c) - c, oy = -20;
+  const g = mazeBlocks(W, H, c, +s.seed || 7), R = rng((+s.seed || 7) * 7 + 3); let rects = '';
+  for (let y = 0; y < g.ny; y++) for (let x = 0; x < g.nx; x++) if (g.on[y][x]) { const alt = P.alt && R() < .18; rects += `<rect x="${ox + x * c - .5}" y="${oy + y * c - .5}" width="${c + 1.5}" height="${c + 1.5}" fill="${alt ? P.alt : P.block}"${alt ? ' opacity=".9"' : ''}/>`; }
+  const fxo = JSON.stringify({ mode: 'gradmap', grad: 'custom', stops: P.grad, blur: 40, contrast: 1.1, grain: .14, zoom: 1.15 });
+  const src = s.bg === 'custom' && s.bgSrc ? s.bgSrc : photoSrc(s.mazePhoto || s.photo || 'party-05');
+  return { html: `<div class="bg" style="background:${P.base}"><div class="mz"><canvas class="fxc mz-field" data-fx='${fxo}' data-src="${esc(src)}" data-w="${W}" data-h="${H}" width="${W}" height="${H}" style="background:${P.base}"></canvas><svg class="mz-blocks" shape-rendering="crispEdges" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none">${rects}</svg><div class="mz-grain"></div></div></div>${texLayer(s)}`, tone: P.ink ? 'light' : 'dark' };
+}
 function background(s, { forExport } = {}) {
+  if (s.bg === 'maze') return mazeBg(s);
   const b = BACKGROUNDS[s.bg] || BACKGROUNDS.midnight;
   let inner = '';
   if (b.photo) inner = `<img src="${photoSrc(s.photo)}" alt="">`;
@@ -337,8 +360,13 @@ function maze(s) {
 
 function announce(s) {
   const st = s.format === 'story', a = s.artists[0] || { name: 'ARTIST' }, bot = st ? 330 : M;
-  const big = a.name.length > 9 ? 132 : 150;
-  return `<div class="photo" style="inset:0"><img src="${photoSrc(s.photo)}" alt=""></div>
+  const big = a.name.length > 9 ? 132 : 150, B = BACKGROUNDS[s.bg] || {}, H = fh(s);
+  // the photo fills the post (bg: photo); "Photo + effect" shows it through the effect (the background layer already
+  // draws it); any other background (loop, colour, MAZE field) shows round a framed photo above the text
+  const win = !B.photo && !B.fx, wt = st ? 250 : 150, wb = H - bot - (st ? 640 : 560);
+  const ph = B.fx ? '' : win ? `<div class="photo an-win" style="left:${M}px;right:${M}px;top:${wt}px;height:${wb - wt}px"><img src="${photoSrc(s.photo)}" alt=""></div>`
+    : `<div class="photo" style="inset:0"><img src="${photoSrc(s.photo)}" alt=""></div>`;
+  return `${ph}
   <div class="shade" style="background:linear-gradient(180deg,rgba(20,20,26,.35),rgba(20,20,26,0) 22%,rgba(20,20,26,0) 46%,rgba(20,20,26,.82))"></div>
   ${logoRow(s, bot, 'r')}
   <div class="stack l main" style="left:${M}px;right:300px;bottom:${bot}px;top:auto">
@@ -550,7 +578,9 @@ const RENDER = { lineup, maze, announce, giveaway, status, calendar, system, hir
 const isLight = c => { const h = String(c || '').replace('#', ''); if (h.length < 6) return false; const [r, g, b] = [0, 2, 4].map(i => parseInt(h.slice(i, i + 2), 16)); return (r * .299 + g * .587 + b * .114) > 160; };
 
 // Build the artboard. opts.forExport swaps loops for their stills; opts.textOnly drops the background (overlay for video).
-export function render(spec, opts = {}) {
+// a spec as it is drawn: DEFAULT + the template's own defaults (background, logos, poster preset) for every field the
+// spec leaves out. The builder loads links through this, so a flyer opened from the guidelines looks the same there.
+export function resolve(spec) {
   const s = { ...DEFAULT, ...spec };
   if (!TEMPLATES[s.template]) s.template = 'lineup';
   const T = TEMPLATES[s.template];
@@ -560,6 +590,7 @@ export function render(spec, opts = {}) {
   if (s.template === 'hiring' && !spec.photo) s.photo = 'party-05';
   if (s.template === 'giveaway' && s.layout === 'ticket' && !spec.bg) s.bg = 'limesolid';
   if (s.template === 'maze' && !spec.bg) s.bg = 'maze';
+  if (s.template === 'announce' && !spec.bg) s.bg = 'photo';
   if (s.template === 'maze' && !spec.labels) s.labels = false;
   if (s.template === 'calendar' && BACKGROUNDS[s.bg]?.video && spec.shade === undefined) s.shade = 0.5;
   const ev = EVENTS[s.event];
@@ -575,6 +606,10 @@ export function render(spec, opts = {}) {
     if (!CW[s.cw]) s.cw = 'midnight';
     if (!s.shapes) s.shapes = [];
   }
+  return s;
+}
+export function render(spec, opts = {}) {
+  const s = resolve(spec), X = EXT[s.template];
   if (s.noLogo) s.logos = [];
   CUR = s; SP = +s.spacing || 1; M = Math.round(+s.margin || 64);
   if (X) return renderExt(s, opts);
@@ -585,14 +620,22 @@ export function render(spec, opts = {}) {
   const ink = s.textColor || (labelOn ? (isLight(label) ? '#14141A' : '#F5F5F5') : (light ? '#14141A' : '#F5F5F5'));
   const metaC = light ? '#14141A' : '#F5F5F5';
   const logo = s.logoColor || metaC;
-  const cls = ['ab', labelOn ? 'labels' : '', s.template === 'highlight' ? 'hl' : '', s.template === 'maze' && s.bg !== 'maze' ? 'mz-blur' : '', opts.textOnly ? 'no-bg' : ''].join(' ');
+  const cls = ['ab', light ? 't-light' : 't-dark', labelOn ? 'labels' : '', s.template === 'highlight' ? 'hl' : '', s.template === 'maze' && s.bg !== 'maze' ? 'mz-blur' : '', opts.textOnly ? 'no-bg' : ''].join(' ');
   const style = `${+s.noteSize && s.noteInline ? `--nts:${+s.noteSize}em;` : ''}--acc:${s.accent};--ink:${ink};--label:${label};--meta:${metaC};--logo:${logo};--m:${M}px;--oy:${+s.offsetY || 0}px;color:${ink}`;
   const an = s.anim && s.anim !== 'none' ? s.anim : '';
-  return `<div class="${cls}${an ? ' an-' + an : ''}" data-format="${s.format}" data-template="${s.template}"${an ? ` data-anim="${an}"` : ''}${xtra(s)} style="${style}">${b.html}<div class="layer">${RENDER[s.template](s)}${placedLogos(s)}</div></div>`;
+  return `<div class="${cls}${an ? ' an-' + an : ''}" data-format="${s.format}" data-template="${s.template}"${an ? ` data-anim="${an}"` : ''}${xtra(s)} style="${style}">${b.html}<div class="layer">${onePhoto(s, RENDER[s.template](s))}${placedLogos(s)}</div></div>`;
 }
 
+// the photo once: when the background already is this photo (Photo, or Photo + effect on it), a template's own photo
+// frame would show it twice, so the frame goes and the background carries the photo
+function onePhoto(s, html) {
+  const B = BACKGROUNDS[s.bg]; if (!(B?.photo || (B?.fx && !s.fxSrc))) return html;
+  const src = photoSrc(s.photo).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  return html.replace(new RegExp(`<div class="photo[^"]*"[^>]*><img src="${src}"[^>]*></div>`, 'g'), '');
+}
 // a texture over the background, under the type (spec.tex; the older dust: true = 'dust')
-export const TEXTURES = { '': 'None', dust: 'Dust', grain: 'Film grain', toner: 'Toner', burn: 'Film burn', paper: 'Paper', scan: 'Scan lines', dots: 'Halftone dots', noise: 'Noise' };
+export const TEXTURES = { '': 'None', dust: 'Dust', grain: 'Film grain', toner: 'Toner', burn: 'Film burn', paper: 'Paper', scan: 'Scan lines', dots: 'Halftone dots', noise: 'Noise',
+  xerox: 'Photocopy', riso: 'Riso grain', lines: 'Line screen', crt: 'CRT', vhs: 'VHS', grid: 'Grid', fold: 'Paper folds', scratch: 'Scratches', stipple: 'Stipple', canvas: 'Canvas' };
 const texLayer = s => { const t = s.tex || (s.dust ? 'dust' : ''); return t && TEXTURES[t] ? `<div class="tex tex-${t}${t === 'dust' ? ' dust' : ''}"></div>` : ''; };
 // extra label on any template (hydrate.js draws it in the post's own label style): spec.extra = "A TO Z", extraPos = top | bottom | tl | tr | bl | br
 // extras = [{ t: "A TO Z", x, y, size: s|m|l|xl }]: free labels at x / y (the block's top-left, in post px), dragged in the builder
@@ -605,9 +648,9 @@ function renderExt(s, opts) {
   const b = background(s, opts);
   const fg = s.textColor || c.fg, logo = s.logoColor || (b.tone === 'light' || s.bg === 'cw' && c.tone === 'light' ? '#14141A' : (s.bg === 'cw' ? c.fg : '#F5F5F5'));
   const vars = `${+s.noteSize ? `--nts:${+s.noteSize}em;` : ''}--bgc:${c.bg};--fg:${fg};--blk:${c.blk};--btx:${c.btx};--acc:${c.acc};--shp:${s.shapeColor || c.shp};--b2:${c.b2};--a2:${s.accent2 || c.acc};--ink:${fg};--label:${c.blk};--meta:${fg};--logo:${logo};--m:${M}px;--oy:${+s.offsetY || 0}px;--sp:${SP};color:${fg}`;
-  const ctx = { s, W, H, T: e.top, B: e.bottom, M, SP, zk, photoSrc, logoRow, photos: PHOTOS };
-  const cls = ['ab', 'x5', 'ls-' + (s.ls || 'block'), 'ff-' + (s.font || 'normal'), s.anim && s.anim !== 'none' ? 'an-' + s.anim : '', opts.textOnly ? 'no-bg' : ''].join(' ');
-  return `<div class="${cls}" data-format="${s.format}" data-template="${s.template}" data-layout="${s.layout}"${s.anim && s.anim !== 'none' ? ` data-anim="${s.anim}"` : ''}${xtra(s)} style="${vars}">${b.html}<div class="layer">${drawShapes(s.shapes, s, ctx)}${compose(s, ctx)}${placedLogos(s)}</div></div>`;
+  const ctx = { s, W, H, T: e.top, B: e.bottom, M, SP, zk, pk, photoSrc, logoRow, photos: PHOTOS };
+  const cls = ['ab', 'x5', (b.tone === 'light' || s.bg === 'cw' && c.tone === 'light') ? 't-light' : 't-dark', 'ls-' + (s.ls || 'block'), 'ff-' + (s.font || 'normal'), s.anim && s.anim !== 'none' ? 'an-' + s.anim : '', opts.textOnly ? 'no-bg' : ''].join(' ');
+  return `<div class="${cls}" data-format="${s.format}" data-template="${s.template}" data-layout="${s.layout}"${s.anim && s.anim !== 'none' ? ` data-anim="${s.anim}"` : ''}${xtra(s)} style="${vars}">${b.html}<div class="layer">${drawShapes(s.shapes, s, ctx)}${onePhoto(s, compose(s, ctx))}${placedLogos(s)}</div></div>`;
 }
 
 export function preview(spec, boxW, opts = {}) {

@@ -48,7 +48,8 @@ function rng(seed) { let a = seed >>> 0 || 1; return () => { a ^= a << 13; a ^= 
 const X = '<svg viewBox="-1 -1 2 2"><path transform="rotate(45)" d="M0-1L.09-.09L1 0L.09.09L0 1L-.09.09L-1 0L-.09-.09Z" fill="currentColor"/></svg>';
 
 let C; // per-render context: { s, W, H, T, B, M, SP, zk, photoSrc, logoRow }
-const em = (role, v) => (v * C.zk(role)).toFixed(3) + 'em';
+// a group's font size; it also tags the block with its role (--r, for the builder) and its own padding (--padk)
+const em = (role, v) => (v * C.zk(role)).toFixed(3) + 'em;--r:' + role + (C.pk?.(role) || '');
 const pb = (t, st = '', c = '') => t ? `<div class="pb ${c}" style="${st}">${esc(t)}</div>` : '';
 const ib = (t, st = '', c = '') => t ? `<span class="pb i ${c}" style="${st}">${t}</span>` : '';
 const box = (st, html, fit = 'box', extra = '') => `<div class="bx${fit ? ' xfit' : ''} main" ${fit ? `data-fit="${fit}"` : ''} style="${st}" ${extra}>${html}</div>`;
@@ -294,7 +295,7 @@ const TT = {
 };
 const DATES = s => s.dates?.length ? s.dates : [{ c: 'Los Angeles', v: 'The Train Station', d: 'OCT 31' }, { c: 'Los Angeles', v: '613 Imperial St', d: 'JAN 02' }, { c: 'San Diego', v: 'Rooftop', d: 'JAN 16' }, { c: 'Mexico City', v: 'Terraza', d: 'FEB 06' }, { c: 'Tulum', v: 'Jungle', d: 'FEB 13' }, { c: 'New York', v: 'Warehouse', d: 'MAR 06' }];
 const TOUR = {
-  columns: s => { const { W, H, M, T, B } = C; return box(`left:${M}px;right:${M}px;top:${T}px;height:${H * .14}px;font-size:100px`, `<div class="nb disp" data-fit="w" style="font-size:${em('title', 1.6)}">${esc(s.title.toUpperCase())}</div><div class="nb hand" style="font-size:${em('title', .5)};align-self:flex-end">${esc(s.subtitle || 'winter series')}</div>`) +
+  columns: s => { const { W, H, M, T, B } = C; return box(`left:${M}px;right:${M}px;top:${T}px;height:${H * .14}px;font-size:100px`, `<div class="nb disp" data-fit="w" style="font-size:${em('title', 1.6)}">${esc(s.title.toUpperCase())}</div><div class="nb hand" style="font-size:${em('title', .26)};align-self:flex-end;margin-top:.6em">${esc(s.subtitle || 'winter series')}</div>`) +
     box(`left:${M}px;right:${M}px;top:${T + H * .17}px;bottom:${B + 40}px;font-size:100px`, `<div class="dlist">${DATES(s).map(r => { const d = dp({ date: r.d }); return `<div class="dr" style="font-size:${em('rows', .42)}"><div class="col">${pb(r.c, 'font-size:.9em')}${pb(r.v, 'font-size:.36em;align-self:flex-end', 'k1')}</div><div class="col">${pb(d.d, 'font-size:1.25em;letter-spacing:-.05em', 'k4')}${pb(d.month.toUpperCase(), 'font-size:.24em;align-self:stretch;text-align:center', 'k4 mn')}</div></div>`; }).join('')}</div>`, 'box', grow(2, 'rows')) + logo('bl', 46) + mono(`${s.cta || 'Tickets'} — link in bio`, `right:${M}px;bottom:${B}px`); },
   residency: s => { const { W, H, M, T, B } = C; return box(`left:${M}px;right:${M}px;top:${H * .3}px;height:${H * .22}px;font-size:100px`, `<div class="col" style="font-size:${em('title', .78)}">${pb(s.presenter)}${pb(s.title, 'margin-left:1.4em')}${pb((s.subtitle || 'Residency').toUpperCase(), 'margin-left:.6em')}</div>`) +
     box(`left:${M}px;right:${M}px;top:${H * .58}px;bottom:${B + 60}px;font-size:100px`, `<div class="g2">${DATES(s).map(r => `<div class="col" style="font-size:${em('rows', .3)}">${pb(r.d)}${pb(r.v)}</div>`).join('')}</div>`, 'box', grow(2, 'rows')) + logo('bc', 48); },

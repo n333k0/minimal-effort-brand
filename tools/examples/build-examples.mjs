@@ -17,8 +17,8 @@ const G = []; const E = [];
 const group = (id, title, note, list) => { G.push({ id, title, note }); for (const e of list) E.push({ group: id, ...e }); };
 const P = (layout, extra = {}, formats = ['feed']) => ({ name: `poster-${layout}${extra._n ? '-' + extra._n : ''}`, template: 'poster', layout, formats, ...Object.fromEntries(Object.entries(extra).filter(([k]) => k !== '_n')) });
 
-group('second-wind', 'The Second Wind flyer · every size', 'The flyer we made, adapted to feed 4:5, story 9:16, square 1:1 and landscape 16:9 — and on three of the new shader loops.',
-  [keep('second-wind_waves'), { name: 'second-wind_chrome', template: 'lineup', bg: 'chrome', formats: ['feed'] }, { name: 'second-wind_holo-me', template: 'lineup', bg: 'holome', formats: ['feed'] }, { name: 'second-wind_neon', template: 'lineup', bg: 'neon', formats: ['feed'] }]);
+group('second-wind', 'The Second Wind flyer · every size', 'The flyer we made, adapted to feed 4:5, story 9:16, square 1:1 and landscape 16:9 — and on three of the new light fields.',
+  [keep('second-wind_waves'), { name: 'second-wind_prism-streak', template: 'lineup', bg: 'pstreak', formats: ['feed'] }, { name: 'second-wind_prism-blue', template: 'lineup', bg: 'pblue', formats: ['feed'] }, { name: 'second-wind_lilac-fog', template: 'lineup', bg: 'lfog', formats: ['feed'] }]);
 group('lineup', 'Lineup · compositions', 'The same night in eight compositions (A–H) and backgrounds. Black label blocks by default, Lime as an option.',
   ['lineup-b_rainbow', 'lineup-c_lilac', 'lineup-d_bubbles', 'lineup-e_flow', 'lineup-f_bloom', 'lineup-lime_spectrum', 'lineup-i_ribbon', 'lineup-j_holo', 'lineup-g_half', 'lineup-h_window'].map(keep));
 const LAY = ['halftone', 'square', 'glow', 'soft', 'corners', 'stagger', 'card', 'column', 'datecard', 'collab', 'mono', 'gridsheet', 'collage', 'plusgrid', 'wall', 'portrait', 'gallery', 'bands', 'beam', 'numbers', 'bleed', 'mirror', 'marquee'];
@@ -101,6 +101,27 @@ group('maze-more', 'THE MAZE · on loops and photos', 'Pick any background loop 
 group('shape-loops', 'Shader loops · shapes', 'The WebGL loops now light simple shapes (ring, pill, rings, blob) instead of a big logo, so the flyer\'s own logo stays the only one.',
   [{ name: 'loop_chrome-ring', template: 'cover', layout: 'centre', bg: 'chrome', statement: 'A different kind of front row.', formats: ['feed'] }, { name: 'loop_neon-rings', template: 'status', layout: 'low', status: 'PRESALE LIVE', bg: 'neon', formats: ['feed'] },
     { name: 'loop_holo-pill', template: 'lineup', layout: 'center', bg: 'holome', formats: ['feed'] }, { name: 'loop_melt-blob', template: 'status', layout: 'centre', status: 'LAST TICKETS', bg: 'melt', formats: ['feed'] }]);
+
+// round 7: light fields from the references (no shapes), prism blues, ten more textures, the MAZE field anywhere,
+// Just announced on any background
+const LF = (n, template, bg, x = {}) => ({ name: `light_${n}`, template, bg, formats: ['feed'], ...x });
+group('light-fields', 'Light fields · from the references', 'New WebGL loops drawn from the ME reference posters, light and texture only: anamorphic prism streaks (FUSE), a zoom-blur vortex (Four Tet), colour fog (Rüfüs), pixel-sorted glitch and film grain. Every one loops seamlessly.',
+  [LF('prism-streak', 'cover', 'pstreak', { layout: 'centre', statement: 'Less, but louder.' }), LF('lilac-streak', 'lineup', 'lstreak', { layout: 'left' }), LF('ember-streak', 'status', 'estreak', { layout: 'centre', status: 'LAST TICKETS' }), LF('ice-streak', 'poster', 'istreak', { layout: 'glow' }),
+    LF('lime-vortex', 'poster', 'lvortex', { layout: 'stagger' }), LF('peach-fog', 'cover', 'pfog', { layout: 'quote', statement: 'The best nights start quiet.' }), LF('lilac-fog', 'lineup', 'lfog', { layout: 'center' }), LF('ice-fog', 'giveaway', 'ifog'),
+    LF('data-glitch', 'poster', 'dglitch', { layout: 'wall' }), LF('lilac-grain', 'calendar', 'lgrain', { layout: 'blocks' }), LF('ember-streak-story', 'lineup', 'estreak', { formats: ['story'] }), LF('prism-streak-announce', 'announce', 'pstreak', { photo: 'ry-x', artists: [{ name: 'RY X', note: '[DJ SET]' }] })]);
+group('prism-blue', 'Prism blues', 'A family of deep blues: light through a prism with spectral edges, a blue streak, vortex, fog, glitch and grain. Lime and ice type sit on all of them.',
+  [LF('prism-blue', 'lineup', 'pblue', { layout: 'center' }), LF('deep-prism', 'poster', 'pdeep', { layout: 'bands' }), LF('prism-lime', 'status', 'plime', { layout: 'centre', status: 'ON SALE NOW' }), LF('blue-streak', 'cover', 'bstreak', { layout: 'centre', statement: 'Culture moves quietly.' }),
+    LF('blue-vortex', 'poster', 'bvortex', { layout: 'halftone' }), LF('blue-fog', 'lineup', 'bfog', { layout: 'left' }), LF('blue-glitch', 'timetable', 'bglitch', { layout: 'rows' }), LF('blue-grain', 'tour', 'bgrain', { layout: 'columns' })]);
+const TX = (t, template, bg, x = {}) => ({ name: `texture_${t}`, template, bg, tex: t, formats: ['feed'], ...x });
+group('textures-more', 'Textures · ten more', 'Photocopy, riso grain, line screen, CRT, VHS, grid, paper folds, scratches, stipple and canvas. On a dark post the darkening ones turn to light specks so they still show.',
+  [TX('xerox', 'poster', 'photo', { layout: 'portrait', photo: 'lee-burridge-3' }), TX('riso', 'lineup', 'midnight', { layout: 'left' }), TX('lines', 'cover', 'limesolid', { layout: 'centre', statement: 'Less, but louder.' }), TX('crt', 'lineup', 'photo', { photo: 'party-04' }),
+    TX('vhs', 'status', 'midnight', { layout: 'centre', status: 'DOORS OPEN' }), TX('fold', 'poster', 'cw', { layout: 'gridsheet' }), TX('scratch', 'announce', 'photo', { photo: 'jamiie', artists: [{ name: 'JAMIIE' }] }), TX('stipple', 'cover', 'icesolid', { layout: 'quote', statement: 'Turn it down until people lean in.' })]);
+group('maze-anywhere', 'THE MAZE field · on any flyer', 'The MAZE blocks and blurred colour field as a background for every template, in the five MAZE palettes.',
+  [{ name: 'maze-field_lineup', template: 'lineup', bg: 'maze', mazePal: 'violet', formats: ['feed'] }, { name: 'maze-field_status', template: 'status', layout: 'centre', status: 'SOLD OUT', bg: 'maze', mazePal: 'orange', formats: ['feed'] },
+    { name: 'maze-field_announce', template: 'announce', bg: 'maze', mazePal: 'night', photo: 'lee-burridge-1', artists: [{ name: 'LEE BURRIDGE' }], formats: ['feed'] }, { name: 'maze-field_cover', template: 'cover', layout: 'centre', bg: 'maze', mazePal: 'ice', statement: 'See you in the maze.', formats: ['feed'] }]);
+group('announce-bg', 'Just announced · on any background', 'The artist photo full bleed, through an effect, or framed over a loop, a colour or the MAZE field.',
+  [{ name: 'announce-bg_fx', template: 'announce', bg: 'fx', fx: { mode: 'duotone', grad: 'acid' }, photo: 'ry-x', artists: [{ name: 'RY X', note: '[DJ SET]' }], formats: ['feed'] }, { name: 'announce-bg_streak', template: 'announce', bg: 'lstreak', photo: 'jamiie', artists: [{ name: 'JAMIIE' }], formats: ['feed'] },
+    { name: 'announce-bg_lime', template: 'announce', bg: 'limesolid', photo: 'lee-burridge-2', artists: [{ name: 'LEE BURRIDGE' }], formats: ['feed'] }, { name: 'announce-bg_prism', template: 'announce', bg: 'pblue', photo: 'lee-burridge-1', artists: [{ name: 'LEE BURRIDGE' }], formats: ['feed'] }]);
 
 // row check (landscape = 2 cells), then write
 const cells = f => f === 'landscape' ? 2 : 1;

@@ -70,6 +70,10 @@ The human alternative is `builder.html` (open it from a local server: `npm run s
 | `tag` `city` `dow` `support` `pillPos` `slots[]` `dates[]` `menu[]` `relNo` `relKind` `relTitle` `kicker` `head` `body` `quote` `by` `caption` `page` `stats[]` `items[]` | | round-5 fields: poster tag line / city / weekday; maze support line and pill position; timetable `{"t","n","st"}`; tour `{"c","v","d"}`; menu `{"p","n","k"}`; release; carousel slides |
 | `shade` | 0–0.8 | darkens the background |
 | `dust` | true / false | dust texture over solid backgrounds |
+| `tex` | `dust grain toner burn paper scan dots noise xerox riso lines crt vhs grid fold scratch stipple canvas` | a texture over the background, under the type; the darkening ones flip to light specks on dark posts |
+| `pad` | `{"artists": 2, "logo": -1}` | per-group block padding steps (0 = the system's 7 px; each step ±35 %, −3 = no padding). The builder sets it by clicking a block |
+| `bg: "maze"` + `mazePal` | `orange violet night ice lime` | THE MAZE blocks and blurred colour field behind any template |
+| `bg` light fields | `pstreak lstreak estreak istreak` · `pblue pdeep plime bstreak bvortex bfog bglitch bgrain` · `lvortex pfog lfog ifog` · `dglitch mglitch lgrain egrain` | round 7: shapeless light loops from the reference posters (`assets/js/fields.js`) |
 
 ## Adding a new artist photo
 Save it as `assets/img/<slug>.jpg` (4:5 or taller, ≥1400 px wide, head in the top third), add one line to `PHOTOS` in
@@ -81,7 +85,7 @@ prompt: "Seamless looping ambient background… very slow, smooth, calm motion. 
 no cuts. No text, no objects, no people. The last frame returns exactly to the first frame." Then check the seam (first vs
 last frame PSNR ≥ 30 dB; if lower, crossfade the last second into the first), and export `assets/video/<id>.mp4` (810×1080),
 `assets/video/<id>.jpg` (first frame) and `downloads/backgrounds/minimal-effort_loop_<id>_master-1440x1920.mp4`.
-Shader loops instead come from `assets/js/shaders.js`: `node tools/render-shaders.mjs glass,pixel,grit` (free, local). Register a loop in `BACKGROUNDS` (templates.js) with its family (Chrome, Prism, Film, Brand light or Shader); the renderer picks it up from there. A new loop must look like it belongs to one of those families. Paid generation needs the owner's go-ahead.
+Shader loops instead come from `assets/js/shaders.js`: `node tools/render-shaders.mjs glass,pixel,grit` (free, local). Light fields (streaks, prism blues, fog, vortex, glitch, grain — no shapes) come from `assets/js/fields.js`: `node tools/render-fields.mjs [prism-blue,…]`. Register a loop in `BACKGROUNDS` (templates.js) with its family (Chrome, Prism, Film, Brand light or Shader); the renderer picks it up from there. A new loop must look like it belongs to one of those families. Paid generation needs the owner's go-ahead.
 
 ## Brand rules you must not break
 - Type: ABC Normal Heavy for display (tracked in), IBM Plex Mono uppercase for labels, Manrope for long text. Never anything else.
@@ -105,3 +109,15 @@ Shader loops instead come from `assets/js/shaders.js`: `node tools/render-shader
 - `assets/js/compose.js` — round-5 compositions (poster, timetable, tour, menu, release, slide), colourways, shapes. `assets/js/fx.js` — the background lab (effects). `assets/js/hydrate.js` — fits the adaptive text and draws effects after render.
 - `tools/render.mjs` — PNG/MP4 renderer. `tools/render-anim.mjs` — MP4 for animated type and moving effects. `tools/render-shaders.mjs` — shader loops. `tools/build-mockups5.py` — street / party mockups. `tools/build-logos.mjs`, `tools/build-kit.mjs` — rebuild downloads. `tools/examples/*.json` — example specs.
 - `downloads/` — every asset, also zipped.
+
+## Builder behaviour worth knowing (round 7)
+- A link from the guidelines (or a pick in the album) loads through `resolve()` in templates.js: the same per-template
+  defaults the renderer uses (background, logos, poster preset), so the builder shows exactly the example that was clicked.
+- Click any part of the flyer: an inspector opens beside it (edit the words → jumps to the field with the line selected;
+  size; padding; logos: swap, size, add, upload, remove; background: change) and the matching control scrolls into view.
+- Uploaded photos, backgrounds, effect sources and logos are kept in the browser (IndexedDB) and listed under Photo as
+  "your uploads"; they come back after a reload. They never leave the browser.
+- When the background already is the photo (Photo, or Photo + effect on it), a template's own photo frame is dropped, so
+  the photo never shows twice. Just announced follows the background: full photo, effect, or a framed photo over a loop,
+  colour or the MAZE field.
+

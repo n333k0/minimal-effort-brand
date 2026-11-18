@@ -14,27 +14,27 @@
  },
  {
   "group": "second-wind",
-  "name": "second-wind_chrome",
+  "name": "second-wind_prism-streak",
   "template": "lineup",
-  "bg": "chrome",
+  "bg": "pstreak",
   "formats": [
    "feed"
   ]
  },
  {
   "group": "second-wind",
-  "name": "second-wind_holo-me",
+  "name": "second-wind_prism-blue",
   "template": "lineup",
-  "bg": "holome",
+  "bg": "pblue",
   "formats": [
    "feed"
   ]
  },
  {
   "group": "second-wind",
-  "name": "second-wind_neon",
+  "name": "second-wind_lilac-fog",
   "template": "lineup",
-  "bg": "neon",
+  "bg": "lfog",
   "formats": [
    "feed"
   ]
@@ -3318,6 +3318,427 @@
   "layout": "centre",
   "status": "LAST TICKETS",
   "bg": "melt",
+  "formats": [
+   "feed"
+  ]
+ },
+ {
+  "group": "light-fields",
+  "name": "light_prism-streak",
+  "template": "cover",
+  "bg": "pstreak",
+  "formats": [
+   "feed"
+  ],
+  "layout": "centre",
+  "statement": "Less, but louder."
+ },
+ {
+  "group": "light-fields",
+  "name": "light_lilac-streak",
+  "template": "lineup",
+  "bg": "lstreak",
+  "formats": [
+   "feed"
+  ],
+  "layout": "left"
+ },
+ {
+  "group": "light-fields",
+  "name": "light_ember-streak",
+  "template": "status",
+  "bg": "estreak",
+  "formats": [
+   "feed"
+  ],
+  "layout": "centre",
+  "status": "LAST TICKETS"
+ },
+ {
+  "group": "light-fields",
+  "name": "light_ice-streak",
+  "template": "poster",
+  "bg": "istreak",
+  "formats": [
+   "feed"
+  ],
+  "layout": "glow"
+ },
+ {
+  "group": "light-fields",
+  "name": "light_lime-vortex",
+  "template": "poster",
+  "bg": "lvortex",
+  "formats": [
+   "feed"
+  ],
+  "layout": "stagger"
+ },
+ {
+  "group": "light-fields",
+  "name": "light_peach-fog",
+  "template": "cover",
+  "bg": "pfog",
+  "formats": [
+   "feed"
+  ],
+  "layout": "quote",
+  "statement": "The best nights start quiet."
+ },
+ {
+  "group": "light-fields",
+  "name": "light_lilac-fog",
+  "template": "lineup",
+  "bg": "lfog",
+  "formats": [
+   "feed"
+  ],
+  "layout": "center"
+ },
+ {
+  "group": "light-fields",
+  "name": "light_ice-fog",
+  "template": "giveaway",
+  "bg": "ifog",
+  "formats": [
+   "feed"
+  ]
+ },
+ {
+  "group": "light-fields",
+  "name": "light_data-glitch",
+  "template": "poster",
+  "bg": "dglitch",
+  "formats": [
+   "feed"
+  ],
+  "layout": "wall"
+ },
+ {
+  "group": "light-fields",
+  "name": "light_lilac-grain",
+  "template": "calendar",
+  "bg": "lgrain",
+  "formats": [
+   "feed"
+  ],
+  "layout": "blocks"
+ },
+ {
+  "group": "light-fields",
+  "name": "light_ember-streak-story",
+  "template": "lineup",
+  "bg": "estreak",
+  "formats": [
+   "story"
+  ]
+ },
+ {
+  "group": "light-fields",
+  "name": "light_prism-streak-announce",
+  "template": "announce",
+  "bg": "pstreak",
+  "formats": [
+   "feed"
+  ],
+  "photo": "ry-x",
+  "artists": [
+   {
+    "name": "RY X",
+    "note": "[DJ SET]"
+   }
+  ]
+ },
+ {
+  "group": "prism-blue",
+  "name": "light_prism-blue",
+  "template": "lineup",
+  "bg": "pblue",
+  "formats": [
+   "feed"
+  ],
+  "layout": "center"
+ },
+ {
+  "group": "prism-blue",
+  "name": "light_deep-prism",
+  "template": "poster",
+  "bg": "pdeep",
+  "formats": [
+   "feed"
+  ],
+  "layout": "bands"
+ },
+ {
+  "group": "prism-blue",
+  "name": "light_prism-lime",
+  "template": "status",
+  "bg": "plime",
+  "formats": [
+   "feed"
+  ],
+  "layout": "centre",
+  "status": "ON SALE NOW"
+ },
+ {
+  "group": "prism-blue",
+  "name": "light_blue-streak",
+  "template": "cover",
+  "bg": "bstreak",
+  "formats": [
+   "feed"
+  ],
+  "layout": "centre",
+  "statement": "Culture moves quietly."
+ },
+ {
+  "group": "prism-blue",
+  "name": "light_blue-vortex",
+  "template": "poster",
+  "bg": "bvortex",
+  "formats": [
+   "feed"
+  ],
+  "layout": "halftone"
+ },
+ {
+  "group": "prism-blue",
+  "name": "light_blue-fog",
+  "template": "lineup",
+  "bg": "bfog",
+  "formats": [
+   "feed"
+  ],
+  "layout": "left"
+ },
+ {
+  "group": "prism-blue",
+  "name": "light_blue-glitch",
+  "template": "timetable",
+  "bg": "bglitch",
+  "formats": [
+   "feed"
+  ],
+  "layout": "rows"
+ },
+ {
+  "group": "prism-blue",
+  "name": "light_blue-grain",
+  "template": "tour",
+  "bg": "bgrain",
+  "formats": [
+   "feed"
+  ],
+  "layout": "columns"
+ },
+ {
+  "group": "textures-more",
+  "name": "texture_xerox",
+  "template": "poster",
+  "bg": "photo",
+  "tex": "xerox",
+  "formats": [
+   "feed"
+  ],
+  "layout": "portrait",
+  "photo": "lee-burridge-3"
+ },
+ {
+  "group": "textures-more",
+  "name": "texture_riso",
+  "template": "lineup",
+  "bg": "midnight",
+  "tex": "riso",
+  "formats": [
+   "feed"
+  ],
+  "layout": "left"
+ },
+ {
+  "group": "textures-more",
+  "name": "texture_lines",
+  "template": "cover",
+  "bg": "limesolid",
+  "tex": "lines",
+  "formats": [
+   "feed"
+  ],
+  "layout": "centre",
+  "statement": "Less, but louder."
+ },
+ {
+  "group": "textures-more",
+  "name": "texture_crt",
+  "template": "lineup",
+  "bg": "photo",
+  "tex": "crt",
+  "formats": [
+   "feed"
+  ],
+  "photo": "party-04"
+ },
+ {
+  "group": "textures-more",
+  "name": "texture_vhs",
+  "template": "status",
+  "bg": "midnight",
+  "tex": "vhs",
+  "formats": [
+   "feed"
+  ],
+  "layout": "centre",
+  "status": "DOORS OPEN"
+ },
+ {
+  "group": "textures-more",
+  "name": "texture_fold",
+  "template": "poster",
+  "bg": "cw",
+  "tex": "fold",
+  "formats": [
+   "feed"
+  ],
+  "layout": "gridsheet"
+ },
+ {
+  "group": "textures-more",
+  "name": "texture_scratch",
+  "template": "announce",
+  "bg": "photo",
+  "tex": "scratch",
+  "formats": [
+   "feed"
+  ],
+  "photo": "jamiie",
+  "artists": [
+   {
+    "name": "JAMIIE"
+   }
+  ]
+ },
+ {
+  "group": "textures-more",
+  "name": "texture_stipple",
+  "template": "cover",
+  "bg": "icesolid",
+  "tex": "stipple",
+  "formats": [
+   "feed"
+  ],
+  "layout": "quote",
+  "statement": "Turn it down until people lean in."
+ },
+ {
+  "group": "maze-anywhere",
+  "name": "maze-field_lineup",
+  "template": "lineup",
+  "bg": "maze",
+  "mazePal": "violet",
+  "formats": [
+   "feed"
+  ]
+ },
+ {
+  "group": "maze-anywhere",
+  "name": "maze-field_status",
+  "template": "status",
+  "layout": "centre",
+  "status": "SOLD OUT",
+  "bg": "maze",
+  "mazePal": "orange",
+  "formats": [
+   "feed"
+  ]
+ },
+ {
+  "group": "maze-anywhere",
+  "name": "maze-field_announce",
+  "template": "announce",
+  "bg": "maze",
+  "mazePal": "night",
+  "photo": "lee-burridge-1",
+  "artists": [
+   {
+    "name": "LEE BURRIDGE"
+   }
+  ],
+  "formats": [
+   "feed"
+  ]
+ },
+ {
+  "group": "maze-anywhere",
+  "name": "maze-field_cover",
+  "template": "cover",
+  "layout": "centre",
+  "bg": "maze",
+  "mazePal": "ice",
+  "statement": "See you in the maze.",
+  "formats": [
+   "feed"
+  ]
+ },
+ {
+  "group": "announce-bg",
+  "name": "announce-bg_fx",
+  "template": "announce",
+  "bg": "fx",
+  "fx": {
+   "mode": "duotone",
+   "grad": "acid"
+  },
+  "photo": "ry-x",
+  "artists": [
+   {
+    "name": "RY X",
+    "note": "[DJ SET]"
+   }
+  ],
+  "formats": [
+   "feed"
+  ]
+ },
+ {
+  "group": "announce-bg",
+  "name": "announce-bg_streak",
+  "template": "announce",
+  "bg": "lstreak",
+  "photo": "jamiie",
+  "artists": [
+   {
+    "name": "JAMIIE"
+   }
+  ],
+  "formats": [
+   "feed"
+  ]
+ },
+ {
+  "group": "announce-bg",
+  "name": "announce-bg_lime",
+  "template": "announce",
+  "bg": "limesolid",
+  "photo": "lee-burridge-2",
+  "artists": [
+   {
+    "name": "LEE BURRIDGE"
+   }
+  ],
+  "formats": [
+   "feed"
+  ]
+ },
+ {
+  "group": "announce-bg",
+  "name": "announce-bg_prism",
+  "template": "announce",
+  "bg": "pblue",
+  "photo": "lee-burridge-1",
+  "artists": [
+   {
+    "name": "LEE BURRIDGE"
+   }
+  ],
   "formats": [
    "feed"
   ]
