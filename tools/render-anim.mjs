@@ -15,7 +15,7 @@ const args = process.argv.slice(2), opt = (k, d) => { const i = args.indexOf('--
 const file = args[0], OUT = path.resolve(opt('out', path.join(ROOT, 'downloads/templates'))), ONLY = opt('only', '')?.split(',').filter(Boolean);
 const FPS = 24, SEC = 10, N = FPS * SEC;
 const SIZE = { feed: [1080, 1350], story: [1080, 1920], square: [1080, 1080], landscape: [1920, 1080] };
-const CELL = ['ascii', 'glyph', 'dither', 'halftone', 'dots', 'lines', 'pixel'];
+const CELL = ['ascii', 'glyph', 'dither', 'halftone', 'dots', 'lines', 'pixel', 'field', 'bloom'];
 export const moving = s => (s.anim && s.anim !== 'none') || (s.bg === 'fx' && CELL.includes(s.fx?.mode) && s.fx?.animate !== false);
 
 const TYPES = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.svg': 'image/svg+xml', '.jpg': 'image/jpeg', '.png': 'image/png', '.woff2': 'font/woff2', '.mp4': 'video/mp4', '.json': 'application/json' };
