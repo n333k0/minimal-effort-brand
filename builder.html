@@ -6,7 +6,7 @@
 <title>Minimal Effort — Flyer Builder</title>
 <link rel="icon" href="assets/logo/favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="assets/fonts/fonts.css">
-<link rel="stylesheet" href="assets/css/templates.css">
+<link rel="stylesheet" href="assets/css/templates.css?v=20261117f">
 <style>
   :root { --mid: #14141A; --ice: #F5F6FC; --lime: #B4F152; --lilac: #A79BEE; --mute: rgba(245,246,252,.55); --line: rgba(245,246,252,.14);
     --sans: 'Manrope', 'Helvetica Neue', Arial, sans-serif; --mono: 'IBM Plex Mono', ui-monospace, Menlo, monospace; color-scheme: dark; }
@@ -186,6 +186,8 @@
     <div data-only="lineup announce status system giveaway poster"><label class="f"><span class="lab">Time</span><input type="text" data-k="time"></label></div>
     <div data-only="maze"><label class="f"><span class="lab">Subtitle (optional, e.g. ARTS DISTRICT BLOCK PARTY)</span><input type="text" data-k="subtitle"></label></div>
     <div data-only="lineup announce maze poster timetable"><label class="f"><span class="lab">Artists — one per line, note after |   e.g.  RY X | [DJ SET]</span><textarea data-k="artists" style="min-height:110px"></textarea></label></div>
+    <div data-only="lineup announce poster timetable"><span class="lab sub-l">Notes after the | ([DJ SET], LIVE…)</span><div class="seg" id="ntc"></div>
+      <div class="szrow" id="ntsz"><span class="lab" style="margin:0">Note size</span><button type="button" data-d="-1" title="Smaller">−</button><b id="vNts"></b><button type="button" data-d="1" title="Bigger">+</button></div></div>
     <div data-only="maze"><label class="f"><span class="lab">Pill</span><input type="text" data-k="pill"></label></div>
     <div data-only="lineup announce maze giveaway poster timetable"><label class="f"><span class="lab">Venue — one line each (THE MAZE: first line big)</span><textarea data-k="venue"></textarea></label></div>
     <div data-only="maze"><label class="f"><span class="lab">Maze pattern — try another</span><input type="range" id="seed" min="1" max="60" step="1"></label></div>
@@ -235,10 +237,10 @@
 
 <script src="assets/vendor/html-to-image.js"></script>
 <script type="module">
-  import { render, DEFAULT, TEMPLATES, ROLES, MAZE, BACKGROUNDS, PHOTOS, EVENTS, FORMATS, ICONS, LOGO, LOGO_META, LABEL_COLORS, TEXT_COLORS, CW, LABEL_STYLES, FONTS, ANIMS, SHAPES, TEXTURES } from './assets/js/templates.js?v=20261117e';
-  import { EXT } from './assets/js/compose.js?v=20261117e';
-  import { FX_MODES, GRADS, FX_DEFAULT } from './assets/js/fx.js?v=20261117e';
-  import { hydrate, fxFrame, seekTo, xlBlocks, xlMain, XL_SIZE } from './assets/js/hydrate.js?v=20261117e';
+  import { render, DEFAULT, TEMPLATES, ROLES, MAZE, BACKGROUNDS, PHOTOS, EVENTS, FORMATS, ICONS, LOGO, LOGO_META, LABEL_COLORS, TEXT_COLORS, CW, LABEL_STYLES, FONTS, ANIMS, SHAPES, TEXTURES } from './assets/js/templates.js?v=20261117f';
+  import { EXT } from './assets/js/compose.js?v=20261117f';
+  import { FX_MODES, GRADS, FX_DEFAULT } from './assets/js/fx.js?v=20261117f';
+  import { hydrate, fxFrame, seekTo, xlBlocks, xlMain, XL_SIZE } from './assets/js/hydrate.js?v=20261117f';
   import { Muxer, ArrayBufferTarget } from './assets/vendor/mp4-muxer.mjs';
   const $ = s => document.querySelector(s);
   const clone = o => JSON.parse(JSON.stringify(o));
@@ -451,6 +453,10 @@
   cwEl.innerHTML = Object.entries(CW).map(([k, v]) => `<button type="button" title="${v.label}" data-v="${k}" style="background:linear-gradient(135deg,${v.bg} 50%,${v.blk === v.bg ? v.fg : v.blk} 50%)"></button>`).join('');
   cwEl.addEventListener('click', e => { const b = e.target.closest('button'); if (b) { S.cw = b.dataset.v; if (S.bg !== 'fx' && !BACKGROUNDS[S.bg]?.video && !BACKGROUNDS[S.bg]?.photo) S.bg = 'cw'; sync(); } });
   seg($('#lsc'), Object.entries(LABEL_STYLES), 'ls');
+  // artist notes: under the name (own block) or beside it on its baseline; the size is a share of the name's size
+  seg($('#ntc'), [['', 'Under the name'], ['1', 'Beside the name']], 'noteInline');
+  const ntDef = () => EXT[S.template] ? .32 : .38;
+  $('#ntsz').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; S.noteSize = +Math.max(.16, Math.min(1, (+S.noteSize || ntDef()) + +b.dataset.d * .04)).toFixed(2); sync(); });
   seg($('#texc'), Object.entries(TEXTURES), 'tex', () => { S.dust = false; });
   seg($('#ffc'), Object.entries(FONTS), 'font');
   seg($('#anc'), Object.entries(ANIMS), 'anim');
@@ -490,7 +496,7 @@
     $('#labels').checked = !!S.labels; $('#shade').value = S.shade || 0; $('#logoSize').value = S.logoSize || 62; $('#logoLabel').checked = !!S.logoLabel;
     const press = (sel, v) => document.querySelectorAll(sel + ' [data-v]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.v === v)));
     press('#tpl', S.template); press('#fmt', S.format); press('#evt', EVENTS[S.event] ? S.event : 'OTHER');
-    press('#lblc', S.labels ? S.labelColor : 'none'); press('#txtc', S.textColor || ''); press('#accc', S.accent); press('#bgs', S.bg); press('#texc', S.tex || (S.dust ? 'dust' : '')); press('#photos', (S.photo || '').startsWith('upload:') ? 'upload' : S.photo);
+    press('#lblc', S.labels ? S.labelColor : 'none'); press('#txtc', S.textColor || ''); press('#accc', S.accent); press('#bgs', S.bg); press('#ntc', S.noteInline ? '1' : ''); $('#vNts').textContent = Math.round((+S.noteSize || ntDef()) * 100) + ' %'; press('#texc', S.tex || (S.dust ? 'dust' : '')); press('#photos', (S.photo || '').startsWith('upload:') ? 'upload' : S.photo);
     const allowed = TEMPLATES[S.template].formats; document.querySelectorAll('#fmt button').forEach(b => b.disabled = !allowed.includes(b.dataset.v));
     if (!allowed.includes(S.format)) S.format = allowed[0];
     document.querySelectorAll('[data-only]').forEach(el => { const on = el.dataset.only.split(' '); el.style.display = on.includes(S.template) || (on.includes('photo') && S.bg === 'photo') ? 'block' : 'none'; });
@@ -517,6 +523,7 @@
     ['#lsc', s => { s.ls = other(Object.keys(LABEL_STYLES), s.ls || 'block'); }, segT], ['#cwc', s => { s.cw = other(Object.keys(CW), s.cw); }, segT],
     ['#ffc', s => { s.font = other(Object.keys(FONTS), s.font || 'normal'); }, segT], ['#shc', s => { s.shapes = (s.shapes || []).length ? [] : [Object.keys(SHAPES)[0]]; }, segT],
     ['#texc', s => { s.dust = false; s.tex = s.tex === 'grain' ? 'scan' : 'grain'; }, segT],
+    ['#ntc', s => { s.noteInline = s.noteInline ? '' : '1'; }, segT], ['#ntsz', s => { s.noteSize = (+s.noteSize || .38) + .12; }, el => [el]],
     ['#wrapc', s => { s.wrap = s.wrap === 'words' ? 'letters' : 'words'; }, segT],
     ['#evt', s => { s.event = other(Object.keys(EVENTS), s.event); }, el => [el.closest('.grp')]],
     ['#lblc', s => { s.labels = true; s.labelColor = s.labelColor === '#F5F5F5' ? '#181D20' : '#F5F5F5'; }, segT],

@@ -45,6 +45,8 @@
 - [x] Feed: the phone scrolls on its own (wheel and mouse drag), the page carries on at the end; sixty posts.
 - [x] 8 new gradient maps, Colour field and Bloom effects, a texture picker (dust, film grain, toner, film burn, paper, scan lines, halftone dots, noise), 19 new examples.
 
+- [x] Client: [DJ] smaller and on the same line as RY X — Words → Notes: Beside the name, Note size − / + (posters too).
+
 ## Final
 - [x] Render (360 files + 24 animated MP4s), kit, PDF (80 pages).
 - [x] Publish — owner chose to publish with Quzie included (2026-11-17); big MP4s moved to the release for the Pages limit.

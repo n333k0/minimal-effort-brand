@@ -124,6 +124,7 @@
 .ab .photo.win { overflow: hidden; }
 .ab .photo.win .stack { position: absolute; }
 .ab .lbx .x { vertical-align: 0; }
+.ab .lbx .nt { font-size: var(--nts, .38em); margin-left: .28em; letter-spacing: -0.01em; } /* a note beside the name, on its baseline */
 /* ticket giveaway */
 .ab .ticket { position: absolute; display: grid; grid-template-columns: 1fr 150px; background: var(--label, #181D20); color: var(--ink);
   -webkit-mask: radial-gradient(circle 34px at 0 50%, transparent 33px, #000 34px) left / 51% 100% no-repeat, radial-gradient(circle 34px at 100% 50%, transparent 33px, #000 34px) right / 51% 100% no-repeat;
@@ -168,7 +169,7 @@
 /* the label block, five ways */
 .ab.x5 .pb { display: block; width: fit-content; max-width: none; white-space: nowrap; padding: var(--py) var(--px); text-box: trim-both cap alphabetic; background: var(--blk); color: var(--btx); font-weight: 800; line-height: 1.05; letter-spacing: -.035em; }
 .ab.x5 .pb.i { display: inline-block; }
-.ab.x5 .pb sup { font-size: .32em; vertical-align: top; margin-left: .15em; letter-spacing: 0; }
+.ab.x5 .pb sup { font-size: var(--nts, .32em); vertical-align: top; margin-left: .15em; letter-spacing: 0; }
 .ab.x5 .nb { color: var(--fg); font-weight: 800; line-height: .9; white-space: nowrap; }
 .ab.x5 .a2 { color: var(--a2); }
 .ab.x5.ls-tight { --py: .03em; --px: .04em; }

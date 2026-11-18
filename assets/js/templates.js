@@ -4,7 +4,7 @@
 // vertical nudge for the main text (spec.offsetY). Our marks are never boxed by default: they take the colour that reads on the
 // background. Templates can have several compositions (TEMPLATES[t].layouts, picked with spec.layout).
 import { LOGO, LOGO_META, ICON_RECTS } from './logos.js';
-import { EXT, EXT_ROLES, EXT_DEFAULT, CW, compose, shapes as drawShapes, POSTER, LABEL_STYLES, FONTS, ANIMS, SHAPES } from './compose.js?v=20261117e';
+import { EXT, EXT_ROLES, EXT_DEFAULT, CW, compose, shapes as drawShapes, POSTER, LABEL_STYLES, FONTS, ANIMS, SHAPES } from './compose.js?v=20261117f';
 export { CW, POSTER, LABEL_STYLES, FONTS, ANIMS, SHAPES };
 
 export const FORMATS = { feed: [1080, 1350], story: [1080, 1920], square: [1080, 1080], landscape: [1920, 1080] };
@@ -191,8 +191,19 @@ export function wrapText(t, max) {
 // chars that fit a width at a font size (ABC Normal Heavy averages ~.56em a character); role zoom counts
 const fit = (px, width = 952) => Math.max(6, Math.floor(width / (px * .56)));
 const lbs = (t, px, cls = '', style = '', width, role) => wrapText(t, fit(px * (role ? zk(role) : 1), width)).map(l => lb(l, cls, `font-size:${px}px;${style}`)).join('');
+// a wrapped name (one block per line) with its note: beside the last line when noteInline, else its own block
+const lbsN = (s, a, px, cls, style, width, role) => {
+  const lines = wrapText(a.name, fit(px * (role ? zk(role) : 1), width)), st = `font-size:${px}px;${style}`;
+  if (!(s.noteInline && a.note)) return lines.map(l => lb(l, cls, st)).join('') + (a.note ? lb(a.note, 't-s') : '');
+  return lines.map((l, i) => i === lines.length - 1 ? lbh(esc(l) + noteSpan(a), cls, st) : lb(l, cls, st)).join('');
+};
 const pres = s => `<div class="lbx t-l" style="white-space:nowrap">${esc(s.presenter)}${s.partner ? `<span class="x">${X_SVG}</span>${esc(s.partner)}` : ''}</div>`;
-const arts = (s, big = 't-xl', small = 't-s') => s.artists.map(a => lb(a.name, big) + (a.note ? lb(a.note, small) : '')).join('');
+// an artist's note ([DJ SET], LIVE…): its own small block under the name, or (noteInline) beside the name, on its
+// baseline, inside the same block; its size follows --nts (spec noteSize, the builder's Note size)
+const lbh = (html, cls = '', style = '') => `<div class="lbx ${cls}" style="${style}">${html}</div>`;
+const noteSpan = a => a.note ? `<span class="nt">${esc(a.note)}</span>` : '';
+const named = (s, a, big, small = 't-s', style = '') => s.noteInline && a.note ? lbh(esc(a.name) + noteSpan(a), big, style) : lb(a.name, big, style) + (a.note ? lb(a.note, small) : '');
+const arts = (s, big = 't-xl', small = 't-s') => s.artists.map(a => named(s, a, big, small)).join('');
 const venue = s => s.venue.filter(Boolean).map(v => lb(v, 't-v')).join('');
 const techLabel = s => `<div class="tl"><div class="glb">${GLOBE}</div><div><small>Event</small><b>${esc(s.title)}</b></div><div><small>Date</small><b>${esc(s.date)}</b></div><div><small>Time</small><b>${esc(s.time)}</b></div><div class="bar"></div></div>`;
 const fw = s => FORMATS[s.format][0], fh = s => FORMATS[s.format][1];
@@ -212,7 +223,7 @@ function lineup(s) {
     html += logoRow(s, bottom);
   } else if (L === 'headliner') {
     const [head, ...rest] = s.artists;
-    const HA = Z('artists', lbs(head?.name || '', 150, '', 'letter-spacing:-0.045em', 900, 'artists') + (head?.note ? lb(head.note, 't-s') : '') + gap(40 * k) + rest.map(a => lb(a.name + (a.note ? ' ' + a.note : ''), 't-l')).join(''));
+    const HA = Z('artists', lbsN(s, head || { name: '' }, 150, '', 'letter-spacing:-0.045em', 900, 'artists') + gap(40 * k) + rest.map(a => s.noteInline && a.note ? lbh(esc(a.name) + noteSpan(a), 't-l') : lb(a.name + (a.note ? ' ' + a.note : ''), 't-l')).join(''));
     html += `<div class="stack c main" style="top:${st ? 470 : sq ? 110 : 230}px;padding:0 ${M - 24}px;${z}">${P}${gap(60 * k)}${HA}${gap(70 * k)}${T}${gap(36)}${Vn}</div>`;
     html += logoRow(s, bottom);
   } else if (L === 'split') {
@@ -333,7 +344,7 @@ function announce(s) {
   <div class="stack l main" style="left:${M}px;right:300px;bottom:${bot}px;top:auto">
     ${s.presenter ? Z('presenter', lb(s.presenter + (s.partner ? ' × ' + s.partner : '') + (s.presents ? ' ' + s.presents.toLowerCase() : ''), 't-xs')) : ''}
     ${Z('title', lb(s.title, 't-m'))}
-    ${Z('artists', lbs(a.name, big, '', 'letter-spacing:-0.045em', 820, 'artists') + (a.note ? lb(a.note, 't-s') : ''))}
+    ${Z('artists', lbsN(s, a, big, '', 'letter-spacing:-0.045em', 820, 'artists'))}
     ${Z('date', lb(s.date + '  –  ' + s.time, 't-m'))}
     ${Z('venue', s.venue.filter(Boolean).slice(0, 3).map(v => lb(v, 't-v')).join(''))}
   </div>`;
@@ -575,7 +586,7 @@ export function render(spec, opts = {}) {
   const metaC = light ? '#14141A' : '#F5F5F5';
   const logo = s.logoColor || metaC;
   const cls = ['ab', labelOn ? 'labels' : '', s.template === 'highlight' ? 'hl' : '', s.template === 'maze' && s.bg !== 'maze' ? 'mz-blur' : '', opts.textOnly ? 'no-bg' : ''].join(' ');
-  const style = `--acc:${s.accent};--ink:${ink};--label:${label};--meta:${metaC};--logo:${logo};--m:${M}px;--oy:${+s.offsetY || 0}px;color:${ink}`;
+  const style = `${+s.noteSize && s.noteInline ? `--nts:${+s.noteSize}em;` : ''}--acc:${s.accent};--ink:${ink};--label:${label};--meta:${metaC};--logo:${logo};--m:${M}px;--oy:${+s.offsetY || 0}px;color:${ink}`;
   const an = s.anim && s.anim !== 'none' ? s.anim : '';
   return `<div class="${cls}${an ? ' an-' + an : ''}" data-format="${s.format}" data-template="${s.template}"${an ? ` data-anim="${an}"` : ''}${xtra(s)} style="${style}">${b.html}<div class="layer">${RENDER[s.template](s)}${placedLogos(s)}</div></div>`;
 }
@@ -593,7 +604,7 @@ function renderExt(s, opts) {
   const c = CW[s.cw], [W, H] = FORMATS[s.format], e = edges(s.format);
   const b = background(s, opts);
   const fg = s.textColor || c.fg, logo = s.logoColor || (b.tone === 'light' || s.bg === 'cw' && c.tone === 'light' ? '#14141A' : (s.bg === 'cw' ? c.fg : '#F5F5F5'));
-  const vars = `--bgc:${c.bg};--fg:${fg};--blk:${c.blk};--btx:${c.btx};--acc:${c.acc};--shp:${s.shapeColor || c.shp};--b2:${c.b2};--a2:${s.accent2 || c.acc};--ink:${fg};--label:${c.blk};--meta:${fg};--logo:${logo};--m:${M}px;--oy:${+s.offsetY || 0}px;--sp:${SP};color:${fg}`;
+  const vars = `${+s.noteSize ? `--nts:${+s.noteSize}em;` : ''}--bgc:${c.bg};--fg:${fg};--blk:${c.blk};--btx:${c.btx};--acc:${c.acc};--shp:${s.shapeColor || c.shp};--b2:${c.b2};--a2:${s.accent2 || c.acc};--ink:${fg};--label:${c.blk};--meta:${fg};--logo:${logo};--m:${M}px;--oy:${+s.offsetY || 0}px;--sp:${SP};color:${fg}`;
   const ctx = { s, W, H, T: e.top, B: e.bottom, M, SP, zk, photoSrc, logoRow, photos: PHOTOS };
   const cls = ['ab', 'x5', 'ls-' + (s.ls || 'block'), 'ff-' + (s.font || 'normal'), s.anim && s.anim !== 'none' ? 'an-' + s.anim : '', opts.textOnly ? 'no-bg' : ''].join(' ');
   return `<div class="${cls}" data-format="${s.format}" data-template="${s.template}" data-layout="${s.layout}"${s.anim && s.anim !== 'none' ? ` data-anim="${s.anim}"` : ''}${xtra(s)} style="${vars}">${b.html}<div class="layer">${drawShapes(s.shapes, s, ctx)}${compose(s, ctx)}${placedLogos(s)}</div></div>`;
