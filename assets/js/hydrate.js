@@ -2,7 +2,7 @@
 // and keep animated effects moving. Used by the builder, the guidelines page and the renderers.
 //   await hydrate(root, { scale })   scale < 1 draws the effects at preview resolution (cheaper)
 //   window.__fxTime(t)               draws every live effect at loop time t (0..1) — the frame renderer calls it
-import { drawFx, loadSource } from './fx.js?v=20261119a';
+import { drawFx, loadSource } from './fx.js?v=20261119b';
 
 const live = new Set();
 let raf = 0, frozen = false, last = 0;

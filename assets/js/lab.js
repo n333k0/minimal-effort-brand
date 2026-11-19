@@ -1,5 +1,5 @@
 // Shader lab on the guidelines page: pick a look, a palette, a format; tweak; export a PNG or record one seamless loop.
-import { mountShader, PALETTES, MODES, MARKS } from './shaders.js?v=20261119a';
+import { mountShader, PALETTES, MODES, MARKS } from './shaders.js?v=20261119b';
 const PRESETS = {
   glass: ['Glass · Midnight', { mode: 'glass', palette: 'brand', mark: 'orb' }], chrome: ['Chrome · MAZE', { mode: 'chrome', palette: 'maze', mark: 'blob', scale: .72 }], holo: ['Holo · Ice', { mode: 'holo', palette: 'ice', mark: 'pill' }],
   glitch: ['Glitch · Acid', { mode: 'glitch', palette: 'acid', mark: 'bars' }], neon: ['Neon · Violet', { mode: 'neon', palette: 'violet', mark: 'ring' }], melt: ['Melt · Lime', { mode: 'melt', palette: 'lime', mark: 'blob' }],

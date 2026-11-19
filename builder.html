@@ -6,7 +6,7 @@
 <title>Minimal Effort — Flyer Builder</title>
 <link rel="icon" href="assets/logo/favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="assets/fonts/fonts.css">
-<link rel="stylesheet" href="assets/css/templates.css?v=20261119a">
+<link rel="stylesheet" href="assets/css/templates.css?v=20261119b">
 <style>
   :root { --mid: #14141A; --ice: #F5F6FC; --lime: #B4F152; --lilac: #A79BEE; --mute: rgba(245,246,252,.55); --line: rgba(245,246,252,.14);
     --sans: 'Manrope', 'Helvetica Neue', Arial, sans-serif; --mono: 'IBM Plex Mono', ui-monospace, Menlo, monospace; color-scheme: dark; }
@@ -255,10 +255,10 @@
 
 <script src="assets/vendor/html-to-image.js"></script>
 <script type="module">
-  import { render, resolve, DEFAULT, TEMPLATES, ROLES, MAZE, BACKGROUNDS, PHOTOS, EVENTS, FORMATS, ICONS, LOGO, LOGO_META, LABEL_COLORS, TEXT_COLORS, CW, LABEL_STYLES, FONTS, ANIMS, SHAPES, TEXTURES } from './assets/js/templates.js?v=20261119a';
-  import { EXT } from './assets/js/compose.js?v=20261119a';
-  import { FX_MODES, GRADS, FX_DEFAULT } from './assets/js/fx.js?v=20261119a';
-  import { hydrate, fxFrame, seekTo, xlBlocks, xlMain, XL_SIZE } from './assets/js/hydrate.js?v=20261119a';
+  import { render, resolve, DEFAULT, TEMPLATES, ROLES, MAZE, BACKGROUNDS, PHOTOS, EVENTS, FORMATS, ICONS, LOGO, LOGO_META, LABEL_COLORS, TEXT_COLORS, CW, LABEL_STYLES, FONTS, ANIMS, SHAPES, TEXTURES } from './assets/js/templates.js?v=20261119b';
+  import { EXT } from './assets/js/compose.js?v=20261119b';
+  import { FX_MODES, GRADS, FX_DEFAULT } from './assets/js/fx.js?v=20261119b';
+  import { hydrate, fxFrame, seekTo, xlBlocks, xlMain, XL_SIZE } from './assets/js/hydrate.js?v=20261119b';
   import { Muxer, ArrayBufferTarget } from './assets/vendor/mp4-muxer.mjs';
   const $ = s => document.querySelector(s);
   const clone = o => JSON.parse(JSON.stringify(o));
@@ -302,7 +302,7 @@
   const seg = (el, items, key, after) => { el.innerHTML = items.map(([v, t]) => `<button type="button" data-v="${v}">${t}</button>`).join(''); el.addEventListener('click', e => { const b = e.target.closest('button'); if (!b || b.disabled) return; S[key] = b.dataset.v; after?.(b.dataset.v); sync(); }); };
   const defLogos = (t, ev) => t === 'maze' ? [] : t === 'announce' ? [{ id: 'me-mark', pos: 'tl' }, ...(ev === 'SECOND WIND' ? [{ id: 'origin-mark' }] : [])] : ['giveaway', 'hiring', 'calendar', 'cover'].includes(t) ? [{ id: 'me-mark' }] : clone(EVENTS[ev]?.logos || [{ id: 'me-mark' }]);
   seg($('#tpl'), Object.entries(TEMPLATES).filter(([k, v]) => !v.hidden).map(([k, v]) => [k, v.label]), 'template', t => { S.logos = defLogos(t, S.event); if (t === 'announce' && !['photo', 'fx'].includes(S.bg)) S.bg = 'photo'; if (t === 'hiring') { S.bg = 'limesolid'; if (!S.photo || S.photo.startsWith('lee')) S.photo = 'party-01'; } if (t === 'giveaway' && (S.photo || '').startsWith('lee')) S.photo = 'party-03'; if (t === 'highlight') { S.format = 'story'; S.labels = false; } const L = TEMPLATES[t].layouts; S.layout = L ? Object.keys(L)[0] : S.layout; if (EXT[t]) applyPreset(); if (t === 'maze') { S.bg = 'maze'; S.labels = false; S.date = 'OCT 31'; S.title = 'HALLOWEEN NIGHT'; S.venue = ['THE TRAIN STATION', '800 N. Alameda St. Los Angeles, CA']; S.artists = [{ name: 'GUY GERBER' }, { name: 'LEE BURRIDGE' }, { name: 'DEER JADE' }, { name: 'THE BITAR BROTHERS' }]; } else if (S.bg === 'maze') S.bg = 'waves'; if (t === 'hiring') S.bg = 'limesolid'; });
-  seg($('#fmt'), [['feed', 'Feed 4:5'], ['story', 'Story 9:16'], ['square', 'Square 1:1'], ['landscape', 'Landscape 16:9']], 'format');
+  seg($('#fmt'), [['feed', 'Feed 4:5'], ['story', 'Story 9:16'], ['square', 'Square 1:1'], ['landscape', 'Landscape 16:9'], ['billboard', 'Billboard 2.44:1']], 'format');
   const drawLay = () => { const L = TEMPLATES[S.template].layouts; $('#layW').style.display = L ? 'block' : 'none'; if (!L) return; $('#lay').innerHTML = Object.entries(L).map(([v, t]) => `<button type="button" data-v="${v}">${t}</button>`).join(''); };
   $('#lay').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; S.layout = b.dataset.v; if (EXT[S.template]) applyPreset(); if (S.template === 'hiring') S.bg = { object: 'limesolid', statement: 'photo', roles: 'lilacsolid' }[S.layout]; if (S.template === 'giveaway' && S.layout === 'ticket' && BACKGROUNDS[S.bg]?.photo) S.bg = 'limesolid'; sync(); });
   // sizes: one row per text group of the template, minus / plus in steps of 15%

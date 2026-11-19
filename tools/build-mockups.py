@@ -8,7 +8,8 @@ from PIL import Image, ImageFilter, ImageDraw
 R = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 G = lambda n: Image.open(os.path.join(R, 'ref/gen3', n + '.png')).convert('RGB')
 LOGO = os.path.join(R, 'downloads/logos/png/minimal-effort_me-mark_{}_3000w.png')
-FLYER = os.environ.get('SECOND_WIND_FLYER', os.path.join(R, 'ref/final-waves.mp4'))  # the real flyer video (set the env var to its path)
+# the Second Wind flyer as it runs now (RY X (DJ) billing, 2026-11-19); the env var points it at another video
+FLYER = os.environ.get('SECOND_WIND_FLYER', os.path.join(R, 'downloads/templates/second-wind_waves_feed.mp4'))
 
 def mark(colour, width):
     im = Image.open(LOGO.format(colour)).convert('RGBA')

@@ -3,7 +3,7 @@
 //   node tools/dev/align.mjs <out.json> [all-formats]     (needs the local server on :8790)
 import fs from 'fs'; import { chromium } from 'playwright';
 const OUT = process.argv[2], ALL = process.argv[3] === 'all';
-const SIZE = { feed: [1080, 1350], story: [1080, 1920], square: [1080, 1080], landscape: [1920, 1080] };
+const SIZE = { feed: [1080, 1350], story: [1080, 1920], square: [1080, 1080], landscape: [1920, 1080], billboard: [2636, 1080] };
 const ex = JSON.parse(fs.readFileSync('tools/examples/templates.json', 'utf8'));
 const b = await chromium.launch({ channel: 'chrome' }); const p = await b.newPage({ deviceScaleFactor: 1 });
 const res = [];

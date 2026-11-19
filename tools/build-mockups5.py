@@ -1,10 +1,12 @@
-"""Round 5 mockups: the identity out in the world — an LED wall at a party, the DJ booth's front panel, a talk with the
-projection screen, a bus-shelter lightbox, a wall of wheat-pasted posters, a billboard, and the phone (animated).
+"""Mockups: the identity out in the world — the DJ booth's LED front panel, a bus-shelter lightbox, a wall of wheat-pasted
+posters, a billboard, and the phone (the moving ones play on the page). LED wall and talk removed 2026-11-19.
 Blank scenes are generated photos (ref/gen5, ref/gen3/phone.png); every logo and poster is our real artwork composited in
 code. The blank surface is found by its colour, so people standing in front of a screen stay in front of it.
 Writes assets/mock/<name>.jpg (+ downloads/mockups/), and for the moving ones a mask and assets/mock/screens.json, which the
 guidelines page uses to lay a live video / ticker over the still.
-python3 tools/build-mockups5.py   (after tools/render.mjs has rendered the examples into downloads/templates)"""
+python3 tools/build-mockups5.py   after tools/render.mjs has rendered the examples into downloads/templates, and the art made
+for the mockups:  node tools/render.mjs tools/mock/art.json --out downloads/renders/mock --no-video
+(story-size posters, so the 3:5 paper is never cropped at the sides; THE MAZE in the billboard format, 2.44:1)"""
 import os, json, subprocess
 import numpy as np
 from PIL import Image, ImageFilter, ImageDraw
@@ -13,6 +15,7 @@ from scipy import ndimage
 R = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SRC = os.environ.get('MOCK_SRC', 'downloads/templates')
 T = lambda n: os.path.join(R, SRC, n + '.png')
+MK = lambda n: os.path.join(R, 'downloads/renders/mock', n + '.png')  # tools/mock/art.json
 SCREENS = {}
 
 def region(img, seed, tol, hint):
@@ -72,42 +75,44 @@ def small(src, dst, w):
 
 G = lambda n: Image.open(os.path.join(R, 'ref/gen5', n + '.png')).convert('RGB')
 
-# LED wall: the chrome ME loop on the wall behind the DJ
-im = G('ledwall'); m0, _ = region(im, (586, 300), 38, (120, 100, 1060, 600))
-# the wall is a rectangle: rows / columns mostly covered by the grey; people, the booth and speakers in front stay in front
-rows = np.where(m0.mean(1) > .5)[0]; cols = np.where(m0[rows.min():rows.max()].mean(0) > .5)[0]
-bb = (cols.min(), rows.min(), cols.max() + 1, rows.max() + 1)
-a = np.asarray(im).astype(float); lum = a.mean(2); ref = np.median(lum[bb[1]:bb[3], bb[0]:bb[2]])
-fg = np.zeros(lum.shape, bool); fg[bb[1]:bb[3], bb[0]:bb[2]] = lum[bb[1]:bb[3], bb[0]:bb[2]] < ref * .62
-fg = ndimage.binary_opening(fg, iterations=1); fg = ndimage.binary_dilation(fg, iterations=1)
-m = np.zeros(lum.shape, bool); m[bb[1]:bb[3], bb[0]:bb[2]] = True; m &= ~fg
-from PIL import ImageEnhance
-art = ImageEnhance.Brightness(frame(os.path.join(R, 'assets/mock/led-chrome.mp4'), 4.2)).enhance(1.35)
-out, mk = put(im, art, m, bb, glow=.4)
-# a little of the room's haze stays over the screen
-hz = np.asarray(im).astype(float); o = np.asarray(out).astype(float); k = m[..., None] * .18
-out = Image.fromarray(np.clip(o * (1 - k) + hz * k + 6 * m[..., None], 0, 255).astype('uint8'))
-save(out, 'ledwall'); screen('ledwall', out, bb, mk, video='assets/mock/led-chrome.mp4')
+# DJ booth: the front panel is an LED screen playing the Prism blue light field with the ME mark (Lime) centred on it, the
+# panel's own pixel grid kept, its light spilling into the haze and onto the floor. The page plays the loop on it.
+im = G('booth'); A = np.asarray(im).astype(float); lum = A.mean(2); sat = A.max(2) - A.min(2)
+pm = (lum > 120) & (sat < 30); pm[:255] = False; pm[640:] = False; ys, xs = np.where(pm)
+bb = (int(np.percentile(xs, .2)), int(np.percentile(ys, .2)), int(np.percentile(xs, 99.8)) + 1, int(np.percentile(ys, 99.8)) + 1)
+x0, y0, x1, y1 = bb; w, h = x1 - x0, y1 - y0
+m = np.zeros(lum.shape, bool); m[y0:y1, x0:x1] = True
+pan = lum[y0:y1, x0:x1]; grid = np.clip(pan / (np.asarray(Image.fromarray(pan.astype('uint8')).filter(ImageFilter.GaussianBlur(6))).astype(float) + 1), .78, 1.18)
+Image.fromarray((np.clip(grid / 1.18, 0, 1) * 255).astype('uint8')).save(os.path.join(R, 'ref/gen5/_grid.png'))
+LOOP = os.path.join(R, 'downloads/backgrounds/minimal-effort_loop_bg33-field-prism-blue_master-1440x1920.mp4')
+mark = Image.open(os.path.join(R, 'downloads/logos/png/minimal-effort_me-mark_lime_3000w.png')).convert('RGBA')
+mh = round(h * .46); mark = mark.resize((round(mark.width * mh / mark.height), mh), Image.LANCZOS)
+ma = np.asarray(mark)[..., 3]; mys, mxs = np.where(ma > 40)  # centred by its ink
+mpos = (round(w / 2 - (mxs.min() + mxs.max()) / 2), round(h / 2 - (mys.min() + mys.max()) / 2))
+mark.save(os.path.join(R, 'ref/gen5/_mark.png'))
+def band(fr):  # the middle band of the portrait loop, at the panel's shape
+    bh = round(fr.width * h / w); top = (fr.height - bh) // 2; return fr.crop((0, top, fr.width, top + bh)).resize((w, h), Image.LANCZOS)
+panel = band(frame(LOOP, 3.0)); panel.paste(mark, mpos, mark)
+P = np.asarray(panel).astype(float) * grid[..., None] * 1.04
+out = A.copy(); out[y0:y1, x0:x1] = P; o = Image.fromarray(np.clip(out, 0, 255).astype('uint8'))
+g = Image.new('RGB', o.size, 0); g.paste(panel, (x0, y0)); g = np.asarray(g.filter(ImageFilter.GaussianBlur(70))).astype(float)
+rf = Image.new('RGB', o.size, 0); rf.paste(panel.transpose(Image.FLIP_TOP_BOTTOM).resize((w, round(h * .7))).filter(ImageFilter.GaussianBlur(14)), (x0, y1 + 14))
+yy = np.arange(lum.shape[0]); fade = (np.clip(1 - (yy - (y1 + 14)) / (h * .7), 0, 1) ** 2 * (yy > y1 + 10))[:, None, None]
+O = np.asarray(o).astype(float) + (~m[..., None]) * (g * .42 + np.asarray(rf).astype(float) * fade * .28 * (.35 + lum[..., None] / 255))
+out = Image.fromarray(np.clip(O, 0, 255).astype('uint8'))
+mk = Image.new('L', (w, h), 255)
+# the moving panel: loop band + mark + the LED grid, 10 s
+vh = h - h % 2; vw = w - w % 2
+subprocess.run(['ffmpeg', '-v', 'error', '-y', '-i', LOOP, '-i', os.path.join(R, 'ref/gen5/_mark.png'), '-i', os.path.join(R, 'ref/gen5/_grid.png'), '-filter_complex',
+  f"[0]crop=iw:round(iw*{h}/{w}):0:(ih-round(iw*{h}/{w}))/2,scale={w}:{h}:flags=lanczos,format=gbrp[b];[b][1]overlay={mpos[0]}:{mpos[1]}:format=gbrp[c];[2]format=gbrp[gr];[c][gr]blend=all_mode=multiply,eq=brightness=.03:contrast=1.02,scale={vw}:{vh},format=yuv420p",
+  '-t', '10', '-c:v', 'libx264', '-b:v', '1.4M', '-maxrate', '1.8M', '-bufsize', '3.5M', '-movflags', '+faststart', '-an', os.path.join(R, 'assets/mock/booth.mp4')], check=True)
+for f in ('_grid.png', '_mark.png'): os.remove(os.path.join(R, 'ref/gen5', f))
+save(out, 'booth'); screen('booth', out, bb, mk, video='assets/mock/booth.mp4')
 
-# DJ booth: MINIMAL EFFORT running across the front panel
-im = G('booth'); m, bb = region(im, (583, 450), 40, (0, 240, 1168, 660))
-w, h = bb[2] - bb[0], bb[3] - bb[1]; panel = Image.new('RGB', (w, h), (20, 20, 26))
-wm = Image.open(os.path.join(R, 'downloads/logos/png/minimal-effort_wordmark_lime_3000w.png')).convert('RGBA'); wm = wm.resize((round(wm.width * h * .22 / wm.height), round(h * .22)), Image.LANCZOS)
-x = round(w * .06)
-while x < w: panel.paste(wm, (x, (h - wm.height) // 2), wm); x += wm.width + round(h * .5)
-out, mk = put(im, panel, m, bb, glow=.25)
-save(out, 'booth'); screen('booth', out, bb, mk, ticker=True)
-
-# a talk: the case-study carousel on the projection screen
-im = G('talk'); m, bb = region(im, (650, 290), 30, (300, 60, 1000, 520))
-slides = ['second-wind_waves_landscape', 'the-maze_halloween_landscape', 'poster-wall-landscape_landscape', 'poster-bands-landscape_landscape']
-out, mk = put(im, Image.open(T(slides[0])), m, bb, glow=.12, dim=.92)
-save(out, 'talk'); screen('talk', out, bb, mk, slides=[f'downloads/templates/{s}.png' for s in slides])
-
-# bus shelter: a story in the lightbox
+# bus shelter: the lineup in the lightbox (Headliner layout, the names read from across the street)
 im = G('shelter'); m, bb = region(im, (448, 680), 40, (280, 400, 620, 960))
-out, mk = put(im, Image.open(T('status_presale-live_story')), m, bb, glow=.3)
-small(os.path.join(R, SRC, 'status_presale-live_story.mp4'), 'assets/mock/shelter.mp4', 540)
+out, mk = put(im, Image.open(T('lineup-d_bubbles_story')), m, bb, glow=.3)
+small(os.path.join(R, SRC, 'lineup-d_bubbles_story.mp4'), 'assets/mock/shelter.mp4', 540)
 save(out, 'shelter'); screen('shelter', out, bb, mk, video='assets/mock/shelter.mp4')
 
 # the poster wall: eight posters wheat-pasted in a row
@@ -116,19 +121,19 @@ paper = (lum > 168) & (sat < 26); paper[:150] = False; paper[440:] = False
 lab, n = ndimage.label(ndimage.binary_opening(paper, iterations=2)); sizes = ndimage.sum(paper, lab, range(1, n + 1))
 keep = [i + 1 for i in np.argsort(sizes)[::-1][:8]]
 boxes = sorted([(ndimage.find_objects((lab == k).astype(int))[0], k) for k in keep], key=lambda b: b[0][1].start)
-posters = ['poster-mirror_feed', 'poster-glow_feed', 'the-maze_halloween_feed', 'poster-wall_feed', 'second-wind_waves_feed', 'poster-stagger_feed', 'poster-bands_feed', 'poster-collage_feed']
+posters = [MK('mock-wall_' + p + '_story') for p in ['poster-mirror', 'poster-glow', 'the-maze_halloween', 'poster-wall', 'second-wind_waves', 'poster-stagger', 'poster-bands', 'poster-collage']]
 out = im
 for (sl, k), p in zip(boxes, posters):
     bb = (sl[1].start, sl[0].start, sl[1].stop, sl[0].stop)
     mm = ndimage.binary_fill_holes(lab == k) | ((lab == 0) & (lum < 168) & False)
     # the walker stays in front: the poster only goes where the paper is
     mm = np.zeros_like(paper); mm[bb[1]:bb[3], bb[0]:bb[2]] = paper[bb[1]:bb[3], bb[0]:bb[2]] | ndimage.binary_fill_holes(lab == k)[bb[1]:bb[3], bb[0]:bb[2]] & (sat[bb[1]:bb[3], bb[0]:bb[2]] < 40)
-    out, _ = put(out, Image.open(T(p)), mm, bb, paper=True, dim=.97)
+    out, _ = put(out, Image.open(p), mm, bb, paper=True, dim=.97)
 save(out, 'posters')
 
-# billboard: THE MAZE, landscape
+# billboard: THE MAZE in its billboard format (2.44:1, the board's own shape), centred
 im = G('billboard'); m, bb = region(im, (595, 345), 40, (200, 160, 1000, 520))
-out, mk = put(im, Image.open(T('the-maze_halloween_landscape')), m, bb, glow=.15)
+out, mk = put(im, Image.open(MK('mock-billboard_the-maze_billboard')), m, bb, glow=.15)
 save(out, 'billboard')
 
 # phone: the Second Wind story playing on the screen

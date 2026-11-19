@@ -8,6 +8,7 @@
 .ab[data-format="story"] { height: 1920px; }
 .ab[data-format="square"] { height: 1080px; }
 .ab[data-format="landscape"] { width: 1920px; height: 1080px; }
+.ab[data-format="billboard"] { width: 2636px; height: 1080px; }
 .ab * { box-sizing: border-box; }
 .ab .bg, .ab .bg > * { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .ab .bg video, .ab .bg img { transform: scale(1.02); }

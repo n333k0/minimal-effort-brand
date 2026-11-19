@@ -20,7 +20,7 @@ recorded in the browser: Chrome, Edge or Safari 17+). For many at once, press *C
 - `node tools/render.mjs tools/examples/templates.json --out downloads/templates` — template examples (PNG, MP4 over loops)
 - `node tools/render-anim.mjs tools/examples/templates.json --out downloads/templates` — MP4s of animated type and moving effects
 - `node tools/build-kit.mjs` — icons, highlight covers, grids, colour tokens, fonts, signature, business cards, zips
-- `python3 tools/build-mockups.py` — tee and the single street poster; `python3 tools/build-mockups5.py` — LED wall, DJ booth, talk, bus shelter, poster run, billboard, phone (needs the template renders)
+- `python3 tools/build-mockups.py` — tee and the single street poster; `python3 tools/build-mockups5.py` — DJ booth, bus shelter, poster run, billboard, phone (needs the template renders and `node tools/render.mjs tools/mock/art.json --out downloads/renders/mock --no-video`)
 - `node tools/render-fields.mjs [prism-blue,…]` — the light fields (20 shapeless loops from the references: streaks, prism blues, fog, vortex, glitch, grain)
 - `node tools/render-shaders.mjs [glass,chrome,…]` — the WebGL shader loops (13 looks); `python3 tools/cutout-objects.py` — hiring objects
 - `node tools/build-pdf.mjs` — the PDF (with the page served on :8790)

@@ -2,7 +2,7 @@
 //   node tools/dev/shot1.mjs <outdir> '<json: [{"name":"announce_lee-burridge","extra":"A TO Z"}, ...]>'
 import fs from 'fs'; import { chromium } from 'playwright';
 const OUT = process.argv[2], list = JSON.parse(process.argv[3]);
-const SIZE = { feed: [1080, 1350], story: [1080, 1920], square: [1080, 1080], landscape: [1920, 1080] };
+const SIZE = { feed: [1080, 1350], story: [1080, 1920], square: [1080, 1080], landscape: [1920, 1080], billboard: [2636, 1080] };
 const ex = JSON.parse(fs.readFileSync('tools/examples/templates.json', 'utf8'));
 const b = await chromium.launch({ channel: 'chrome' }); const p = await b.newPage({ deviceScaleFactor: 1 });
 for (const o of list) {

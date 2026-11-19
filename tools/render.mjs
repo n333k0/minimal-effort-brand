@@ -23,7 +23,7 @@ const FORMATS = opt('formats', null)?.split(',');
 const NOVIDEO = args.includes('--no-video');
 fs.mkdirSync(OUT, { recursive: true });
 
-const SIZE = { feed: [1080, 1350], story: [1080, 1920], square: [1080, 1080], landscape: [1920, 1080] };
+const SIZE = { feed: [1080, 1350], story: [1080, 1920], square: [1080, 1080], landscape: [1920, 1080], billboard: [2636, 1080] };
 const LOOP = Object.fromEntries(Object.entries(BACKGROUNDS).filter(([, b]) => b.loop).map(([k, b]) => [k, b.loop]));
 const MASTER = id => path.join(ROOT, 'downloads/backgrounds', `minimal-effort_loop_${id}_master-1440x1920.mp4`);
 const CROP = Object.fromEntries(Object.entries(SIZE).map(([k, [w, h]]) => [k, `scale=${w}:${h}:force_original_aspect_ratio=increase:flags=lanczos,crop=${w}:${h}`]));

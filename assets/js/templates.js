@@ -4,10 +4,10 @@
 // vertical nudge for the main text (spec.offsetY). Our marks are never boxed by default: they take the colour that reads on the
 // background. Templates can have several compositions (TEMPLATES[t].layouts, picked with spec.layout).
 import { LOGO, LOGO_META, ICON_RECTS } from './logos.js';
-import { EXT, EXT_ROLES, EXT_DEFAULT, CW, compose, shapes as drawShapes, POSTER, LABEL_STYLES, FONTS, ANIMS, SHAPES } from './compose.js?v=20261119a';
+import { EXT, EXT_ROLES, EXT_DEFAULT, CW, compose, shapes as drawShapes, POSTER, LABEL_STYLES, FONTS, ANIMS, SHAPES } from './compose.js?v=20261119b';
 export { CW, POSTER, LABEL_STYLES, FONTS, ANIMS, SHAPES };
 
-export const FORMATS = { feed: [1080, 1350], story: [1080, 1920], square: [1080, 1080], landscape: [1920, 1080] };
+export const FORMATS = { feed: [1080, 1350], story: [1080, 1920], square: [1080, 1080], landscape: [1920, 1080], billboard: [2636, 1080] };  // billboard: 2.44:1, THE MAZE only
 
 // Backgrounds — one family, "liquid light": CHROME (liquid iridescent forms), PRISM (spectrum light), FILM (analog leaks),
 // BRAND LIGHT (Lilac, Lime, the two together) and SHADER (the ME drawn by WebGL: glass, pixel, grit). All loops are 10 s and end
@@ -74,7 +74,7 @@ export const MAZE = {
 
 export const TEMPLATES = {
   lineup: { label: 'Event flyer', formats: ['feed', 'story', 'square', 'landscape'], layouts: LAYOUTS },
-  maze: { label: 'THE MAZE flyer', formats: ['feed', 'story', 'square', 'landscape'], layouts: Object.fromEntries(Object.entries(MAZE).map(([k, v]) => [k, v.label])) },
+  maze: { label: 'THE MAZE flyer', formats: ['feed', 'story', 'square', 'landscape', 'billboard'], layouts: Object.fromEntries(Object.entries(MAZE).map(([k, v]) => [k, v.label])) },
   announce: { label: 'Just announced', formats: ['feed', 'story'] },
   giveaway: { label: 'Ticket giveaway', formats: ['feed', 'story'], layouts: { window: 'Photo window', full: 'Full photo', ticket: 'Ticket' } },
   status: { label: 'Ticket messaging', formats: ['feed', 'story', 'square'], layouts: { low: 'Low', centre: 'Centred', top: 'Top', left: 'Left', band: 'Band, full width', bandhug: 'Band, hugging', full: 'One line, full width' } },
@@ -171,7 +171,7 @@ function logoItems(s, list, size) {
     return `<span class="lg-w${boxed ? ' boxed' : ''}" data-lgi="${(s.logos || []).indexOf(l)}" style="${pad}"><span class="lg-i" style="width:${w.toFixed(1)}px;height:${h.toFixed(1)}px">${inner}</span></span>`;
   }).join('');
 }
-const edges = f => ({ top: f === 'story' ? 250 : f === 'landscape' ? 56 : M, bottom: f === 'story' ? 330 : (f === 'square' || f === 'landscape') ? 56 : M });
+const edges = f => ({ top: f === 'story' ? 250 : f === 'landscape' || f === 'billboard' ? 56 : M, bottom: f === 'story' ? 330 : (f === 'square' || f === 'landscape' || f === 'billboard') ? 56 : M });
 function logoRow(s, y, align = 'c', opts = {}) {
   const list = (s.logos || []).filter(l => l && (l.id || l.src) && !l.pos); if (!list.length) return '';
   const pos = opts.top != null ? `top:${opts.top}px` : `bottom:${y}px`;
@@ -316,12 +316,13 @@ function mazeBlocks(W, H, c, seed, logoCell) {
   return { on, nx, ny, cx, cy };
 }
 function maze(s) {
-  const W = fw(s), H = fh(s), ls = s.format === 'landscape', st = s.format === 'story', sq = s.format === 'square';
+  const W = fw(s), H = fh(s), ls = s.format === 'landscape', bbd = s.format === 'billboard', st = s.format === 'story', sq = s.format === 'square';
   const P = MAZE[s.layout] || MAZE.orange, c = 140;
   const ox = ls ? -10 : ((W / 2 - c / 2) % c) - c, oy = st ? -60 : -20;
   // the logo block: in the cell right above the text (it moves with "Move the text up / down", never under the date line);
-  // on the landscape cover, in the left column next to the first line
-  const top = st ? 600 : sq ? 285 : 390, tTop = (ls ? 96 : top) + (+s.offsetY || 0), mz0 = Math.round(c * .78 * zk('mazelogo'));
+  // on the landscape cover, in the left column next to the first line. The billboard (2.44:1) is set like the posters,
+  // one centred stack with the logo above it, so it reads from across the street
+  const top = st ? 600 : sq ? 285 : bbd ? 295 : 390, tTop = (ls ? 96 : top) + (+s.offsetY || 0), mz0 = Math.round(c * .78 * zk('mazelogo'));
   const lx = ls ? 1 : Math.round((W / 2 - c / 2 - ox) / c);
   const ly = ls ? Math.max(0, Math.round((tTop + 40 - oy - c / 2) / c)) : Math.max(0, Math.floor((tTop - 36 - mz0 / 2 - oy - c / 2) / c));
   const g = mazeBlocks(W, H, c, +s.seed || 7);
@@ -342,7 +343,7 @@ function maze(s) {
   const ink = s.textColor || P.ink || '#B4F152';
   const mz = mz0;
   const logo = `<div class="mz-logo" style="left:${ox + lx * c + c / 2 - mz / 2}px;top:${oy + ly * c + c / 2 - mz / 2}px;width:${mz}px;height:${mz}px;color:${s.logoColor || ink}">${LOGO['the-maze']}</div>`;
-  const names = s.artists.map(a => { const t = a.name + (a.note ? ' ' + a.note : ''); const base = ls ? 130 : sq ? 128 : 165, px = Math.min(base, (ls ? 1000 : W - 2 * M + 40) / (Math.max(4, t.length) * .42)); return `<div class="mz-n" style="font-size:${px.toFixed(1)}px">${esc(t)}</div>`; }).join('');
+  const names = s.artists.map(a => { const t = a.name + (a.note ? ' ' + a.note : ''); const base = ls ? 130 : bbd ? 118 : sq ? 128 : 165, px = Math.min(base, (ls ? 1000 : W - 2 * M + 40) / (Math.max(4, t.length) * .42)); return `<div class="mz-n" style="font-size:${px.toFixed(1)}px">${esc(t)}</div>`; }).join('');
   const support = s.support ? Z('artists', `<div class="mz-mono" style="font-size:32px">SUPPORT BY:&nbsp;&nbsp;${esc(s.support)}</div>`) : '';
   const dateL = Z('date', `<div class="mz-mono" style="font-size:32px">${esc(s.date)},&nbsp;&nbsp;${esc(s.title)}</div>`);
   const sub = s.subtitle ? Z('subtitle', `<div class="mz-n" style="font-size:46px">${esc(s.subtitle)}</div>`) : '';
@@ -355,7 +356,7 @@ function maze(s) {
     text = `<div class="stack l main" style="left:385px;right:${M}px;top:96px">${dateL}${gap(18)}${sub}${Z('artists', names)}${support ? gap(22) + support : ''}${gap(30)}${pill}${gap(44)}${ven}</div>`;
   } else {
     const above = s.pillPos === 'above';
-    text = `<div class="stack c main" style="top:${top}px;padding:0 ${M - 24}px">${dateL}${gap(sub ? 10 : 22)}${sub}${gap(sub ? 18 : 0)}${above ? pill + gap(24) : ''}${Z('artists', names)}${support ? gap(26) + support : ''}${above ? '' : gap(sq ? 26 : 34) + pill}${gap(sq ? 30 : st ? 70 : 90)}${ven}</div>`;
+    text = `<div class="stack c main" style="top:${top}px;padding:0 ${M - 24}px">${dateL}${gap(sub ? 10 : 22)}${sub}${gap(sub ? 18 : 0)}${above ? pill + gap(24) : ''}${Z('artists', names)}${support ? gap(26) + support : ''}${above ? '' : gap(sq ? 26 : 34) + pill}${gap(sq ? 30 : st ? 70 : bbd ? 29 : 90)}${ven}</div>`;
   }
   return `<div class="mz">${own ? field : field}<svg class="mz-blocks" shape-rendering="crispEdges" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none">${rects}</svg><div class="mz-grain"></div></div>${logo}<div class="mz-ink" style="color:${ink};--mzc:${ink}">${text}</div>`;
 }

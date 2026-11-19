@@ -1,0 +1,11 @@
+[
+ {"name":"mock-billboard_the-maze","template":"maze","layout":"orange","event":"THE MAZE","date":"OCT 31","title":"HALLOWEEN NIGHT","seed":7,"artists":[{"name":"GUY GERBER"},{"name":"LEE BURRIDGE"},{"name":"DEER JADE"},{"name":"THE BITAR BROTHERS"}],"venue":["THE TRAIN STATION","800 N. Alameda St. Los Angeles, CA"],"pill":"IN ORDER OF APPEARANCE","formats":["billboard"]},
+ {"name":"mock-wall_poster-mirror","template":"poster","layout":"mirror","formats":["story"]},
+ {"name":"mock-wall_poster-glow","template":"poster","layout":"glow","formats":["story"]},
+ {"name":"mock-wall_the-maze_halloween","template":"maze","layout":"orange","event":"THE MAZE","date":"OCT 31","title":"HALLOWEEN NIGHT","artists":[{"name":"GUY GERBER"},{"name":"LEE BURRIDGE"},{"name":"DEER JADE"},{"name":"THE BITAR BROTHERS"}],"venue":["THE TRAIN STATION","800 N. Alameda St. Los Angeles, CA"],"formats":["story"]},
+ {"name":"mock-wall_poster-wall","template":"poster","layout":"wall","formats":["story"]},
+ {"name":"mock-wall_second-wind_waves","template":"lineup","layout":"center","bg":"waves","formats":["story"]},
+ {"name":"mock-wall_poster-stagger","template":"poster","layout":"stagger","formats":["story"]},
+ {"name":"mock-wall_poster-bands","template":"poster","layout":"bands","formats":["story"]},
+ {"name":"mock-wall_poster-collage","template":"poster","layout":"collage","formats":["story"]}
+]

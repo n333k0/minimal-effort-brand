@@ -95,4 +95,4 @@ Image jobs (r2): upscale ryx 59519eb8-c024-418c-80ec-3d1938459e64 · upscale jam
 - Opening: the turned letters now read FRONE (E facing right) and ROШ, sit at cap height, and the ME lands centred in the square; descriptions smaller.
 - Grid section: eight compositions with the 12-column overlay; letters (not block edges) sit on the margin.
 - Feed: three phones (a grid of thirty posts, stories, a carousel post) with sliders.
-- Mockups: LED wall, DJ booth panel, talk screen, bus shelter, poster run, billboard, phone — screens play live on the page. The cube sign is retired.
+- Mockups: DJ booth LED panel (Prism blue loop + Lime ME), bus shelter (Headliner lineup), poster run (story-size posters, no side crops), billboard (THE MAZE billboard format, centred), phone — screens play live on the page. The cube sign, LED wall and talk are retired (2026-11-19).
