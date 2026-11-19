@@ -1,9 +1,9 @@
 // Minimal Effort brand guidelines — page logic. Effects after RASA World v9: goo headlines that melt as they arrive and
 // while scrolling fast, a lime smoke trail over the hero, a pill header. Template previews are drawn live by templates.js.
 // Without JS the page is the plain layout in site.css (template previews then fall back to their PNG <noscript> images).
-import { preview } from './templates.js?v=20261118a';
-import { hydrate } from './hydrate.js?v=20261118a';
-import './sections.js?v=20261118a';
+import { preview } from './templates.js?v=20261119a';
+import { hydrate } from './hydrate.js?v=20261119a';
+import './sections.js?v=20261119a';
 
 const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const printing = new URLSearchParams(location.search).has('print');

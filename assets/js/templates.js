@@ -4,7 +4,7 @@
 // vertical nudge for the main text (spec.offsetY). Our marks are never boxed by default: they take the colour that reads on the
 // background. Templates can have several compositions (TEMPLATES[t].layouts, picked with spec.layout).
 import { LOGO, LOGO_META, ICON_RECTS } from './logos.js';
-import { EXT, EXT_ROLES, EXT_DEFAULT, CW, compose, shapes as drawShapes, POSTER, LABEL_STYLES, FONTS, ANIMS, SHAPES } from './compose.js?v=20261118a';
+import { EXT, EXT_ROLES, EXT_DEFAULT, CW, compose, shapes as drawShapes, POSTER, LABEL_STYLES, FONTS, ANIMS, SHAPES } from './compose.js?v=20261119a';
 export { CW, POSTER, LABEL_STYLES, FONTS, ANIMS, SHAPES };
 
 export const FORMATS = { feed: [1080, 1350], story: [1080, 1920], square: [1080, 1080], landscape: [1920, 1080] };
@@ -107,14 +107,15 @@ export const DEFAULT = {
   size: {}, margin: 64, spacing: 1, offsetY: 0,
   event: 'SECOND WIND', presenter: 'MNML EFFRT', partner: 'SBCTLR', presents: 'PRESENTS',
   title: 'Second Wind', date: 'Jan 2', time: '6pm to 3am',
-  artists: [{ name: 'LEE BURRIDGE' }, { name: 'RY X', note: '[DJ SET]' }, { name: 'JAMIIE' }],
+  artists: [{ name: 'LEE BURRIDGE' }, { name: 'RY X', note: '(DJ)' }, { name: 'JAMIIE' }],
+  noteInline: 'same',  // RY X's billing (their team, 2026-11-19): RY X (DJ), every letter one size, colour and style
   venue: ['613 Imperial Street', 'Arts District Los Angeles', 'Day to Night'],
   status: 'SOLD OUT', cta: 'Get tickets', handle: '@MINIMALEFFORTLA', wrap: 'words',
   prize: 'Win 5 × VIP tickets', steps: ['Follow @minimaleffortla', 'Tag two friends', 'Share to your story'], deadline: 'Winners announced Dec 30',
   month: 'September — October',
   rows: [
     { d: 'SEP 06', w: 'SAT', e: 'THE MAZE', a: 'Guy Gerber · Lee Burridge', v: 'Train Station' },
-    { d: 'SEP 20', w: 'SAT', e: 'MNML EFFRT', a: 'RY X (DJ set)', v: 'Rooftop, DTLA' },
+    { d: 'SEP 20', w: 'SAT', e: 'MNML EFFRT', a: 'RY X (DJ)', v: 'Rooftop, DTLA' },
     { d: 'OCT 04', w: 'SAT', e: 'MNML EFFRT', a: 'Jamiie', v: 'Arts District' },
     { d: 'OCT 31', w: 'FRI', e: 'THE MAZE', a: 'Halloween — to be announced', v: 'Train Station' },
   ],
@@ -221,8 +222,9 @@ const lbsN = (s, a, px, cls, style, width, role) => {
   return lines.map((l, i) => i === lines.length - 1 ? lbh(esc(l) + noteSpan(a), cls, st) : lb(l, cls, st)).join('');
 };
 const pres = s => `<div class="lbx t-l" style="white-space:nowrap">${esc(s.presenter)}${s.partner ? `<span class="x">${X_SVG}</span>${esc(s.partner)}` : ''}</div>`;
-// an artist's note ([DJ SET], LIVE…): its own small block under the name, or (noteInline) beside the name, on its
-// baseline, inside the same block; its size follows --nts (spec noteSize, the builder's Note size)
+// an artist's note ((DJ), LIVE…): its own small block under the name, or (noteInline '1') beside the name, on its
+// baseline, inside the same block; its size follows --nts (spec noteSize, the builder's Note size). noteInline 'same'
+// (the default on the flyer) never gets here: render() joins the note to the name first
 const lbh = (html, cls = '', style = '') => `<div class="lbx ${cls}" style="${style}">${html}</div>`;
 const noteSpan = a => a.note ? `<span class="nt">${esc(a.note)}</span>` : '';
 const named = (s, a, big, small = 't-s', style = '') => s.noteInline && a.note ? lbh(esc(a.name) + noteSpan(a), big, style) : lb(a.name, big, style) + (a.note ? lb(a.note, small) : '');
@@ -605,11 +607,14 @@ export function resolve(spec) {
     if (!spec.logos) s.logos = [{ id: 'me-mark' }];
     if (!CW[s.cw]) s.cw = 'midnight';
     if (!s.shapes) s.shapes = [];
+    if (spec.noteInline === undefined) s.noteInline = '';  // posters keep their own note style until one is picked
   }
   return s;
 }
 export function render(spec, opts = {}) {
   const s = resolve(spec), X = EXT[s.template];
+  // noteInline 'same': the note is billed as part of the name (RY X (DJ)), one size, colour and style, on any template
+  if (s.noteInline === 'same') s.artists = (s.artists || []).map(a => a && a.note ? { ...a, name: `${a.name} ${a.note}`, note: '' } : a);
   if (s.noLogo) s.logos = [];
   CUR = s; SP = +s.spacing || 1; M = Math.round(+s.margin || 64);
   if (X) return renderExt(s, opts);
@@ -621,7 +626,7 @@ export function render(spec, opts = {}) {
   const metaC = light ? '#14141A' : '#F5F5F5';
   const logo = s.logoColor || metaC;
   const cls = ['ab', light ? 't-light' : 't-dark', labelOn ? 'labels' : '', s.template === 'highlight' ? 'hl' : '', s.template === 'maze' && s.bg !== 'maze' ? 'mz-blur' : '', opts.textOnly ? 'no-bg' : ''].join(' ');
-  const style = `${+s.noteSize && s.noteInline ? `--nts:${+s.noteSize}em;` : ''}--acc:${s.accent};--ink:${ink};--label:${label};--meta:${metaC};--logo:${logo};--m:${M}px;--oy:${+s.offsetY || 0}px;color:${ink}`;
+  const style = `${+s.noteSize && s.noteInline && s.noteInline !== 'same' ? `--nts:${+s.noteSize}em;` : ''}--acc:${s.accent};--ink:${ink};--label:${label};--meta:${metaC};--logo:${logo};--m:${M}px;--oy:${+s.offsetY || 0}px;color:${ink}`;
   const an = s.anim && s.anim !== 'none' ? s.anim : '';
   return `<div class="${cls}${an ? ' an-' + an : ''}" data-format="${s.format}" data-template="${s.template}"${an ? ` data-anim="${an}"` : ''}${xtra(s)} style="${style}">${b.html}<div class="layer">${onePhoto(s, RENDER[s.template](s))}${placedLogos(s)}</div></div>`;
 }
@@ -647,7 +652,7 @@ function renderExt(s, opts) {
   const c = CW[s.cw], [W, H] = FORMATS[s.format], e = edges(s.format);
   const b = background(s, opts);
   const fg = s.textColor || c.fg, logo = s.logoColor || (b.tone === 'light' || s.bg === 'cw' && c.tone === 'light' ? '#14141A' : (s.bg === 'cw' ? c.fg : '#F5F5F5'));
-  const vars = `${+s.noteSize ? `--nts:${+s.noteSize}em;` : ''}--bgc:${c.bg};--fg:${fg};--blk:${c.blk};--btx:${c.btx};--acc:${c.acc};--shp:${s.shapeColor || c.shp};--b2:${c.b2};--a2:${s.accent2 || c.acc};--ink:${fg};--label:${c.blk};--meta:${fg};--logo:${logo};--m:${M}px;--oy:${+s.offsetY || 0}px;--sp:${SP};color:${fg}`;
+  const vars = `${+s.noteSize && s.noteInline !== 'same' ? `--nts:${+s.noteSize}em;` : ''}--bgc:${c.bg};--fg:${fg};--blk:${c.blk};--btx:${c.btx};--acc:${c.acc};--shp:${s.shapeColor || c.shp};--b2:${c.b2};--a2:${s.accent2 || c.acc};--ink:${fg};--label:${c.blk};--meta:${fg};--logo:${logo};--m:${M}px;--oy:${+s.offsetY || 0}px;--sp:${SP};color:${fg}`;
   const ctx = { s, W, H, T: e.top, B: e.bottom, M, SP, zk, pk, photoSrc, logoRow, photos: PHOTOS };
   const cls = ['ab', 'x5', (b.tone === 'light' || s.bg === 'cw' && c.tone === 'light') ? 't-light' : 't-dark', 'ls-' + (s.ls || 'block'), 'ff-' + (s.font || 'normal'), s.anim && s.anim !== 'none' ? 'an-' + s.anim : '', opts.textOnly ? 'no-bg' : ''].join(' ');
   return `<div class="${cls}" data-format="${s.format}" data-template="${s.template}" data-layout="${s.layout}"${s.anim && s.anim !== 'none' ? ` data-anim="${s.anim}"` : ''}${xtra(s)} style="${vars}">${b.html}<div class="layer">${drawShapes(s.shapes, s, ctx)}${onePhoto(s, compose(s, ctx))}${placedLogos(s)}</div></div>`;

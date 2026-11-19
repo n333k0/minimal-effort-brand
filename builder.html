@@ -6,7 +6,7 @@
 <title>Minimal Effort — Flyer Builder</title>
 <link rel="icon" href="assets/logo/favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="assets/fonts/fonts.css">
-<link rel="stylesheet" href="assets/css/templates.css?v=20261118a">
+<link rel="stylesheet" href="assets/css/templates.css?v=20261119a">
 <style>
   :root { --mid: #14141A; --ice: #F5F6FC; --lime: #B4F152; --lilac: #A79BEE; --mute: rgba(245,246,252,.55); --line: rgba(245,246,252,.14);
     --sans: 'Manrope', 'Helvetica Neue', Arial, sans-serif; --mono: 'IBM Plex Mono', ui-monospace, Menlo, monospace; color-scheme: dark; }
@@ -203,8 +203,8 @@
     <div data-only="lineup announce giveaway status system maze poster timetable"><label class="f"><span class="lab">Date</span><input type="text" data-k="date"></label></div>
     <div data-only="lineup announce status system giveaway poster"><label class="f"><span class="lab">Time</span><input type="text" data-k="time"></label></div>
     <div data-only="maze"><label class="f"><span class="lab">Subtitle (optional, e.g. ARTS DISTRICT BLOCK PARTY)</span><input type="text" data-k="subtitle"></label></div>
-    <div data-only="lineup announce maze poster timetable"><label class="f"><span class="lab">Artists — one per line, note after |   e.g.  RY X | [DJ SET]</span><textarea data-k="artists" style="min-height:110px"></textarea></label></div>
-    <div data-only="lineup announce poster timetable"><span class="lab sub-l">Notes after the | ([DJ SET], LIVE…)</span><div class="seg" id="ntc"></div>
+    <div data-only="lineup announce maze poster timetable"><label class="f"><span class="lab">Artists — one per line, note after |   e.g.  RY X | (DJ)</span><textarea data-k="artists" style="min-height:110px"></textarea></label></div>
+    <div data-only="lineup announce poster timetable"><span class="lab sub-l">Notes after the |   e.g. (DJ), LIVE</span><div class="seg" id="ntc"></div>
       <div class="szrow" id="ntsz"><span class="lab" style="margin:0">Note size</span><button type="button" data-d="-1" title="Smaller">−</button><b id="vNts"></b><button type="button" data-d="1" title="Bigger">+</button></div></div>
     <div data-only="maze"><label class="f"><span class="lab">Pill</span><input type="text" data-k="pill"></label></div>
     <div data-only="lineup announce maze giveaway poster timetable"><label class="f"><span class="lab">Venue — one line each (THE MAZE: first line big)</span><textarea data-k="venue"></textarea></label></div>
@@ -255,15 +255,18 @@
 
 <script src="assets/vendor/html-to-image.js"></script>
 <script type="module">
-  import { render, resolve, DEFAULT, TEMPLATES, ROLES, MAZE, BACKGROUNDS, PHOTOS, EVENTS, FORMATS, ICONS, LOGO, LOGO_META, LABEL_COLORS, TEXT_COLORS, CW, LABEL_STYLES, FONTS, ANIMS, SHAPES, TEXTURES } from './assets/js/templates.js?v=20261118a';
-  import { EXT } from './assets/js/compose.js?v=20261118a';
-  import { FX_MODES, GRADS, FX_DEFAULT } from './assets/js/fx.js?v=20261118a';
-  import { hydrate, fxFrame, seekTo, xlBlocks, xlMain, XL_SIZE } from './assets/js/hydrate.js?v=20261118a';
+  import { render, resolve, DEFAULT, TEMPLATES, ROLES, MAZE, BACKGROUNDS, PHOTOS, EVENTS, FORMATS, ICONS, LOGO, LOGO_META, LABEL_COLORS, TEXT_COLORS, CW, LABEL_STYLES, FONTS, ANIMS, SHAPES, TEXTURES } from './assets/js/templates.js?v=20261119a';
+  import { EXT } from './assets/js/compose.js?v=20261119a';
+  import { FX_MODES, GRADS, FX_DEFAULT } from './assets/js/fx.js?v=20261119a';
+  import { hydrate, fxFrame, seekTo, xlBlocks, xlMain, XL_SIZE } from './assets/js/hydrate.js?v=20261119a';
   import { Muxer, ArrayBufferTarget } from './assets/vendor/mp4-muxer.mjs';
   const $ = s => document.querySelector(s);
   const clone = o => JSON.parse(JSON.stringify(o));
   const escA = v => String(v ?? '').replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
   let S = clone(DEFAULT);
+  // how an artist note is set: billed with the name (RY X (DJ), one size, colour and style) or small, beside / under it
+  const NOTE_STYLES = [['same', 'Same as the name'], ['1', 'Small, beside'], ['', 'Small, under']];
+  const ntMode = () => S.noteInline === 'same' ? 'same' : S.noteInline ? '1' : '';
   try { const h = location.hash.slice(1); if (h) S = clone(resolve(JSON.parse(decodeURIComponent(escape(atob(h)))))); /* same defaults as the guidelines render */ } catch (e) { }
   // the single "Extra label" field became free, draggable labels: carry an old link's label over
   if (String(S.extra || '').trim() && !(S.extras || []).length) S.extras = String(S.extra).split('\n').map(t => t.trim()).filter(Boolean).map(t => ({ t, size: 'm', at: 'main', side: 'before' }));
@@ -497,7 +500,8 @@
   }
   const flash = el => { if (!el) return; const g = el.closest('.grp') || el; g.scrollIntoView({ behavior: 'smooth', block: 'center' }); g.classList.remove('flash'); void g.offsetWidth; g.classList.add('flash'); };
   const editField = (f, txt) => {
-    flash(f); setTimeout(() => { f.focus({ preventScroll: true }); const v = f.value.toLowerCase(), i = v.indexOf(txt.toLowerCase().trim().split('\n')[0]);
+    flash(f); setTimeout(() => { f.focus({ preventScroll: true }); const v = f.value.toLowerCase(); let w = txt.toLowerCase().trim().split('\n')[0].split(' '), i = -1;
+      while (w.length && (i = v.indexOf(w.join(' '))) < 0) w.pop();  /* RY X (DJ) is typed RY X | (DJ): match the name */
       if (i >= 0 && f.setSelectionRange) { const e = v.indexOf('\n', i); f.setSelectionRange(i, e < 0 ? v.length : e); } }, 350);
   };
   const step = (label, key, v, d = '') => `<div class="irow"><span>${label}</span><button type="button" data-ik="${key}" data-d="-1">−</button><b>${v}</b><button type="button" data-ik="${key}" data-d="1">+</button>${d}</div>`;
@@ -526,7 +530,8 @@
     if (SEL.kind === 'text') {
       const f = fieldFor(SEL.txt, SEL.role);
       h = `<p class="ih">${R[SEL.role] || SEL.role || 'Text'}</p>${f ? `<button type="button" class="btn sm acc" data-ia="edit">Edit the words</button>` : ''}
-        ${R[SEL.role] ? step('Size', 'size', sz(SEL.role)) : ''}${SEL.block ? step('Padding', 'pad', pd(SEL.role)) : ''}`;
+        ${R[SEL.role] ? step('Size', 'size', sz(SEL.role)) : ''}${SEL.block ? step('Padding', 'pad', pd(SEL.role)) : ''}
+        ${SEL.role === 'artists' && S.template !== 'maze' && (S.artists || []).some(a => a.note) ? `<p class="ih" style="margin-top:10px">Note · ${escA((S.artists.find(a => a.note) || {}).note)}</p><div class="irow2">${NOTE_STYLES.map(([v, t]) => `<button type="button" class="btn sm${ntMode() === v ? ' acc' : ''}" data-ia="nt" data-v="${v}">${t}</button>`).join('')}</div>` : ''}`;
     } else if (SEL.kind === 'logo') {
       const l = S.logos?.[SEL.i] || {};
       h = `<p class="ih">Logo</p>${l.src ? '' : `<select data-ia="swap">${Object.entries(LOGO_META).map(([k, m]) => `<option value="${k}"${k === l.id ? ' selected' : ''}>${m.label || k}</option>`).join('')}</select>`}
@@ -560,6 +565,7 @@
     const a = b.dataset.ia, k = b.dataset.ik, d = +b.dataset.d;
     if (a === 'close') { SEL = null; return drawIns(); }
     if (a === 'edit') { const f = fieldFor(SEL.txt, SEL.role); if (f) editField(f, SEL.txt); return; }
+    if (a === 'nt') { S.noteInline = b.dataset.v; sync(); return; }
     if (a === 'bg') return flash($('#bgs'));
     if (a === 'photo') return flash($('#photos'));
     if (a === 'xl') { const r = $('#xlList').querySelector(`[data-xlt="${SEL.i}"]`); flash(r); setTimeout(() => r?.select(), 350); return; }
@@ -586,8 +592,9 @@
   cwEl.innerHTML = Object.entries(CW).map(([k, v]) => `<button type="button" title="${v.label}" data-v="${k}" style="background:linear-gradient(135deg,${v.bg} 50%,${v.blk === v.bg ? v.fg : v.blk} 50%)"></button>`).join('');
   cwEl.addEventListener('click', e => { const b = e.target.closest('button'); if (b) { S.cw = b.dataset.v; if (S.bg !== 'fx' && !BACKGROUNDS[S.bg]?.video && !BACKGROUNDS[S.bg]?.photo) S.bg = 'cw'; sync(); } });
   seg($('#lsc'), Object.entries(LABEL_STYLES), 'ls');
-  // artist notes: under the name (own block) or beside it on its baseline; the size is a share of the name's size
-  seg($('#ntc'), [['', 'Under the name'], ['1', 'Beside the name']], 'noteInline');
+  // artist notes: same as the name (one size, colour and style: RY X (DJ)), or small: under the name (own block) or
+  // beside it on its baseline, where the size is a share of the name's size
+  seg($('#ntc'), NOTE_STYLES, 'noteInline');
   const ntDef = () => EXT[S.template] ? .32 : .38;
   $('#ntsz').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; S.noteSize = +Math.max(.16, Math.min(1, (+S.noteSize || ntDef()) + +b.dataset.d * .04)).toFixed(2); sync(); });
   seg($('#texc'), Object.entries(TEXTURES), 'tex', () => { S.dust = false; });
@@ -629,7 +636,7 @@
     $('#labels').checked = !!S.labels; $('#shade').value = S.shade || 0; $('#logoSize').value = S.logoSize || 62; $('#logoLabel').checked = !!S.logoLabel;
     const press = (sel, v) => document.querySelectorAll(sel + ' [data-v]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.v === v)));
     press('#tpl', S.template); press('#fmt', S.format); press('#evt', EVENTS[S.event] ? S.event : 'OTHER');
-    press('#lblc', S.labels ? S.labelColor : 'none'); press('#txtc', S.textColor || ''); press('#accc', S.accent); press('#bgs', S.bg); press('#ntc', S.noteInline ? '1' : ''); $('#vNts').textContent = Math.round((+S.noteSize || ntDef()) * 100) + ' %'; press('#texc', S.tex || (S.dust ? 'dust' : '')); press('#photos', (S.photo || '').startsWith('upload:') ? 'upload' : S.photo);
+    press('#lblc', S.labels ? S.labelColor : 'none'); press('#txtc', S.textColor || ''); press('#accc', S.accent); press('#bgs', S.bg); press('#ntc', ntMode()); $('#vNts').textContent = Math.round((+S.noteSize || ntDef()) * 100) + ' %'; press('#texc', S.tex || (S.dust ? 'dust' : '')); press('#photos', (S.photo || '').startsWith('upload:') ? 'upload' : S.photo);
     const allowed = TEMPLATES[S.template].formats; document.querySelectorAll('#fmt button').forEach(b => b.disabled = !allowed.includes(b.dataset.v));
     if (!allowed.includes(S.format)) S.format = allowed[0];
     document.querySelectorAll('[data-only]').forEach(el => { const on = el.dataset.only.split(' '); el.style.display = on.includes(S.template) || (on.includes('photo') && S.bg === 'photo') ? 'block' : 'none'; });
@@ -657,7 +664,7 @@
     ['#lsc', s => { s.ls = other(Object.keys(LABEL_STYLES), s.ls || 'block'); }, segT], ['#cwc', s => { s.cw = other(Object.keys(CW), s.cw); }, segT],
     ['#ffc', s => { s.font = other(Object.keys(FONTS), s.font || 'normal'); }, segT], ['#shc', s => { s.shapes = (s.shapes || []).length ? [] : [Object.keys(SHAPES)[0]]; }, segT],
     ['#texc', s => { s.dust = false; s.tex = s.tex === 'grain' ? 'scan' : 'grain'; }, segT],
-    ['#ntc', s => { s.noteInline = s.noteInline ? '' : '1'; }, segT], ['#ntsz', s => { s.noteSize = (+s.noteSize || .38) + .12; }, el => [el]],
+    ['#ntc', s => { s.noteInline = s.noteInline === 'same' ? '' : 'same'; }, segT], ['#ntsz', s => { s.noteSize = (+s.noteSize || .38) + .12; }, el => [el]],
     ['#wrapc', s => { s.wrap = s.wrap === 'words' ? 'letters' : 'words'; }, segT],
     ['#evt', s => { s.event = other(Object.keys(EVENTS), s.event); }, el => [el.closest('.grp')]],
     ['#lblc', s => { s.labels = true; s.labelColor = s.labelColor === '#F5F5F5' ? '#181D20' : '#F5F5F5'; }, segT],

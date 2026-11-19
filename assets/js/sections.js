@@ -1,8 +1,8 @@
 // Minimal Effort guidelines v2: builds the data-driven sections (technical labels, icons, compositions, loops, templates,
 // highlights, feed) from templates.js and tools/examples/templates.json. Template previews carry data-tpl, which
 // site.js draws (and redraws on resize). Every block checks that its container exists, so other pages can import this.
-import { preview, icon, ICONS, LAYOUTS, BACKGROUNDS, LOGO } from './templates.js?v=20261118a';
-import { hydrate } from './hydrate.js?v=20261118a';
+import { preview, icon, ICONS, LAYOUTS, BACKGROUNDS, LOGO } from './templates.js?v=20261119a';
+import { hydrate } from './hydrate.js?v=20261119a';
 
 const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => [...r.querySelectorAll(s)];
 const attr = o => JSON.stringify(o).replace(/'/g, '&#39;');
@@ -19,7 +19,7 @@ const mol = $('#molecules');
 if (mol) {
   const m1 = `<div class="mol"><div class="glb">${GLOBE}</div><div><small>Event</small><b>Second Wind</b></div><div><small>Date</small><b>Jan 02</b></div><div><small>Time</small><b>6PM–3AM</b></div><div class="bar"></div></div>`;
   const m2 = `<div class="mol"><div><small>Venue</small><b>The Train Station</b></div><div><small>Doors</small><b>8PM</b></div><div><small>Lat</small><b>34.0407</b></div><div><small>Lon</small><b>−118.2468</b></div></div>`;
-  const log = `<div class="mol-log">&gt; LOADING LINEUP ........ <span class="ok">OK</span>\n&gt; LEE BURRIDGE ........... <span class="ok">CONFIRMED</span>\n&gt; RY X [DJ SET] .......... <span class="ok">CONFIRMED</span>\n&gt; TICKETS ................ <span class="ok">ON SALE</span>\n&gt; CAPACITY ............... 97%</div>`;
+  const log = `<div class="mol-log">&gt; LOADING LINEUP ........ <span class="ok">OK</span>\n&gt; LEE BURRIDGE ........... <span class="ok">CONFIRMED</span>\n&gt; RY X (DJ) .............. <span class="ok">CONFIRMED</span>\n&gt; TICKETS ................ <span class="ok">ON SALE</span>\n&gt; CAPACITY ............... 97%</div>`;
   const me = `<i class="lg lg-mark" style="width:72px;margin:0 auto 18px"></i>`;
   const T = [
     ['on-mid', 'Neon on black · Lime', m1, '--acc:#B4F152;color:#B4F152'],
@@ -113,7 +113,7 @@ const MZ = { template: 'maze', layout: 'orange', date: 'OCT 31', title: 'HALLOWE
 const feed = [
   { template: 'announce', photo: 'lee-burridge-1', artists: [{ name: 'LEE BURRIDGE' }] }, { template: 'lineup', bg: 'waves' }, { template: 'calendar', layout: 'big', bg: 'midnight', dust: true },
   { template: 'status', layout: 'band', status: 'TICKETS LIVE', bg: 'chrome' }, { template: 'poster', layout: 'mirror' }, { template: 'cover', bg: 'lilac', car: 1, statement: 'Second Wind. Jan 2.' },
-  { ...MZ }, { template: 'poster', layout: 'glow', cw: 'lime' }, { template: 'announce', photo: 'ry-x', artists: [{ name: 'RY X', note: '[DJ SET]' }] },
+  { ...MZ }, { template: 'poster', layout: 'glow', cw: 'lime' }, { template: 'announce', photo: 'ry-x', artists: [{ name: 'RY X', note: '(DJ)' }] },
   { template: 'slide', layout: 'cover', car: 1 }, { template: 'poster', layout: 'wall' }, { template: 'status', layout: 'centre', status: 'SOLD OUT', bg: 'rainbow' },
   { template: 'poster', layout: 'portrait', bg: 'fx', fx: { mode: 'ascii', grad: 'acid', cell: 12 }, photo: 'lee-burridge-1' }, { template: 'hiring', layout: 'object' }, { template: 'poster', layout: 'stagger' },
   { template: 'giveaway', layout: 'ticket', bg: 'limesolid' }, { template: 'poster', layout: 'bands' }, { template: 'cover', layout: 'centre', bg: 'glass', statement: 'Less, but louder.' },
